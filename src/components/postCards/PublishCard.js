@@ -146,7 +146,9 @@ const Form = styled.form`
         }
         textarea{
             min-height: 47px;
-        }        const promisse = axios.post(`${url}/timeline`, token, newPostInfos);
+        }
+    }
+`
 
 const Input = styled.input`
     min-height: 30px;
@@ -185,4 +187,4 @@ const PublishButton = styled.button`
     &:hover:enabled{
         opacity: 0.7;
     }
-`        const promisse = axios.post(`${url}/timeline`, token, newPostInfos);
+`
