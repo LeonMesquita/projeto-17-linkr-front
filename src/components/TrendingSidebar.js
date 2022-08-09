@@ -1,24 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import styled from "styled-components";
 
-export default function TrendingSideBar( { } ){
-    // const navigate = useNavigate();
-    const [trendings, setTrendings] = useState([
-        "javascript",
-        "react",
-        "react-native",
-        "material",
-        "web-dev",
-        "mobile",
-        "css",
-        "html",
-        "node",
-        "sql"
-    ]);
-
+export default function TrendingSideBar( { trendings } ){
 
     return(
         <Container>
