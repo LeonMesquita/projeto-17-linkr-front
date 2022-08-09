@@ -26,6 +26,6 @@ export default function HashtagTimeline(){
     //     });
     // }, []);
 
-    return(`Happy Hacking`)
+    return(<PublishCard />)
 };
 
