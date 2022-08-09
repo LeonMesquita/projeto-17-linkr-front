@@ -17,9 +17,12 @@ const CardContainer = styled.section`
         background-color: #FFFFFF;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
+    &.post{
+        margin-top: 16px;
+    }
 
     @media screen and (max-width: 630px){
-        margin: 0 15px;
+        margin: 10px 15px;
     }
     @media screen and (max-width: 431px){
         div.publish:first-of-type{
