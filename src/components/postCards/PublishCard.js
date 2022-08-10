@@ -5,7 +5,7 @@ import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from "./style";
+import { CardContainer, PostContentSide, PostSide } from  "../style.js";;
 
 export default function PublishCard(){
     const { token } = useContext(TokenContext);

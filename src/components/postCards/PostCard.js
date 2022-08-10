@@ -3,28 +3,28 @@ import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from "./style";
+import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
-export default function PostCard(){
+
+export default function PostCard({description,title, link_info,link_image,url}){
     const { user } = useContext(UserContext);
-
-
     return(
         <CardContainer className="post">
             <PostContentSide>
-                <img src={user.pictureUrl} alt="" />
+                <img src={user.pictureUrl} alt="user" />
             </PostContentSide>
             <PostSide>
                 <PostInfos>
-                    <h1>Juvenal</h1>
-                    <span>Muito maneiro esse tutorial de Material UI com React, deem uma olhada!</span>
+                    <h1>{user.username}</h1>
+                    <span>{description}</span>
                     <UrlContainer>
                         <UrlDescriptionSide>
-                            <h1>Como aplicar o Material UI em um projeto React</h1>
-                            <span>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</span>
-                            <h2>https://medium.com/@pshrmn/a-simple-react-router</h2>
+                            <h1>{title}</h1>
+                            <span>{link_info}</span>
+                            <h2>{url}</h2>
                         </UrlDescriptionSide>
                         <UrlImageSide>
+                            <img src={link_image} alt={title}></img>
                         </UrlImageSide>
                     </UrlContainer>
                 </PostInfos>
