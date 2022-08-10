@@ -10,10 +10,15 @@ import Timeline from "./pages/Timeline.js";
 import HashtagTimeline from "./pages/HashtagTimeline.js";
 import UserTimeline from "./pages/UserTimeline.js";
 
+
+
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")
     const [url, setUrl] = useState(''); //Colocar link do deploy
+
+
+    
 
     return (
         <TokenContext.Provider value={{setToken, token}}>

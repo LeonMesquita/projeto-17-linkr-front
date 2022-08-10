@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
+import PostCard from "../components/postCards/PostCard";
 
 export default function HomePage(){
     
@@ -23,6 +24,6 @@ export default function HomePage(){
     //     });
     // }, []);
 
-    return(`Happy Hacking`)
+    return(<PostCard/>)
 };
 
