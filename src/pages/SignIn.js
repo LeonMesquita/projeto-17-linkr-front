@@ -7,6 +7,8 @@ import AuthArea from "../components/AuthArea";
 import Swal from 'sweetalert2'
 import  AuthButton  from "../components/AuthButton";
 
+
+
 export default function SignIn(){
     const navigate = useNavigate();
 
