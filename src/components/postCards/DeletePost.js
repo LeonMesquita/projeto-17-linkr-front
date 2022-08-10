@@ -6,14 +6,14 @@ import Modal from "react-modal";
 import styled from "styled-components";
 import { useContext } from "react";
 
-export default function DeletePost({toggle, setToggle}){
+export default function DeletePost({erase, setErase}){
     const {token} = useContext(TokenContext)
     function toggleModal() {
     
-        setToggle(!toggle);
+        setErase(!erase);
       }
     // function deletePost(id){
-    //     setToggle(!toggle);
+    //      setErase(!erase);
     //     //requisição de delete
     //     const config = {
     //         headers: {
@@ -23,16 +23,16 @@ export default function DeletePost({toggle, setToggle}){
     //     axios.delete(`localhost:4000/delete-post/${id}`,config)
     //     .then(res=>{  
     //         // setloading true
-    //         setToggle(false)})
+    //           setErase(false)})
     //     .catch(err => {
     //         console.log(err.response)
     //         alert("não foi possível deletar o post")
-    //         setToggle(false)
+    //           setErase(false)
     //     })
     // }
     return(
         <Modal
-                isOpen={toggle}
+                isOpen={erase}
                 onRequestClose={toggleModal}
                 style={customStyles}
                 // onAfterOpen={afterOpenModal}

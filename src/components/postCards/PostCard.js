@@ -6,11 +6,12 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "./style";
 
 import DeletePost from "./DeletePost";
+import EditPost from "./EditPost";
 
 export default function PostCard() {
   const { user } = useContext(UserContext);
-  const [toggle, setToggle] = useState(false);
-  
+  const [erase, setErase] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   return (
     <CardContainer className="post">
@@ -22,15 +23,26 @@ export default function PostCard() {
           <PostTop>
             <h1>Juvenal</h1>
             <div className="icons">
-              <ion-icon name="pencil-outline"></ion-icon>
-              <ion-icon name="trash-outline" onClick={()=>setToggle(!toggle)}></ion-icon>
-              <DeletePost toggle = {toggle} setToggle={setToggle}/>
+              <ion-icon
+                name="pencil-outline"
+                onClick={() => setEdit(!edit)}
+              ></ion-icon>
+              <ion-icon
+                name="trash-outline"
+                onClick={() => setErase(!erase)}
+              ></ion-icon>
+              <DeletePost erase={erase} setErase={setErase} />
             </div>
           </PostTop>
-          <span>
-            Muito maneiro esse tutorial de Material UI com React, deem uma
-            olhada!
-          </span>
+          {edit ? (
+            <EditPost edit={edit} setEdit={setEdit} />
+          ) : (
+            <span>
+              Muito maneiro esse tutorial de Material UI com React, deem uma
+              olhada!
+            </span>
+          )}
+
           <UrlContainer>
             <UrlDescriptionSide>
               <h1>Como aplicar o Material UI em um projeto React</h1>
@@ -156,4 +168,3 @@ const UrlDescriptionSide = styled.div`
 `;
 
 const UrlImageSide = styled.div``;
-
