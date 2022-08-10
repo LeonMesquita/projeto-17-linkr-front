@@ -13,7 +13,7 @@ import SignIn from "./pages/SignIn.js";
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")
-    const [url, setUrl] = useState(''); //Colocar link do deploy
+    const [url, setUrl] = useState('http://localhost:4000'); //Colocar link do deploy
 
     return (
         <TokenContext.Provider value={{setToken, token}}>
