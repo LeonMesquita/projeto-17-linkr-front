@@ -1,10 +1,11 @@
-import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";//useContext,
+//import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import TokenContext from "../contexts/TokenContext";
-import UserContext from "../contexts/UserContext";
+//import TokenContext from "../contexts/TokenContext";
+//import UserContext from "../contexts/UserContext";
+
 import Header from "../components/Header.js";
 import PostCard from "../components/postCards/PostCard.js";
 import PublishCard from "../components/postCards/PublishCard.js";
@@ -17,12 +18,9 @@ export default function Timeline(){
     // const navigate = useNavigate();
     // pass the link directly
 
-   
-
     useEffect(() => {
         const promise = axios.get(`https://linkr-back-api.herokuapp.com/posts`);
         promise.then((res)=>{
-            console.log(res.data);
             setPosts(res.data);
         });
         promise.catch(() => {
