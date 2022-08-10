@@ -9,7 +9,7 @@ import SignUp from "./pages/SignUp.js";
 import Timeline from "./pages/Timeline.js";
 import HashtagTimeline from "./pages/HashtagTimeline.js";
 import UserTimeline from "./pages/UserTimeline.js";
-
+import SignIn from "./pages/SignIn.js";
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")
@@ -22,6 +22,7 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/sign-up" element={<SignUp />} />
+                        <Route path="/sign-in" element={<SignIn />} />
                         <Route path="/timeline" element={<Timeline />} />
                         <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
                         <Route path="/user/:id" element={<UserTimeline />} />

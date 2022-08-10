@@ -5,10 +5,8 @@ import styled from "styled-components";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
-
 import PostCard from "../components/postCards/PostCard";
 import PublishCard from "../components/postCards/PublishCard"
-
 export default function HashtagTimeline(){
     
     // const { token, setToken } = useContext(TokenContext);
