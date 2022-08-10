@@ -10,11 +10,12 @@ font-family: 'Passion One', cursive;
 }
 body{
     font-family: 'Lato', sans-serif;
-    min-height: 100%vh;
+    min-height: 100vh;
     background-color: #333333;
-};
+}
 button,
-input{
+input,
+textarea{
     background: none;
 	color: inherit;
 	border: none;
@@ -22,6 +23,4 @@ input{
 	font: inherit;
 	cursor: pointer;
 	outline: inherit;
-}; /*Reset buttone & input */
-
-
+} /*Reset buttone & input */

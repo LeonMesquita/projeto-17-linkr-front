@@ -10,7 +10,6 @@ import Timeline from "./pages/Timeline.js";
 import HashtagTimeline from "./pages/HashtagTimeline.js";
 import UserTimeline from "./pages/UserTimeline.js";
 import SignIn from "./pages/SignIn.js";
-
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")

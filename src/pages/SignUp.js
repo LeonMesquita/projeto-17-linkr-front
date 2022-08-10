@@ -17,10 +17,8 @@ export default function SignUp(){
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [picture, setPicture] = useState('');
-
     const [isDisabled, setIsDisabled] = useState(false);
-
-
+  
     // useEffect(() => {
     //     const promisse = axios.(`${url}/`, );
     //     promisse.then((res)=>{
