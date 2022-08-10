@@ -9,7 +9,8 @@ import UserContext from "../contexts/UserContext";
 export default function Timeline(){
     
     // const { token, setToken } = useContext(TokenContext);
-    // const { url, user, setUser } = useContext(UserContext);
+     const { url, user, setUser } = useContext(UserContext);
+     console.log(user);
     // const navigate = useNavigate();
 
 
