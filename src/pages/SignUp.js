@@ -1,9 +1,6 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import styled from "styled-components";
-
-import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 import AuthArea from "../components/AuthArea";
 import Swal from 'sweetalert2'
@@ -17,8 +14,10 @@ export default function SignUp(){
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [picture, setPicture] = useState('');
+
     const [isDisabled, setIsDisabled] = useState(false);
-  
+
+
     // useEffect(() => {
     //     const promisse = axios.(`${url}/`, );
     //     promisse.then((res)=>{
@@ -43,6 +42,8 @@ export default function SignUp(){
                 title: 'Oops...',
                 text: 'Você deve preencher todos os campos!',
               });
+              setIsDisabled(false);
+              return;
         }
 
         try{

@@ -13,16 +13,16 @@ import SignIn from "./pages/SignIn.js";
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")
-    const [url, setUrl] = useState(''); //Colocar link do deploy
+    const [url, setUrl] = useState('http://localhost:4000'); //Colocar link do deploy
 
     return (
         <TokenContext.Provider value={{setToken, token}}>
             <UserContext.Provider value={{ url, user, setUser }}>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/a" element={<HomePage />} />
+                        <Route path="/" element={<HomePage />} />
                         <Route path="/sign-up" element={<SignUp />} />
-                        <Route path="/" element={<SignIn />} />
+                        <Route path="/sign-in" element={<SignIn />} />
                         <Route path="/timeline" element={<Timeline />} />
                         <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
                         <Route path="/user/:id" element={<UserTimeline />} />
