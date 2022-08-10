@@ -69,7 +69,7 @@ export default function SignUp(){
         <AuthArea isDisabled={isDisabled}>
             <form onSubmit={submitSignup}>
                 <input placeholder="e-mail" value={email} onChange={e => setEmail(e.target.value)}/>
-                <input placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
+                <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
                 <input placeholder="username" value={username} onChange={e => setUsername(e.target.value)} />
                 <input placeholder="picture url" value={picture} onChange={e => setPicture(e.target.value)} />
                 <AuthButton buttonText='Log In' isDisabled={isDisabled}/>

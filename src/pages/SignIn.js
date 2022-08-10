@@ -12,7 +12,7 @@ import  AuthButton  from "../components/AuthButton";
 export default function SignIn(){
     const navigate = useNavigate();
 
-    const { url, user, setUser } = useContext(UserContext);
+    const { url, setUser } = useContext(UserContext);
     const {setToken} = useContext(TokenContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -37,7 +37,10 @@ export default function SignIn(){
         try{
             const promise = await axios.post(`${url}/signin`, userBody);
             setToken(promise.data.token);
-            setUser(promise.data.username);
+            setUser({
+                username: promise.data.username,
+                pictureUrl: promise.data.pictureUrl
+            });
             Swal.fire(
                 'Good job!',
                 'Login realizado com sucesso!',
@@ -60,7 +63,7 @@ export default function SignIn(){
         <AuthArea>
             <form onSubmit={submitLogin}>
                 <input placeholder="e-mail" value={email} onChange={e => setEmail(e.target.value)}/>
-                <input placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
+                <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
                 <AuthButton buttonText='Log In' isDisabled={isDisabled}/>
             </form>
             <Link to='/sign-up'>
