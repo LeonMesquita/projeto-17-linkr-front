@@ -57,15 +57,11 @@ export default function SignUp(){
           navigate('/sign-in');
 
         }catch(e){
-            if(e.response.status == 409){
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Este usuário já existe, tente novamente!',
-                  });
-            }
-            console.log(e.response.status);
-            
+                    text: e.response.status == 409 ? 'Este usuário já existe, tente novamente!' : 'Falha ao realizar cadastro!',
+                  });    
         }
         setIsDisabled(false);
     }
