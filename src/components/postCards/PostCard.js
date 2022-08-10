@@ -28,7 +28,7 @@ export default function PostCard({description,url}){
     }
 
     useEffect(() => {
-        const promise = axios.post(`http://localhost:5000/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
+        const promise = axios.post(`https://linkr-back-api.herokuapp.com/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
         promise.then((res)=>{
             
             setData(res.data);
