@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";//useContext,
+import { useState, useContext, useEffect } from "react";//useContext,
 //import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
 //import TokenContext from "../contexts/TokenContext";
-//import UserContext from "../contexts/UserContext";
+import UserContext from "../contexts/UserContext";
 
 import Header from "../components/Header.js";
 import PostCard from "../components/postCards/PostCard.js";
