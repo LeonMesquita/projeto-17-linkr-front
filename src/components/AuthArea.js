@@ -75,25 +75,23 @@ const AvailableArea = styled.div`
         border: none;
         text-indent:15px;
 
+        &::placeholder{	
+            font-family: 'Oswald';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 25px;
+            color: #9F9F9F;
+        }
+
+
      }
      input:focus {
         outline: none;
         border: 2px solid #05e3fc;
      }
 
-     button{
-        width: 85%;
-        height: 65px;
-        background: #1877F2;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
 
-        font-family: 'Oswald';
-        font-weight: 700;
-        font-size: 27px;
-        color: #FFFFFF;
-     }
+
 
      a{
         font-family: 'Lato';
@@ -103,6 +101,11 @@ const AvailableArea = styled.div`
         text-decoration-line: underline;
         color: #FFFFFF;
         margin-top: 15px;
+        transition: font-size 0.4s;
+
+        &:hover {
+            font-size: 23px;
+        }
      }
 
      @media(max-width: 1275px) {

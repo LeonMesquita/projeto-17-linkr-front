@@ -6,7 +6,8 @@ import styled from "styled-components";
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 import AuthArea from "../components/AuthArea";
-
+import Swal from 'sweetalert2'
+import  AuthButton  from "../components/AuthButton";
 export default function SignUp(){
     
     // const { token, setToken } = useContext(TokenContext);
@@ -35,28 +36,48 @@ export default function SignUp(){
         const userBody = {
             email,
             password,
-            userName: username,
+            username: username,
             pictureUrl: picture
+        }
+        if(email === '' || password === '' || username === '' || picture === ''){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Você deve preencher todos os campos!',
+              });
         }
 
         try{
             await axios.post(`${url}/signup`, userBody);
-            navigate('/sign-in');
+            Swal.fire(
+                'Good job!',
+                'Cadastro realizado com sucesso!',
+                'success'
+              );
+          navigate('/sign-in');
 
         }catch(e){
+            if(e.response.status == 409){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Este usuário já existe, tente novamente!',
+                  });
+            }
+            console.log(e.response.status);
             
         }
         setIsDisabled(false);
     }
 
     return(
-        <AuthArea>
+        <AuthArea isDisabled={isDisabled}>
             <form onSubmit={submitSignup}>
                 <input placeholder="e-mail" value={email} onChange={e => setEmail(e.target.value)}/>
                 <input placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
                 <input placeholder="username" value={username} onChange={e => setUsername(e.target.value)} />
                 <input placeholder="picture url" value={picture} onChange={e => setPicture(e.target.value)} />
-                <button disabled={isDisabled}>Sign Up</button>
+                <AuthButton buttonText='Log In' isDisabled={isDisabled}/>
             </form>
             <Link to='/sign-in'>
                 Switch back to log in

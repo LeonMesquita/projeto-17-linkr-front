@@ -54,11 +54,3 @@ a{
 	text-decoration: none;
 }
 
-::placeholder{
-	
-	font-family: 'Oswald';
-	font-style: normal;
-	font-weight: 700;
-	font-size: 25px;
-	color: #9F9F9F;
- }
