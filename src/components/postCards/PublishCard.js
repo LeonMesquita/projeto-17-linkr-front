@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "./style";
-import { ThreeDots } from "react-loader-spinner";
 
 export default function PublishCard({ refreshPosts }) {
     const { token } = useContext(TokenContext);
@@ -22,13 +22,25 @@ export default function PublishCard({ refreshPosts }) {
         setNewPostInfos({ ...newPostInfos, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e) => {
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Oi")
         setIsDisable("disabled");
-        if(newPostInfos.url.length === 0 || newPostInfos === 0){
-            setIsDisable("")
-            return console.log("Escreva Algo");
+        if(newPostInfos.url.length === 0){  
+            await Swal.fire({
+                icon: 'error',
+                titleText: 'Oops... Url camp is empty',
+                text: 'For be able to publish an post, is required to the link camp is filled',
+                color: `#FFFFFF`,
+                background: `#333333`,
+                confirmButtonColor:`#1877F2`,
+                padding: `10px`,
+                timer: 2000,
+                timerProgressBar: true,
+                timerProgressBar: `#ffffff`
+            })
+            return setIsDisable("")
         }
         const promisse = axios.post(`${url}/timeline`, token, newPostInfos);
         const TWO_SECONDS = 2000;
@@ -79,12 +91,7 @@ export default function PublishCard({ refreshPosts }) {
                     <PublishButton type="submit">
                         {
                             isDisable === "disabled"
-                                ? <ThreeDots
-                                    height="18"
-                                    width="63"
-                                    color="#FFFFFF"
-                                    ariaLabel='loading'
-                                    />
+                                ? `Publishing...`
                                 : `Publish`
                         }
                     </PublishButton>
