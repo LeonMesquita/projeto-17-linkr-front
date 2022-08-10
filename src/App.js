@@ -20,9 +20,9 @@ export default function App() {
             <UserContext.Provider value={{ url, user, setUser }}>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<HomePage />} />
+                        <Route path="/a" element={<HomePage />} />
                         <Route path="/sign-up" element={<SignUp />} />
-                        <Route path="/sign-in" element={<SignIn />} />
+                        <Route path="/" element={<SignIn />} />
                         <Route path="/timeline" element={<Timeline />} />
                         <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
                         <Route path="/user/:id" element={<UserTimeline />} />
