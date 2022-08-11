@@ -45,7 +45,7 @@ export default function Timeline(){
                     </Title>
                     <PublishCard/>
                     {posts.map( post => {
-                         return (<PostCard key={post.created_at} description={post.description} url={post.url}></PostCard>
+                         return (<PostCard key={post.post_id} description={post.description} url={post.url}></PostCard>
                          )
                         })  }  
                 </Feed>

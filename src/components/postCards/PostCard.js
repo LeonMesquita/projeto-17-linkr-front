@@ -1,13 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
 
 export default function PostCard({author,author_pic,description,url}){
-    const { user } = useContext(UserContext);
 
     const urldata = {
         url: "",
