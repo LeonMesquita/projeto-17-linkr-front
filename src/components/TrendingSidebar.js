@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -57,8 +58,10 @@ const Container = styled.aside`
     flex-direction: column;
 
     width: 301px;
+    max-height: 80vh;
     border-radius: 16px;
-
+    margin-top: 170px;
+    margin-left: 25px;
     background: #171717;
     
     header, main{

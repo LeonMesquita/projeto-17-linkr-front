@@ -72,7 +72,7 @@ export default function SignUp(){
                 <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
                 <input placeholder="username" value={username} onChange={e => setUsername(e.target.value)} />
                 <input placeholder="picture url" value={picture} onChange={e => setPicture(e.target.value)} />
-                <AuthButton buttonText='Log In' isDisabled={isDisabled}/>
+                <AuthButton buttonText='SignUp' isDisabled={isDisabled}/>
             </form>
             <Link to='/sign-in'>
                 Switch back to log in
