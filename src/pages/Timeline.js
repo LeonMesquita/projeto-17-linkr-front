@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";//useContext,
+import { useState, useEffect } from "react";//useContext,
 
 //import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
 //import TokenContext from "../contexts/TokenContext";
-import UserContext from "../contexts/UserContext";
+//import UserContext from "../contexts/UserContext";
 
 import TrendingSideBar from "../components/TrendingSidebar";
 import Header from "../components/Header.js";
@@ -16,43 +16,48 @@ export default function Timeline(){
 
     const [ posts, setPosts ] = useState([]);
     // const { token, setToken } = useContext(TokenContext);
-     const { url, user, setUser } = useContext(UserContext);
-     console.log(user);
-
+    //const { url, user, setUser } = useContext(UserContext);
+     
     // const navigate = useNavigate();
     // pass the link directly
-
+    let isLoading;
     useEffect(() => {
+        isLoading=true;
         const promise = axios.get(`https://linkr-back-api.herokuapp.com/posts`);
         promise.then((res)=>{
             setPosts(res.data);
+            isLoading=false;
         });
-        promise.catch(() => {
-
+        promise.catch((e) => {
+            alert(e)
         });
     }, []);
-//            // ADICIONAR TRENDINGS NA SIDEBAR 
+//           // ADICIONAR TRENDINGS NA SIDEBAR 
     return(
         <>
             <Header/>
             <Container>
-            {posts.length > 0
-                    ?  
-                (<>
-                <Feed>
-                    <Title>
-                        timeline
-                    </Title>
-                    <PublishCard/>
-                    {posts.map( post => {
-                         return (<PostCard key={post.post_id} description={post.description} url={post.url}></PostCard>
-                         )
-                        })  }  
-                </Feed>
-                <TrendingSideBar trendings={["arroz","react","driven"]}/> 
-                </>
-               ):(<Title>loading . . .</Title>) 
-               }
+            {isLoading ?
+                (<Title>Loading . . .</Title>)
+                :
+                (<>{posts.length > 0 ?  
+                    (<>
+                    <Feed>
+                        <Title>
+                            timeline
+                        </Title>
+                        <PublishCard/>
+                        {posts.map( post => {
+                            return (<PostCard key={post.post_id} description={post.description} url={post.url}></PostCard>
+                            )
+                            })  }  
+                    </Feed>
+                    <TrendingSideBar trendings={["arroz","react","driven"]}/> 
+                    </>)
+                    :
+                    (<Title>There are no posts yet . . .</Title>) 
+                }</>)
+            }
             </Container>
         </>
     )
