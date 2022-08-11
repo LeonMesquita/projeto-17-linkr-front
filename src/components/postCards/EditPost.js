@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
-export default function EditPost({edit, setEdit, text}){
+export default function EditPost({edit, setEdit}){
           const inputRef = useRef(null);
         
           useEffect(() => {
@@ -13,7 +13,7 @@ export default function EditPost({edit, setEdit, text}){
           return (
             <Input>
               {edit && <input ref={inputRef} />}
-              <input type='text' ></input>
+             
             </Input>
           )
   

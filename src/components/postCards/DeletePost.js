@@ -1,19 +1,26 @@
 import TokenContext from "../../contexts/TokenContext";
+import Loading from "../Loading";
 
 import axios from "axios";
 import Modal from "react-modal";
 
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+
 
 export default function DeletePost({erase, setErase}){
     const {token} = useContext(TokenContext)
+    const [loading, setLoading] = useState(false)
     function toggleModal() {
     
         setErase(!erase);
       }
+      function deletePost(){
+        setLoading(!loading)
+        // setErase(false)
+      }
     // function deletePost(id){
-    //      setErase(!erase);
+    //      setLoading(true)
     //     //requisição de delete
     //     const config = {
     //         headers: {
@@ -22,12 +29,15 @@ export default function DeletePost({erase, setErase}){
     //     };
     //     axios.delete(`localhost:4000/delete-post/${id}`,config)
     //     .then(res=>{  
-    //         // setloading true
+      //        atualizar lista de posts
+    //          setloading false
+     //          setLoading(false)
     //           setErase(false)})
     //     .catch(err => {
     //         console.log(err.response)
     //         alert("não foi possível deletar o post")
     //           setErase(false)
+    //             setLoading(false)
     //     })
     // }
     return(
@@ -41,10 +51,11 @@ export default function DeletePost({erase, setErase}){
                 <ModalStyle>
                   <p>Are you sure you want to delete this post?</p>
                   <div className="buttons" >
-                  <button id="decline" onClick={toggleModal}  >No, go back</button>
-                  <button id="accept"
-                //    onClick={()=>deletePost(postId)}
-                    >Yes, delete it</button>
+                  <button  onClick={toggleModal}  ><p id="decline"> No, go back </p></button>
+                  <button  id="accept"
+                
+                   onClick={()=>deletePost()}
+                    > {loading? <Loading/> : <p>Yes, delete it </p> }</button>
 
                   </div>
                 </ModalStyle>
@@ -93,12 +104,15 @@ const customStyles = {
       border-radius: 5px;
       height: 37px ;
       padding: 10px;
-      font-size: 18px;
+     
       display: flex;
       justify-content: center;
       align-items: center;
       font-weight: 700;
       
+    }
+    button p{
+      font-size: 18px;
     }
     button:hover{
       filter: brightness(1.2);
@@ -120,6 +134,8 @@ const customStyles = {
       }
       button{
           height: 30px;
+      }
+      button p{
           font-size: 15px;
       }
     }
