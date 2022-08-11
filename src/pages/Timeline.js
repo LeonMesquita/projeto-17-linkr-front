@@ -15,8 +15,8 @@ export default function Timeline(){
     const [ posts, setPosts ] = useState([]);
     // const { token, setToken } = useContext(TokenContext);
     //const { url, user, setUser } = useContext(UserContext);
-    // const navigate = useNavigate();
-    // pass the link directly
+     const { url, user, setUser } = useContext(UserContext);
+     console.log(user);
 
     useEffect(() => {
         const promise = axios.get(`https://linkr-back-api.herokuapp.com/posts`);

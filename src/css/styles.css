@@ -15,7 +15,6 @@ body{
     background-color: #333333;
 }
 button,
-input,
 textarea{
     background: none;
 	color: inherit;
