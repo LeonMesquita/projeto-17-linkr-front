@@ -29,7 +29,7 @@ export default function Timeline(){
             setIsLoading(false);
         });
         promise.catch((e) => {
-            alert(e)
+            alert("An error occured while trying to fetch the posts, please refresh the page");
         });
     }, []);
 //           // ADICIONAR TRENDINGS NA SIDEBAR 
