@@ -6,6 +6,7 @@ import styled from "styled-components";
 //import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 
+import TrendingSideBar from "../components/TrendingSidebar";
 import Header from "../components/Header.js";
 import PostCard from "../components/postCards/PostCard.js";
 import PublishCard from "../components/postCards/PublishCard.js";
@@ -30,28 +31,37 @@ export default function Timeline(){
 
         });
     }, []);
-
+//            // ADICIONAR TRENDINGS NA SIDEBAR 
     return(
         <>
-            <Header>
-            </Header>
-            
-            <Feed>
-                <Title>
-                    timeline
-                </Title>
-                <PublishCard></PublishCard>
-                {posts.map((post)=>{
-                    return  <PostCard key={post.created_at} description={post.description} url={post.url}></PostCard>
-                    }
-                )};
-
-            </Feed>
-           
+            <Header/>
+            <Container>
+            {posts.length > 0
+                    ?  
+                (<>
+                <Feed>
+                    <Title>
+                        timeline
+                    </Title>
+                    <PublishCard/>
+                    {posts.map( post => {
+                         return (<PostCard key={post.created_at} description={post.description} url={post.url}></PostCard>
+                         )
+                        })  }  
+                </Feed>
+                <TrendingSideBar trendings={["arroz","react","driven"]}/> 
+                </>
+               ):(<Title>loading . . .</Title>) 
+               }
+            </Container>
         </>
     )
 };
 
+const Container =styled.div`
+    display: flex;
+    justify-content: center;
+`
 const Feed = styled.div`
     display:flex;
     flex-direction: column;
