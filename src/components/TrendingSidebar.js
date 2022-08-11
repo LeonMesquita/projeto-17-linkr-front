@@ -1,10 +1,29 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
+
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import TokenContext from "../contexts/TokenContext";
+import UserContext from "../contexts/UserContext";
 
 import styled from "styled-components";
 
-export default function TrendingSideBar( { trendings } ){
-    
+export default function TrendingSideBar(){
+
+    const { url } = useContext(UserContext);
+    const { token } = useContext(TokenContext);
+    const [trendings, setTrendings] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const promise = axios.get(`${url}/trendings`, token);
+        promise.then((res) => {
+            setTrendings(res.data);
+            setIsLoading(false)
+        })
+    }, [])
+    console.log(isLoading)
     return(
         <Container>
             <Title>
@@ -13,18 +32,21 @@ export default function TrendingSideBar( { trendings } ){
             <Divisor />
             <Content>
                 {
-                    trendings.length > 0
-                    ?   trendings.map( trending => {
-                        return (
-                            <Hashtag>
-                                <Link to={`/hashtag/${trending}`}>
-                                    # {trending}
-                                </Link>
-                            </Hashtag>
-                        )
-                        })
-                    : <h2>No momento não há nenhuma trending, não esqueça de fazer novos posts usando #, para novas trendings surgirem.</h2>
-                    
+                    isLoading
+                    ?   <SkeletonTheme baseColor="#171717" highlightColor="#272727" width="100%" height="23px" >
+                            <Skeleton className="margin" count={10} />
+                        </SkeletonTheme>
+                    :  trendings.length > 0
+                        ?   trendings.map( trending => {
+                            return (
+                                <Hashtag>
+                                    <Link to={`/hashtag/${trending}`}>
+                                        # {trending}
+                                    </Link>
+                                </Hashtag>
+                            )
+                            })
+                        :   <h2>No momento não há nenhuma trending, não esqueça de fazer novos posts usando #, para novas trendings surgirem.</h2>
                 }
             </Content>
         </Container>
@@ -80,6 +102,9 @@ const Content = styled.main`
         text-align: center;
         word-break: break-word;
     }
+    .margin{margin: 2.5px 0px;}
+    .margin:first-of-type{margin-bottom: 0px;}
+    .margin:last-of-type{margin-top: 0px;}
 `;
 
 const Hashtag = styled.div`
