@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";//useContext,
+
 //import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
@@ -15,7 +16,6 @@ export default function Timeline(){
 
     const [ posts, setPosts ] = useState([]);
     // const { token, setToken } = useContext(TokenContext);
-
      const { url, user, setUser } = useContext(UserContext);
      console.log(user);
 
