@@ -1,13 +1,15 @@
-import { useState, useContext} from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from "./style";
+import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
-export default function PublishCard(){
+
+export default function PublishCard({ refreshPosts }) {
     const { token } = useContext(TokenContext);
     const { url, user } = useContext(UserContext);
 
@@ -15,26 +17,77 @@ export default function PublishCard(){
         url: "",
         description: ""
     });
-    const [isDisable, setIsDisable] = useState(false);
+    const [isDisable, setIsDisable] = useState("");
+
+    const alert = (titleText, text) => {
+        return Swal.fire({
+            icon: 'error',
+            titleText: `${titleText}`,
+            text: `${text}`,
+            color: `#FFFFFF`,
+            background: `#333333`,
+            confirmButtonColor:`#1877F2`,
+            padding: `10px`,
+            timer: 4000,
+            timerProgressBar: true,
+            timerProgressBar: `#ffffff`
+        })
+    }
 
     const handleInputs = (e) => {
-        setNewPostInfos({...newPostInfos, [e.target.name]: e.target.value})
+        setNewPostInfos({ ...newPostInfos, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsDisable(true);
-        // const promisse = axios.post(`${url}/`, token, newPostInfos);
+        setIsDisable("disabled");
+        if(newPostInfos.url.length === 0){
+            const titleText = "Oops... Url camp is empty";
+            const text = "For be able to publish an post, is required to the link camp is filled";
+            await alert(titleText, text)
+            return setIsDisable("")
+        }
+        const promisse = axios.post(`${url}/timeline`, newPostInfos, token);
+        const TWO_SECONDS = 2000;
+
+        promisse.then(() => {
+
+            refreshPosts();
+            setNewPostInfos({
+                url: "",
+                description: ""
+            })
+        })
+        promisse.catch(async (res) => {
+            const errors = res.response.data;
+            let titleText = `Oops... Unauthorized`
+            let text = `Sign out...`
+            if(errors !== "Unauthorized"){
+                titleText = `Oops... u have ${errors.length} error(s)`;
+                text = "";
+                for(let i = 0; i < errors.length; i++){
+                    const erro = errors[i];
+                    const title = Object.keys(erro)[0];
+                    const description = Object.keys(erro)[0];
+                    text += `${titleText} : ${description} \n`
+                }
+               
+            } await alert(titleText, text)
+            return setIsDisable("")
+        });
     }
 
-    return(
+    return (
         <CardContainer className="publish">
             <PostContentSide className="publish">
                 <img src={user.pictureUrl} alt="" />
             </PostContentSide>
             <PostSide>
                 <h1>What are you going to share today?</h1>
-                <Form onSubmit={handleSubmit}>
+                <Form 
+                    onSubmit={handleSubmit}
+                    className={isDisable}
+                >
                     <Input
                         type="url"
                         placeholder="http://..."
@@ -54,9 +107,9 @@ export default function PublishCard(){
                     />
                     <PublishButton type="submit">
                         {
-                            isDisable
-                            ? `Oi`
-                            : `Publish`
+                            isDisable === "disabled"
+                                ? `Publishing...`
+                                : `Publish`
                         }
                     </PublishButton>
                 </Form>
@@ -81,9 +134,32 @@ const Form = styled.form`
     textarea::placeholder{
         color: #949494;
     }
-    textarea{
-        
+
+    &.disabled{
+        button,
+        input,
+        textarea{
+            pointer-events:none;
+            overflow: hidden;
+        }
+        input,textarea{
+            background-color: #e0e0e0;
+            color: #AFAFAF;
+        }
+        button{
+            opacity: 0.6;
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus{
+            -webkit-text-fill-color: #AFAFAF;
+            -webkit-box-shadow: 0 0 0 50px #e0e0e0 inset !important;
+        }   
     }
+
     @media screen and (max-width: 431px){
         input, textarea{
             font-size: 13px;
@@ -102,6 +178,13 @@ const Input = styled.input`
     min-height: 30px;
     margin-bottom: 2.5px;
     padding-left: 10px;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus{
+        -webkit-text-fill-color: #000000;
+        -webkit-box-shadow: 0 0 0 50px #EFEFEF inset;
+    }  
 `
 const DescriptionBox = styled.textarea`
     min-height: 60px;
@@ -111,15 +194,21 @@ const DescriptionBox = styled.textarea`
 `
 
 const PublishButton = styled.button`
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background-color: #1877F2;
     width: 112px;
     height: 31px;
     margin-top: 5px;
     float: right;
 
-    text-align: center;
     font-weight: 700;
     font-size: 14px;
     line-height: 17px;
     color: #FFFFFF;
+
+    &:hover:enabled{
+        opacity: 0.7;
+    }
 `
