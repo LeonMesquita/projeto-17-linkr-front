@@ -31,7 +31,8 @@ export default function Timeline(){
 
         });
     }, []);
-//            // ADICIONAR TRENDINGS NA SIDEBAR 
+            // um post da rota /posts contem: post_id, username, picture_url, description, url, created_at, hashtags, likes
+            // ADICIONAR TRENDINGS NA SIDEBAR 
     return(
         <>
             <Header/>
@@ -45,7 +46,7 @@ export default function Timeline(){
                     </Title>
                     <PublishCard/>
                     {posts.map( post => {
-                         return (<PostCard key={post.created_at} description={post.description} url={post.url}></PostCard>
+                         return (<PostCard key={post.post_id} author={post.username} author_pic={post.picture_url} description={post.description} url={post.url}></PostCard>
                          )
                         })  }  
                 </Feed>

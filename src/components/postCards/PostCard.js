@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
 
-export default function PostCard({description,url}){
+export default function PostCard({author,author_pic,description,url}){
     const { user } = useContext(UserContext);
 
     const urldata = {
@@ -45,11 +45,11 @@ export default function PostCard({description,url}){
         {data ? (
                 <CardContainer className="post">
                 <PostContentSide>
-                    <img src={user.pictureUrl} alt="user" />
+                    <img src={author_pic} alt="user" />
                 </PostContentSide>
                 <PostSide>
                     <PostInfos>
-                        <h1>{user.username}</h1>
+                        <h1>{author}</h1>
                         <span>{description}</span>
                         <UrlContainer>
                             <UrlDescriptionSide>
