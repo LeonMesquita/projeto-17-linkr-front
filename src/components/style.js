@@ -60,6 +60,46 @@ const PostSide = styled.div`
         margin-bottom: 15px;
     }
 `;
+const HeaderContainer = styled.div`
+    display:flex;
+    justify-content: space-between;
+    width:100%;
+    height: 72px;
+    background: #151515;
+    position: fixed;
+    left: 0;
+    top: 0;
+    h1{
+        margin: 10px;
+        margin-left: 20px;
+        font-family: 'Passion One';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 49px;
+        line-height: 54px;
+        color: #ffffff;
+        /* identical to box height */
+        letter-spacing: 0.05em;
+    }
+`;
 
+const LogoutBox = styled.div`
+    margin: 7px;
+    min-width: 60px;
+    min-height: 50px;
 
-export { CardContainer, PostContentSide, PostSide };
+    img{
+        width: 53px;
+        height: 53px;
+        border-radius: 26.5px;
+    }
+    @media screen and (max-width: 431px){
+        img{
+            width: 41px;
+            height: 41px;
+            border-radius: 26.5px;
+        }
+    }
+`
+
+export { CardContainer, PostContentSide, PostSide, HeaderContainer , LogoutBox};

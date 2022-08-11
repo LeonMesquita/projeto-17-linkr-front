@@ -6,7 +6,7 @@ import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from "./style";
+import { CardContainer, PostContentSide, PostSide } from  "../style.js";;
 
 export default function PublishCard({ refreshPosts }) {
     const { token } = useContext(TokenContext);
@@ -36,7 +36,7 @@ export default function PublishCard({ refreshPosts }) {
                 background: `#333333`,
                 confirmButtonColor:`#1877F2`,
                 padding: `10px`,
-                timer: 2000,
+                timer: 4000,
                 timerProgressBar: true,
                 timerProgressBar: `#ffffff`
             })
