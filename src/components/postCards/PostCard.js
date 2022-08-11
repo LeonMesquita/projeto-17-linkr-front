@@ -1,63 +1,97 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
+import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from "./style";
+import { CardContainer, PostContentSide, PostSide } from "../style.js";
 
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 
-export default function PostCard() {
+export default function PostCard({ description, url }) {
   const { user } = useContext(UserContext);
   const [erase, setErase] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  return (
-    <CardContainer className="post">
-      <PostContentSide>
-        <img src={user.pictureUrl} alt="" />
-      </PostContentSide>
-      <PostSide>
-        <PostInfos>
-          <PostTop>
-            <h1>Juvenal</h1>
-            <div className="icons">
-              <ion-icon
-                name="pencil-outline"
-                onClick={() => setEdit(!edit)}
-              ></ion-icon>
-              <ion-icon
-                name="trash-outline"
-                onClick={() => setErase(!erase)}
-              ></ion-icon>
-              <DeletePost erase={erase} setErase={setErase} />
-            </div>
-          </PostTop>
-          {edit ? (
-            <EditPost edit={edit} setEdit={setEdit} />
-          ) : (
-            <span>
-              Muito maneiro esse tutorial de Material UI com React, deem uma
-              olhada!
-            </span>
-          )}
+  const urldata = {
+    url: "",
+    title: "",
+    siteName: "",
+    description: "",
+    mediaType: "",
+    contentType: "",
+    images: [],
+    favicons: [],
+    videos: [],
+  };
 
-          <UrlContainer>
-            <UrlDescriptionSide>
-              <h1>Como aplicar o Material UI em um projeto React</h1>
-              <span>
-                Hey! I have moved this tutorial to my personal blog. Same
-                content, new location. Sorry about making you click through to
-                another page.
-              </span>
-              <h2>https://medium.com/@pshrmn/a-simple-react-router</h2>
-            </UrlDescriptionSide>
-            <UrlImageSide></UrlImageSide>
-          </UrlContainer>
-        </PostInfos>
-      </PostSide>
-    </CardContainer>
+  const [data, setData] = useState(urldata);
+
+  let body = {
+    url: url,
+  };
+
+  useEffect(() => {
+    const promise = axios.post(
+      `https://linkr-back-api.herokuapp.com/urls`,
+      body
+    ); //`https://linkr-back-api.herokuapp.com/urls`
+    promise.then((res) => {
+      setData(res.data);
+
+      console.log(data);
+    });
+    promise.catch(() => {});
+  });
+
+  return (
+    <>
+      {data ? (
+        <CardContainer className="post">
+          <PostContentSide>
+            <img src={user.pictureUrl} alt="user" />
+          </PostContentSide>
+
+          <PostSide>
+            <PostInfos>
+              <PostTop>
+                <h1>{user.username}</h1>
+                <div className="icons">
+                  <ion-icon
+                    name="pencil-outline"
+                    onClick={() => setEdit(!edit)}
+                  ></ion-icon>
+                  <ion-icon
+                    name="trash-outline"
+                    onClick={() => setErase(!erase)}
+                  ></ion-icon>
+                  <DeletePost erase={erase} setErase={setErase} />
+                </div>
+              </PostTop>
+              {edit ? (
+                <EditPost edit={edit} setEdit={setEdit} />
+              ) : (
+                <span>{description}</span>
+              )}
+
+              <UrlContainer>
+                <UrlDescriptionSide>
+                  <h1>{data.title}</h1>
+                  <span>{data.description}</span>
+                  <h2>{url}</h2>
+                </UrlDescriptionSide>
+                <UrlImageSide>
+                  <img src={data.favicons[0]} alt={data.title}></img>
+                </UrlImageSide>
+              </UrlContainer>
+            </PostInfos>
+          </PostSide>
+        </CardContainer>
+      ) : (
+        <h1>Loading . . . </h1>
+      )}
+    </>
   );
 }
 
@@ -167,4 +201,9 @@ const UrlDescriptionSide = styled.div`
   }
 `;
 
-const UrlImageSide = styled.div``;
+const UrlImageSide = styled.div`
+  img {
+    width: 153.44px;
+    height: 153.44px;
+  }
+`;
