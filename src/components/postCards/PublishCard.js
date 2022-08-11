@@ -6,7 +6,8 @@ import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from  "../style.js";;
+import { CardContainer, PostContentSide, PostSide } from  "../style.js";
+
 
 export default function PublishCard({ refreshPosts }) {
     const { token } = useContext(TokenContext);
@@ -18,45 +19,64 @@ export default function PublishCard({ refreshPosts }) {
     });
     const [isDisable, setIsDisable] = useState("");
 
+    const alert = (titleText, text) => {
+        return Swal.fire({
+            icon: 'error',
+            titleText: `${titleText}`,
+            text: `${text}`,
+            color: `#FFFFFF`,
+            background: `#333333`,
+            confirmButtonColor:`#1877F2`,
+            padding: `10px`,
+            timer: 4000,
+            timerProgressBar: true,
+            timerProgressBar: `#ffffff`
+        })
+    }
+
     const handleInputs = (e) => {
         setNewPostInfos({ ...newPostInfos, [e.target.name]: e.target.value })
     }
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsDisable("disabled");
-        if(newPostInfos.url.length === 0){  
-            await Swal.fire({
-                icon: 'error',
-                titleText: 'Oops... Url camp is empty',
-                text: 'For be able to publish an post, is required to the link camp is filled',
-                color: `#FFFFFF`,
-                background: `#333333`,
-                confirmButtonColor:`#1877F2`,
-                padding: `10px`,
-                timer: 4000,
-                timerProgressBar: true,
-                timerProgressBar: `#ffffff`
-            })
+        if(newPostInfos.url.length === 0){
+            const titleText = "Oops... Url camp is empty";
+            const text = "For be able to publish an post, is required to the link camp is filled";
+            await alert(titleText, text)
             return setIsDisable("")
         }
-        const promisse = axios.post(`${url}/timeline`, token, newPostInfos);
+        const promisse = axios.post(`${url}/timeline`, newPostInfos, token);
         const TWO_SECONDS = 2000;
 
         promisse.then(() => {
+
             refreshPosts();
-            setTimeout(() => {setIsDisable("")}, TWO_SECONDS);
+            setTimeout(() => {
+                setNewPostInfos({
+                    url: "",
+                    description: ""
+                })
+                setIsDisable("")
+            }, TWO_SECONDS);
         })
-        promisse.catch((res) => {
+        promisse.catch(async (res) => {
             const errors = res.response.data;
-            errors.map((error) => {
-                const erro = Object.keys(error)[0];
-                const description = Object.values(error)[0];
-                window.alert(`${erro} : ${description}`);
-            })
-            setTimeout(() => {setIsDisable("")}, TWO_SECONDS);
+            let titleText = `Oops... Unauthorized`
+            let text = `Sign out...`
+            if(errors !== "Unauthorized"){
+                titleText = `Oops... u have ${errors.length} error(s)`;
+                text = "";
+                for(let i = 0; i < errors.length; i++){
+                    const erro = errors[i];
+                    const title = Object.keys(erro)[0];
+                    const description = Object.keys(erro)[0];
+                    text += `${titleText} : ${description} \n`
+                }
+               
+            } await alert(titleText, text)
+            return setIsDisable("")
         });
     }
 
