@@ -23,7 +23,6 @@ export default function TrendingSideBar(){
             setIsLoading(false)
         })
     }, [])
-    console.log(isLoading)
     return(
         <Container>
             <Title>
