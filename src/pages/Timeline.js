@@ -15,18 +15,18 @@ import PublishCard from "../components/postCards/PublishCard.js";
 export default function Timeline(){
 
     const [ posts, setPosts ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(true);
     // const { token, setToken } = useContext(TokenContext);
     //const { url, user, setUser } = useContext(UserContext);
      
     // const navigate = useNavigate();
     // pass the link directly
-    let isLoading;
+    
     useEffect(() => {
-        isLoading=true;
         const promise = axios.get(`https://linkr-back-api.herokuapp.com/posts`);
         promise.then((res)=>{
             setPosts(res.data);
-            isLoading=false;
+            setIsLoading(false);
         });
         promise.catch((e) => {
             alert(e)
