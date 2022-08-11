@@ -53,13 +53,10 @@ export default function PublishCard({ refreshPosts }) {
         promisse.then(() => {
 
             refreshPosts();
-            setTimeout(() => {
-                setNewPostInfos({
-                    url: "",
-                    description: ""
-                })
-                setIsDisable("")
-            }, TWO_SECONDS);
+            setNewPostInfos({
+                url: "",
+                description: ""
+            })
         })
         promisse.catch(async (res) => {
             const errors = res.response.data;
