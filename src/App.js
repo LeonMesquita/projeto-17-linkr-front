@@ -21,7 +21,6 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<SignIn />} />
                         <Route path="/sign-up" element={<SignUp />} />
-                        <Route path="/sign-in" element={<SignIn />} />
                         <Route path="/timeline" element={<Timeline />} />
                         <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
                         <Route path="/user/:id" element={<UserTimeline />} />

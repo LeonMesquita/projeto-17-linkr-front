@@ -9,12 +9,16 @@ import AuthButton  from "../components/AuthButton";
 
 export default function SignIn(){
     const navigate = useNavigate();
-
     const { url, setUser } = useContext(UserContext);
     const {setToken} = useContext(TokenContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
+    const storagedToken =  localStorage.getItem("token");
+    if(storagedToken){
+        navigate('/timeline');
+    }
+    
     async function submitLogin(e){
         e.preventDefault();
         setIsDisabled(true);
