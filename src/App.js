@@ -12,10 +12,16 @@ import SignIn from "./pages/SignIn.js";
 export default function App() {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState("")
-    const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
+    //const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
+    const [url, setUrl] = useState('http://localhost:4000');
 
+    const authorization = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
     return (
-        <TokenContext.Provider value={{setToken, token}}>
+        <TokenContext.Provider value={{setToken, token, authorization}}>
             <UserContext.Provider value={{ url, user, setUser }}>
                 <BrowserRouter>
                     <Routes>

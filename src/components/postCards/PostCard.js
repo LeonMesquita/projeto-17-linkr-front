@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
 
-export default function PostCard({author,author_pic,description,url}){
+export default function PostCard({author,author_pic,description,url, onclick}){
 
     const urldata = {
         url: "",
@@ -31,12 +31,12 @@ export default function PostCard({author,author_pic,description,url}){
             
             setData(res.data);
 
-            console.log(data);
+           // console.log(data);
         });
         promise.catch(() => {
 
         });
-    });
+    },[]);
 
     return(
         <>
@@ -47,7 +47,7 @@ export default function PostCard({author,author_pic,description,url}){
                 </PostContentSide>
                 <PostSide>
                     <PostInfos>
-                        <h1>{author}</h1>
+                        <p onClick={onclick}>{author}</p>
                         <span>{description}</span>
                         <UrlContainer>
                             <UrlDescriptionSide>
@@ -72,7 +72,7 @@ export default function PostCard({author,author_pic,description,url}){
 const PostInfos = styled.div`
 
     h1,span{font-weight: 400;}
-    h1{
+    h1,p{
         margin-bottom: 7px;
         font-size: 19px;
         line-height: 23px;
@@ -84,14 +84,21 @@ const PostInfos = styled.div`
         color: #B7B7B7;
     }
     @media screen and (max-width: 431px){
-        h1,span{font-weight: 400;}
-        h1{
+        h1,span,p{font-weight: 400;}
+        h1,p{
             font-size: 17px;
             line-height: 20px;
         }
         span{
             font-size: 15px;
             line-height: 18px;
+        }
+    }
+
+    p{
+        cursor: pointer;
+        &:hover{
+            text-decoration: underline;
         }
     }
 `
