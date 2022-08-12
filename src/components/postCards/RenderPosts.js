@@ -1,6 +1,8 @@
 import PostCard from "../postCards/PostCard";
 
 export default function RenderPosts({ posts }) {
+    
+    
 
     return (
         <>

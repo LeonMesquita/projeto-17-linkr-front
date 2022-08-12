@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import styled from "styled-components";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
@@ -11,25 +10,35 @@ import PublishCard from "../components/postCards/PublishCard";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide, PostSection}from "../components/timelines/style";
+import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide}from "../components/timelines/style";
 
 export default function HashtagTimeline(){
+
+    const { url } = useContext(UserContext);
+    const { token } = useContext(TokenContext);
+
     const {hashtag} = useParams();
-    const array = [];
-    // const { token, setToken } = useContext(TokenContext);
-    // const { url, setUrl, user, setUser } = useContext(UserContext);
-    // const navigate = useNavigate();
+    const [posts, setPosts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
+    const handleGetPosts = () => {
+        //Quando rotas linkadas mudar para
+        //const promisse = axios.get(`${url}/hashtag/${hashtag}`, token)
+        setIsLoading(true);
+        const promisse = axios.get(`https://linkr-back-api.herokuapp.com/posts`);
+        promisse.then((res) => {
+            setPosts(res.data);
+            setIsLoading(false);
+        })
+        promisse.catch((e) => {
+            alert(e)
+            setIsLoading(false);
+        });
+    }
 
-    // useEffect(() => {
-    //     const promisse = axios.(`${url}/`, );
-    //     promisse.then((res)=>{
-
-    //     });
-    //     promisse.catch(() => {
-
-    //     });
-    // }, []);
+    useEffect( () => {
+        handleGetPosts()
+    }, []);
 
     return(
         <Body>
@@ -39,7 +48,7 @@ export default function HashtagTimeline(){
                 <Feed>
                     <LeftSide>
                         <PublishCard />
-                        <RenderPosts posts={array}/>
+                        <RenderPosts posts={posts}/>
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar/>
