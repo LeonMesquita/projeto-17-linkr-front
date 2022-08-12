@@ -16,6 +16,7 @@ export default function TrendingSideBar(){
     const [trendings, setTrendings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+
     useEffect(() => {
         const promise = axios.get(`${url}/trendings`, token);
         promise.then((res) => {
@@ -36,11 +37,11 @@ export default function TrendingSideBar(){
                             <Skeleton className="margin" count={10} />
                         </SkeletonTheme>
                     :  trendings.length > 0
-                        ?   trendings.map( trending => {
+                        ?   trendings.map( (trending, index) => {
                             return (
-                                <Hashtag>
-                                    <Link to={`/hashtag/${trending}`}>
-                                        # {trending}
+                                <Hashtag key={index}>
+                                    <Link to={`/hashtag/${trending.name}`}>
+                                        # {trending.name}
                                     </Link>
                                 </Hashtag>
                             )
