@@ -74,7 +74,7 @@ const AvailableArea = styled.div`
         margin-bottom: 15px;
         border: none;
         text-indent:15px;
-
+        color: black;
         &::placeholder{	
             font-family: 'Oswald';
             font-style: normal;

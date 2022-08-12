@@ -1,16 +1,12 @@
-import { useContext, useState, useEffect } from "react";
-
+import { useState, useEffect } from "react";
 import axios from "axios";
-import UserContext from "../../contexts/UserContext";
-
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
-
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 
-export default function PostCard({ description, url,author_pic,author }) {
-  const { user } = useContext(UserContext);
+export default function PostCard({author,author_pic,description,url}){
+
   const [erase, setErase] = useState(false);
   const [edit, setEdit] = useState(false);
 
@@ -36,7 +32,7 @@ export default function PostCard({ description, url,author_pic,author }) {
     const promise = axios.post(
       `https://linkr-back-api.herokuapp.com/urls`,
       body
-    ); //`https://linkr-back-api.herokuapp.com/urls`
+    ); 
     promise.then((res) => {
       setData(res.data);
 
@@ -45,55 +41,54 @@ export default function PostCard({ description, url,author_pic,author }) {
     promise.catch(() => {});
   });
 
-  return (
-    <>
-      {data ? (
-        <CardContainer className="post">
-          <PostContentSide>
-            <img src={author_pic} alt="user" />
-          </PostContentSide>
+    return(
+        <>
+        {data ? (
+                <CardContainer className="post">
+                <PostContentSide>
+                    <img src={author_pic} alt="user" />
+                </PostContentSide>
+                <PostSide>
+                    <PostInfos>
+                    <PostTop>
+                      <h1>{author}</h1>
+                      <div className="icons">
+                        <ion-icon
+                          name="pencil-outline"
+                          onClick={() => setEdit(!edit)}
+                        ></ion-icon>
+                        <ion-icon
+                          name="trash-outline"
+                          onClick={() => setErase(!erase)}
+                        ></ion-icon>
+                        <DeletePost erase={erase} setErase={setErase} />
+                      </div>
+                    </PostTop>
+                    {edit ? (
+                      <EditPost edit={edit} setEdit={setEdit} />
+                    ) : (
+                      <span>{description}</span>
+                    )}
+                        <UrlContainer>
+                            <UrlDescriptionSide>
+                                <h1>{data.title}</h1>
+                                <span>{data.description}</span>
+                                <h2>{url}</h2>
+                            </UrlDescriptionSide>
+                            <UrlImageSide>
+                                <img src={data.favicons[0]} alt={data.title}></img>
+                            </UrlImageSide>
+                        </UrlContainer>
+                    </PostInfos>
+                </PostSide>
+            </CardContainer>
+            )
+            : (<h1>Loading . . . </h1>)
+        }
+        </>
+    )
+};
 
-          <PostSide>
-            <PostInfos>
-              <PostTop>
-                <h1>{author}</h1>
-                <div className="icons">
-                  <ion-icon
-                    name="pencil-outline"
-                    onClick={() => setEdit(!edit)}
-                  ></ion-icon>
-                  <ion-icon
-                    name="trash-outline"
-                    onClick={() => setErase(!erase)}
-                  ></ion-icon>
-                  <DeletePost erase={erase} setErase={setErase} />
-                </div>
-              </PostTop>
-              {edit ? (
-                <EditPost edit={edit} setEdit={setEdit} />
-              ) : (
-                <span>{description}</span>
-              )}
-
-              <UrlContainer>
-                <UrlDescriptionSide>
-                  <h1>{data.title}</h1>
-                  <span>{data.description}</span>
-                  <h2>{url}</h2>
-                </UrlDescriptionSide>
-                <UrlImageSide>
-                  <img src={data.favicons[0]} alt={data.title}></img>
-                </UrlImageSide>
-              </UrlContainer>
-            </PostInfos>
-          </PostSide>
-        </CardContainer>
-      ) : (
-        <h1>Loading . . . </h1>
-      )}
-    </>
-  );
-}
 
 const PostInfos = styled.div`
   h1,
