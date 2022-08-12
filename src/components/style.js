@@ -11,6 +11,7 @@ const CardContainer = styled.section`
         height: 50px;
         border-radius: 26.5px; 
     }
+
     transition: ease all .5s;
     
     &.publish{
@@ -56,6 +57,7 @@ const PostSide = styled.div`
         color: #707070;
         margin-bottom: 15px;
     }
+
 `;
 const HeaderContainer = styled.div`
     display:flex;

@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import PublishCard from "../components/postCards/PublishCard";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
+import PublishSkeleton from "../components/postCards/Skeletons/PublishSkeleton";
 
 import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide}from "../components/timelines/style";
 
@@ -36,9 +37,9 @@ export default function HashtagTimeline(){
         });
     }
 
-    useEffect( () => {
-        handleGetPosts()
-    }, []);
+    // useEffect( () => {
+    //     handleGetPosts()
+    // }, []);
 
     return(
         <Body>
@@ -47,6 +48,7 @@ export default function HashtagTimeline(){
                 <TimelineTitle>{hashtag}</TimelineTitle>
                 <Feed>
                     <LeftSide>
+                        <PublishSkeleton />
                         <PublishCard />
                         <RenderPosts posts={posts}/>
                     </LeftSide>
