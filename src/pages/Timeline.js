@@ -86,7 +86,7 @@ export default function Timeline(){
                          : 
                         <PublishCard/>}
                         {posts.map( post => {
-                            return (<PostCard key={post.post_id} author_pic={post.picture_url} author={post.username} description={post.description} url={post.url} onclick={() => onClickUser(post.user_id)}></PostCard>
+                            return (<PostCard key={post.post_id} author_pic={post.picture_url} author={post.username} description={post.description} postUrl={post.url} postId={post.post_id} userId={user.userId} onclick={() => onClickUser(post.user_id)}></PostCard>
                             )
                             })  }  
                     </Feed>

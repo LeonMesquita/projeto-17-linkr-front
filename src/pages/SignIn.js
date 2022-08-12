@@ -37,6 +37,7 @@ export default function SignIn(){
             const promise = await axios.post(`${url}/signin`, userBody);
             setToken(promise.data.token);
             setUser({
+                userId: promise.data.id,
                 username: promise.data.username,
                 pictureUrl: promise.data.pictureUrl
             });
@@ -55,7 +56,7 @@ export default function SignIn(){
 
         }
 
-        setIsDisabled(false);
+       // setIsDisabled(false);
 
     }
     return(
