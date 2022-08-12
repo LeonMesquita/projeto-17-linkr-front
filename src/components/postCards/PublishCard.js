@@ -10,7 +10,7 @@ import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 
 
 export default function PublishCard({ refreshPosts }) {
-    const { token } = useContext(TokenContext);
+    const { authorization } = useContext(TokenContext);
     const { url, user } = useContext(UserContext);
 
     const [newPostInfos, setNewPostInfos] = useState({
@@ -47,7 +47,7 @@ export default function PublishCard({ refreshPosts }) {
             await alert(titleText, text)
             return setIsDisable("")
         }
-        const promisse = axios.post(`${url}/timeline`, newPostInfos, token);
+        const promisse = axios.post(`${url}/timeline`, newPostInfos, authorization);
         const TWO_SECONDS = 2000;
 
         promisse.then(() => {
