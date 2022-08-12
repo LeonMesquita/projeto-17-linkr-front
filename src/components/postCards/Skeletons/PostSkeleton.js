@@ -59,9 +59,13 @@ const PublishLoading = styled.div`
 
 
     @media screen and (max-width: 431px){
-        & p:nth-child(3){
-            height: 52px;
-            margin-top: 2.5px;
+        & p:nth-child(1){
+            height: 20px;
+            margin-bottom: 7px;
+        } 
+        & p:nth-child(4){
+            height: 115px;
+            margin-top: 10px;
         }
         ${ProfilePicLoading}{
             p{

@@ -50,7 +50,6 @@ export default function HashtagTimeline(){
                 <Feed>
                     <LeftSide>
                         <PublishSkeleton />
-                        <PublishCard />
                         <PostSkeleton />
                         <RenderPosts posts={posts}/>
                     </LeftSide>
