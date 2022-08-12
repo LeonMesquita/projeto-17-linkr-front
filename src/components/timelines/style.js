@@ -35,6 +35,8 @@ const LeftSide = styled.div`
 const RightSide = styled.div`
 `
 
+
+
 const Body = styled.div`
     width: 971px;
     height: 100vh;

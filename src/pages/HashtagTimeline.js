@@ -6,22 +6,23 @@ import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 
 import Header from "../components/Header";
-import PublishCard from "../components/postCards/PublishCard";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
-import PublishSkeleton from "../components/postCards/Skeletons/PublishSkeleton";
 import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
+import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide}from "../components/timelines/style";
+import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide, LoadingContainer } from "../components/timelines/style";
+import { ThreeDots } from "react-loader-spinner";
 
-export default function HashtagTimeline(){
+export default function HashtagTimeline() {
 
     const { url } = useContext(UserContext);
     const { token } = useContext(TokenContext);
 
-    const {hashtag} = useParams();
+    const { hashtag } = useParams();
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [statusCode, setStatusCode] = useState(false);
 
     const handleGetPosts = () => {
         //Quando rotas linkadas mudar para
@@ -33,28 +34,35 @@ export default function HashtagTimeline(){
             setIsLoading(false);
         })
         promisse.catch((e) => {
-            alert(e)
+            setStatusCode(e)
             setIsLoading(false);
         });
     }
 
-    // useEffect( () => {
-    //     handleGetPosts()
-    // }, []);
+    useEffect( () => {
+        handleGetPosts()
+    }, []);
 
-    return(
+    return (
         <Body>
-            <Header/>
+            <Header />
             <Main>
-                <TimelineTitle>{hashtag}</TimelineTitle>
+                <TimelineTitle># {hashtag}</TimelineTitle>
                 <Feed>
                     <LeftSide>
-                        <PublishSkeleton />
-                        <PostSkeleton />
-                        <RenderPosts posts={posts}/>
+                        {
+                            isLoading
+                                ?
+                                <>
+                                    <PostSkeleton />
+                                </>
+                                :   statusCode
+                                    ?   <StatusCodeScreen statusCode={statusCode}/>
+                                    :   <RenderPosts posts={posts} />
+                        }
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar/>
+                        <TrendingSideBar />
                     </RightSide>
                 </Feed>
             </Main>
