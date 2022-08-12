@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const CardContainer = styled.section`
     display:flex;
-    max-width: 611px;
+    width: 611px;
     background: #171717;
     border-radius: 16px;
     padding: 18px;
