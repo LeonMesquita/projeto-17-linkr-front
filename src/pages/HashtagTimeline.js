@@ -8,9 +8,10 @@ import UserContext from "../contexts/UserContext";
 
 import Header from "../components/Header";
 import PublishCard from "../components/postCards/PublishCard";
+import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 
-import { Body, Main, Feed, TimelineTitle } from "../components/timelines/style";
+import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide, PostSection}from "../components/timelines/style";
 
 export default function HashtagTimeline(){
     const {hashtag} = useParams();
@@ -36,12 +37,13 @@ export default function HashtagTimeline(){
             <Main>
                 <TimelineTitle>{hashtag}</TimelineTitle>
                 <Feed>
-                    <div className="leftSide">
+                    <LeftSide>
                         <PublishCard />
-                    </div>
-                    <div className="rightSide">
+                        <RenderPosts posts={array}/>
+                    </LeftSide>
+                    <RightSide>
                         <TrendingSideBar/>
-                    </div>
+                    </RightSide>
                 </Feed>
             </Main>
         </Body>

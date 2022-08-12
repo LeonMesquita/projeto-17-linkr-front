@@ -21,9 +21,6 @@ const CardContainer = styled.section`
         margin-top: 16px;
     }
 
-    @media screen and (max-width: 630px){
-        margin: 10px 15px;
-    }
     @media screen and (max-width: 431px){
         div.publish:first-of-type{
             display:none;
