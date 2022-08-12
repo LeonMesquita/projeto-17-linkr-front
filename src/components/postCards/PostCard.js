@@ -9,7 +9,7 @@ import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 
-export default function PostCard({ description, url }) {
+export default function PostCard({ description, url,author_pic,author }) {
   const { user } = useContext(UserContext);
   const [erase, setErase] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -50,13 +50,13 @@ export default function PostCard({ description, url }) {
       {data ? (
         <CardContainer className="post">
           <PostContentSide>
-            <img src={user.pictureUrl} alt="user" />
+            <img src={author_pic} alt="user" />
           </PostContentSide>
 
           <PostSide>
             <PostInfos>
               <PostTop>
-                <h1>{user.username}</h1>
+                <h1>{author}</h1>
                 <div className="icons">
                   <ion-icon
                     name="pencil-outline"
