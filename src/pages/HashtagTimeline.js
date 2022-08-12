@@ -10,6 +10,7 @@ import PublishCard from "../components/postCards/PublishCard";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 import PublishSkeleton from "../components/postCards/Skeletons/PublishSkeleton";
+import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
 
 import { Body, Main, TimelineTitle, Feed, LeftSide,RightSide}from "../components/timelines/style";
 
@@ -50,6 +51,7 @@ export default function HashtagTimeline(){
                     <LeftSide>
                         <PublishSkeleton />
                         <PublishCard />
+                        <PostSkeleton />
                         <RenderPosts posts={posts}/>
                     </LeftSide>
                     <RightSide>

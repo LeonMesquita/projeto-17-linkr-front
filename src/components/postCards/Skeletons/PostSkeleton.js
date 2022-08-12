@@ -5,29 +5,25 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "../../style.js";
 
 
-export default function PublishSkeleton() {
+export default function PostSkeleton() {
 
     return (
-        <CardContainer className="publish">
-            <PostContentSide className="publish">
-                <SkeletonTheme baseColor="#FFFFFF" highlightColor="#e0e0e0" width="100%" height="23px" >
+        <CardContainer className="post">
+            <PostContentSide className="post">
+                <SkeletonTheme baseColor="#171717" highlightColor="#272727" width="100%" height="23px" >
                     <ProfilePicLoading>
-                        <Skeleton
-                            width="50px"
-                            height="50px"
-                            count={1}
-                            duration={2}
-                        />
+                        <p><Skeleton count={1} duration={2} height="100%" width="100%" borderRadius="25px"/></p>
                     </ProfilePicLoading>
                 </SkeletonTheme>
             </PostContentSide>
             <PostSide>
-            <SkeletonTheme baseColor="#FFFFFF" highlightColor="#e0e0e0" width="100%" height="23px" >
+            <SkeletonTheme baseColor="#171717" highlightColor="#272727" width="100%" height="23px" >
                     <PublishLoading>
                         <p><Skeleton  count={1} height="100%" width="100%" duration={2}/></p>
                         <p><Skeleton  count={1} height="100%" width="100%" duration={2}/></p>
                         <p><Skeleton  count={1} height="100%" width="100%" duration={2}/></p>
-                        <p><Skeleton  count={1} height="100%" width="100%" duration={2}/></p>
+                        <p><Skeleton  count={1} height="100%" width="100%" duration={2} borderRadius="12px"/></p>
+
                     </PublishLoading>
                 </SkeletonTheme>
             </PostSide>
@@ -36,8 +32,9 @@ export default function PublishSkeleton() {
 };
 
 const ProfilePicLoading = styled.div`
-    span {
-        border-radius: 50px;
+    & p:nth-child(1){
+        width:50px;
+        height:50px;
     }
 `
 const PublishLoading = styled.div`
@@ -51,23 +48,26 @@ const PublishLoading = styled.div`
         margin-bottom: 2.5px;
     }
     & p:nth-child(3){
-        height: 60px;
-        margin-top: 2.5px;
+        height: 30px;
     }
     & p:nth-child(4){
-        width: 112px;
-        height: 31px;
-        margin-top: 5px;
-        float: right;
+        border: 1px solid #272727;
+        height: 150px;
+        margin-top: 10px;
+        border-radius: 11px;
     }
+
 
     @media screen and (max-width: 431px){
         & p:nth-child(3){
             height: 52px;
             margin-top: 2.5px;
         }
-        & p:nth-child(4){
-            height: 22px;
-        } 
+        ${ProfilePicLoading}{
+            p{
+                width: 40px;
+                heigth: 40px;
+            }
+        }
     }
 `
