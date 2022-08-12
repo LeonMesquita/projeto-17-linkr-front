@@ -6,8 +6,6 @@ import styled from "styled-components";
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 
-import TrendingSideBar from "../components/TrendingSidebar";
-
 export default function HashtagTimeline(){
     
     // const { token, setToken } = useContext(TokenContext);
@@ -25,6 +23,6 @@ export default function HashtagTimeline(){
     //     });
     // }, []);
 
-    return(<TrendingSideBar />)
+    return(`Happy Hacking`)
 };
 
