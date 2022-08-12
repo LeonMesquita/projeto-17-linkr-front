@@ -14,10 +14,7 @@ export default function SignIn(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
-    const storagedToken =  localStorage.getItem("token");
-    if(storagedToken){
-        navigate('/timeline');
-    }
+
     
     async function submitLogin(e){
         e.preventDefault();
