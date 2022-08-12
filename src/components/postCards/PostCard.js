@@ -36,7 +36,7 @@ export default function PostCard({author,author_pic,description,url}){
         promise.catch(() => {
 
         });
-    });
+    },[]);
 
     return(
         <>
