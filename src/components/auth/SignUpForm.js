@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,15 +7,16 @@ import UserContext from "../../contexts/UserContext";
 
 import { Button, Form, Input } from "./style";
 
-export default function SignInForm() {
+export default function SignUpForm() {
     const navigate = useNavigate();
     const { url } = useContext(UserContext)
     const [isDisabled, setIsDisabled] = useState("enabled");
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "")
 
     const [userInfos, setUserInfos] = useState({
         email: "",
-        password: ""
+        username: "",
+        password: "",
+        pictureUrl: ""
     })
 
     const handleChanges = (e) => { setUserInfos({ ...userInfos, [e.target.name]: e.target.value }) };
@@ -35,14 +35,14 @@ export default function SignInForm() {
         }
     }
     const AlertSucess = (result) => {
-        if (result.isConfirmed === true || result.isDismissed === true) return navigate("/timeline")
+        if (result.isConfirmed === true || result.isDismissed === true) return navigate("/")
     }
     const AlertError = (result) => {
         if (result.isConfirmed === true || result.isDismissed === true) return setIsDisabled("enabled")
     }
 
     const handleIsEmpty = () => {
-        if (userInfos.email === '' || userInfos.password === '') {
+        if ( userInfos.email === "" || userInfos.username === "" || userInfos.password === "" || userInfos.pictureUrl === "" ) {
             Swal.fire(AlertObject(
                 "warning",
                 "Oops...",
@@ -51,43 +51,33 @@ export default function SignInForm() {
         }
     }
 
-    const handleLogin = async (e) => {
+    const handleRegistration = async (e) => {
         e.preventDefault();
         setIsDisabled("disabled");
         handleIsEmpty();
-        console.log(userInfos)
-        console.log(url)
-        const promise = axios.post(`${url}/signin`, userInfos);
-        promise.then((res) => {
-            setLinkirUser({
-                token: {
-                    headers: {
-                        Authorization: `Bearer ` + res.data.token
-                    }
-                },
-                userId: res.data.id,
-                username: res.data.username,
-                profilePic: res.data.pictureUrl
-            })
 
+        const promise = axios.post(`${url}/signup`, userInfos);
+        promise.then((res) => {
             Swal.fire(AlertObject(
                 'success',
-                'Login realizado com sucesso!',
-                'Entrando em sua conta',
+                'Good job!',
+                'Cadastro realizado com sucesso!'
             )).then(AlertSucess);
         })
         promise.catch((e) => {
             Swal.fire(AlertObject(
                 "error",
                 "Oops...",
-                "Email ou senha incorretos!"
+                e.response.status == 409 ? 'Este usuário já existe, tente novamente!' : 'Falha ao realizar cadastro!'
             )).then(AlertError);
         })
     }
 
+
+
     return (
-        <Form
-            onSubmit={handleLogin}
+        <Form 
+            onSubmit={handleRegistration}
             className={isDisabled}
         >
             <Input
@@ -99,6 +89,14 @@ export default function SignInForm() {
                 onChange={handleChanges}
             />
             <Input
+                type="username"
+                placeholder="username"
+                id="usernameId"
+                value={userInfos.username}
+                name="username"
+                onChange={handleChanges}
+            />
+            <Input
                 type="password"
                 placeholder="password"
                 id="passwordId"
@@ -106,17 +104,24 @@ export default function SignInForm() {
                 name="password"
                 onChange={handleChanges}
             />
+            <Input
+                type="url"
+                placeholder="picture url"
+                id="pictureUrlId"
+                value={userInfos.pictureUrl}
+                name="pictureUrl"
+                onChange={handleChanges}
+            />
             <Button type="submit">
                 {
                     isDisabled === "disabled"
-                        ? `Log in ...`
-                        : `Log in `
+                        ? `SignUp ...`
+                        : `SignUp `
                 }
             </Button>
-            <Link to='/sign-up'>
-                First time? Create an account!
+            <Link to='/'>
+                Switch back to log in
             </Link>
         </Form>
-
     )
 }
