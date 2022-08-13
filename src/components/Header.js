@@ -4,6 +4,7 @@ import { Link,useNavigate } from "react-router-dom";
 //import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
 import axios from "axios";
+import {DebounceInput} from 'react-debounce-input';
 
 export default function Header() {
 
@@ -27,7 +28,7 @@ export default function Header() {
     }
 
     function logout(){
-       localStorage.setItem("linkrUser","");
+       localStorage.setItem("linkrUser",JSON.stringify(" - "));
        navigate("/", { replace: true });
     }
 
@@ -37,6 +38,10 @@ export default function Header() {
                 linkr
             </h1></Link>
             <SearchContainer>
+            <DebounceInput
+                minLength={3}
+                debounceTimeout={300}
+                onChange={searchUser} />
                 <ion-icon onClick={searchUser} name="search"></ion-icon>
                 <Search placeholder="    Search for people" value={search} onChange={e => setSearch(e.target.value)}></Search>
                 <ResultsContainer>
