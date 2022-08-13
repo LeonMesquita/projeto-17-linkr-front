@@ -17,13 +17,13 @@ export default function TrendingSideBar(){
     const [trendings, setTrendings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const promise = axios.get(`${url}/trendings`, token);
-        promise.then((res) => {
-            setTrendings(res.data);
-            setIsLoading(false)
-        })
-    }, [])
+    // useEffect(() => {
+    //     const promise = axios.get(`${url}/trendings`, token);
+    //     promise.then((res) => {
+    //         setTrendings(res.data);
+    //         setIsLoading(false)
+    //     })
+    // }, [])
     return(
         <Container>
             <Title>
@@ -60,10 +60,7 @@ const Container = styled.aside`
     width: 301px;
     max-height: 80vh;
     border-radius: 16px;
-    margin-top: 170px;
-    margin-left: 25px;
     background: #171717;
-    
     header, main{
         h1, a, h2{
             font-weight: 700;
