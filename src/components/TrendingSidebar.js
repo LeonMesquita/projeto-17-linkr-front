@@ -1,29 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
-
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import TokenContext from "../contexts/TokenContext";
-import UserContext from "../contexts/UserContext";
 
+import 'react-loading-skeleton/dist/skeleton.css';
 import styled from "styled-components";
 
-export default function TrendingSideBar(){
+export default function TrendingSideBar({ trendings, isLoading }){
 
-    const { url } = useContext(UserContext);
-    const { token } = useContext(TokenContext);
-    const [trendings, setTrendings] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    // useEffect(() => {
-    //     const promise = axios.get(`${url}/trendings`, token);
-    //     promise.then((res) => {
-    //         setTrendings(res.data);
-    //         setIsLoading(false)
-    //     })
-    // }, [])
     return(
         <Container>
             <Title>
@@ -37,11 +20,11 @@ export default function TrendingSideBar(){
                             <Skeleton className="margin" count={10} />
                         </SkeletonTheme>
                     :  trendings.length > 0
-                        ?   trendings.map( trending => {
+                        ?   trendings.map( (trending, index) => {
                             return (
-                                <Hashtag>
-                                    <Link to={`/hashtag/${trending}`}>
-                                        # {trending}
+                                <Hashtag key={index}>
+                                    <Link to={`/hashtag/${trending.name}`}>
+                                        # {trending.name}
                                     </Link>
                                 </Hashtag>
                             )
