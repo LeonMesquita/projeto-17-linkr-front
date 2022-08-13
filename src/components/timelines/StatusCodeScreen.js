@@ -23,10 +23,18 @@ export default function StatusCodeScreen({ statusCode }){
 
 
 const CodeContainer = styled.section`
+    width: 611px;
     display:flex;
     flex-direction: column;
     align-items:center;
     & > img {
-        width: 611px;
+        width: 100%;
+    }
+    @media screen and (max-width: 655px){
+        width: 100%;
+        & > img{width: calc(100%-34px);}
+    }
+    @media screen and (max-width: 436px;){
+        & > img{width: 100%;}
     }
 `

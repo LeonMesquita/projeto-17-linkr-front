@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import styled from "styled-components";
@@ -7,12 +8,14 @@ import {IoIosHeartEmpty, IoIosHeart} from "react-icons/io";
 import TokenContext from "../../contexts/TokenContext.js";
 import UserContext from "../../contexts/UserContext.js";
 
+import { ReactTagify } from "react-tagify";
+
 export default function PostCard({author,author_pic,description, postUrl, onclick, postId, userId}){
     if(!userId){
         userId = -1;
     }
     
-
+    const navigate = useNavigate();
     
     const { token, setToken, authorization } = useContext(TokenContext);
     const { url, user, setUser } = useContext(UserContext);
@@ -89,6 +92,8 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
 
         }
     }
+    const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
+    const tagStyle = {fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF"};
     return(
         <>
         {data ? (
@@ -99,7 +104,15 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
                 <PostSide>
                     <PostInfos>
                         <p onClick={onclick}>{author}</p>
-                        <span>{description}</span>
+                        <ReactTagify
+                            tagStyle={tagStyle}
+                            detectLinks={false}
+                            tagClicked={(tag) => handleNavigate(tag)}
+
+                        >
+                            <span>{description}</span>
+                        </ReactTagify>
+                        
                         <a style={{display: "table-cell"}} href = {url} target = "_blank" 
                             rel = "noopener noreferrer"><UrlContainer>
                             <UrlDescriptionSide>
