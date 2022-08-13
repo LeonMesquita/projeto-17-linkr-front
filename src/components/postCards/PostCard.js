@@ -8,6 +8,12 @@ import TokenContext from "../../contexts/TokenContext.js";
 import UserContext from "../../contexts/UserContext.js";
 
 export default function PostCard({author,author_pic,description, postUrl, onclick, postId, userId}){
+    if(!userId){
+        userId = -1;
+    }
+    
+
+    
     const { token, setToken, authorization } = useContext(TokenContext);
     const { url, user, setUser } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -33,8 +39,10 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
     async function getFavorites(postId, userId){
 
         try{
-            const promise =  await axios.get(`${url}/posts/favorite/${postId}`);
-            setNumberOfFavorites(promise.data);
+            const promise =  await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
+            setNumberOfFavorites(promise.data.favoriteQuantity);
+            setIsFavorite(promise.data.isFavorite);
+
         }catch(e){
 
         }
@@ -62,7 +70,7 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
             authorization);
 
             setIsFavorite(!isFavorite);
-            getFavorites(postId);
+            getFavorites(postId, userId);
         }catch(e){
 
         }
@@ -70,13 +78,12 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
 
 
     async function removeFavorite(){
-        //{postId, userId},
         try{
             await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,
             
             authorization);
             setIsFavorite(!isFavorite);
-            getFavorites(postId);
+            getFavorites(postId, userId);
         }catch(e){
             console.log(e)
 
