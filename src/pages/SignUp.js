@@ -2,9 +2,8 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../contexts/UserContext";
-import AuthArea from "../components/AuthArea";
+import AuthArea from "../components/auth/AuthArea";
 import Swal from 'sweetalert2'
-import  AuthButton  from "../components/AuthButton";
 export default function SignUp(){
     
     // const { token, setToken } = useContext(TokenContext);
@@ -66,18 +65,19 @@ export default function SignUp(){
     }
 
     return(
-        <AuthArea isDisabled={isDisabled}>
-            <form onSubmit={submitSignup}>
-                <input placeholder="e-mail" value={email} onChange={e => setEmail(e.target.value)}/>
-                <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
-                <input placeholder="username" value={username} onChange={e => setUsername(e.target.value)} />
-                <input placeholder="picture url" value={picture} onChange={e => setPicture(e.target.value)} />
-                <AuthButton buttonText='SignUp' isDisabled={isDisabled}/>
-            </form>
-            <Link to='/'>
-                Switch back to log in
-            </Link>
-        </AuthArea>
+        // <AuthArea isDisabled={isDisabled}>
+        //     <form onSubmit={submitSignup}>
+        //         <input placeholder="e-mail" value={email} onChange={e => setEmail(e.target.value)}/>
+        //         <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
+        //         <input placeholder="username" value={username} onChange={e => setUsername(e.target.value)} />
+        //         <input placeholder="picture url" value={picture} onChange={e => setPicture(e.target.value)} />
+        //         <AuthButton buttonText='SignUp' isDisabled={isDisabled}/>
+        //     </form>
+        //     <Link to='/'>
+        //         Switch back to log in
+        //     </Link>
+        // </AuthArea>
+        <></>
     );
 };
 
