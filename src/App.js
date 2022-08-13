@@ -11,7 +11,11 @@ import UserTimeline from "./pages/UserTimeline.js";
 import SignIn from "./pages/SignIn.js";
 export default function App() {
     const [token, setToken] = useState(null);
-    const [user, setUser] = useState("")
+    const [user, setUser] = useState({
+        userId: "",
+        username: "",
+        pictureUrl: ""
+    })
     //const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
     const [url, setUrl] = useState('http://localhost:4000');
 

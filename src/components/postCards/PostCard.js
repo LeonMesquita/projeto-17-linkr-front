@@ -1,14 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from  "../style.js";
+import {IoIosHeartEmpty, IoIosHeart} from "react-icons/io";
+import TokenContext from "../../contexts/TokenContext.js";
+import UserContext from "../../contexts/UserContext.js";
 
+export default function PostCard({author,author_pic,description, postUrl, onclick, postId, userId}){
+    if(!userId){
+        userId = -1;
+    }
+    
 
-export default function PostCard({author,author_pic,description,url, onclick}){
-
+    
+    const { token, setToken, authorization } = useContext(TokenContext);
+    const { url, user, setUser } = useContext(UserContext);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [numberOfFavorites, setNumberOfFavorites] = useState(0);
     const urldata = {
-        url: "",
+        postUrl: "",
         title: "",
         siteName:"",
         description:"",
@@ -22,11 +33,23 @@ export default function PostCard({author,author_pic,description,url, onclick}){
     const [ data, setData ] = useState(urldata);
 
     let body={
-        "url": url
+        "url": postUrl
+    }
+
+    async function getFavorites(postId, userId){
+
+        try{
+            const promise =  await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
+            setNumberOfFavorites(promise.data.favoriteQuantity);
+            setIsFavorite(promise.data.isFavorite);
+
+        }catch(e){
+
+        }
     }
 
     useEffect(() => {
-        const promise = axios.post(`https://linkr-back-api.herokuapp.com/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
+        const promise = axios.post(`${url}/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
         promise.then((res)=>{
             
             setData(res.data);
@@ -36,8 +59,36 @@ export default function PostCard({author,author_pic,description,url, onclick}){
         promise.catch(() => {
 
         });
+
+        getFavorites(postId, userId);
     },[]);
 
+    async function onClickFavorite(){
+        try{
+            await axios.post(`${url}/posts/favorite`,
+            {postId, userId},
+            authorization);
+
+            setIsFavorite(!isFavorite);
+            getFavorites(postId, userId);
+        }catch(e){
+
+        }
+    }
+
+
+    async function removeFavorite(){
+        try{
+            await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,
+            
+            authorization);
+            setIsFavorite(!isFavorite);
+            getFavorites(postId, userId);
+        }catch(e){
+            console.log(e)
+
+        }
+    }
     return(
         <>
         {data ? (
@@ -54,7 +105,7 @@ export default function PostCard({author,author_pic,description,url, onclick}){
                             <UrlDescriptionSide>
                                 <h1>{data.title}</h1>
                                 <span>{data.description}</span>
-                                <h2>{url}</h2>
+                                <h2>{postUrl}</h2>
                             </UrlDescriptionSide>
                             <UrlImageSide>
                                 <img src={data.favicons[0]} alt={data.title}></img>
@@ -62,6 +113,11 @@ export default function PostCard({author,author_pic,description,url, onclick}){
                             </UrlContainer></a>
                     </PostInfos>
                 </PostSide>
+                <FavoriteDiv iconColor={isFavorite ? '#AC0C00' : 'white'}>
+                    {isFavorite ? <IoIosHeart onClick={removeFavorite}/> : <IoIosHeartEmpty  onClick={onClickFavorite}/>}
+                    
+                    <h6>{numberOfFavorites} Likes</h6>
+                </FavoriteDiv>
             </CardContainer>
             )
             : (<h1>Loading . . . </h1>)
@@ -155,4 +211,21 @@ const UrlImageSide = styled.div`
     width: 153.44px;
     height: 153.44px;
    }
+`
+
+const FavoriteDiv = styled.div`
+    position: absolute;
+    top: 90px;
+    left: 27px;
+    text-align: center;
+    color: ${props => props.iconColor};
+    font-size: 20px;
+
+    h6{
+        font-family: 'Lato';
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 13px;
+        color: #FFFFFF;
+    }
 `

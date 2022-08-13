@@ -36,12 +36,14 @@ export default function SignIn(){
         }
         try{
             const promise = await axios.post(`${url}/signin`, userBody);
+
             setLinkirUser({
                 token: {
                     headers:{
                         Authorization: `Bearer ` + promise.data.token
                     }
                 },
+                userId: promise.data.id,
                 username: promise.data.username,
                 profilePic: promise.data.pictureUrl
             })
@@ -60,7 +62,7 @@ export default function SignIn(){
             });
         }
 
-        setIsDisabled(false);
+       // setIsDisabled(false);
 
     }
     return(

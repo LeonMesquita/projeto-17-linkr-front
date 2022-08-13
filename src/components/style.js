@@ -4,6 +4,7 @@ const CardContainer = styled.section`
     display:flex;
     width: 611px;
     background: #171717;
+    position: relative;
     border-radius: 16px;
     padding: 18px;
     img{
@@ -69,6 +70,7 @@ const HeaderContainer = styled.div`
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 1;
     h1{
         margin: 10px;
         margin-left: 20px;
