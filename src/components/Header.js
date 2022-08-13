@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 //import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
 import axios from "axios";
@@ -8,13 +8,13 @@ import axios from "axios";
 export default function Header() {
 
     //const handleLogout = () => useLocalStorage("linkrUser", "");
-
+    let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [users, setUsers] = useState([]);
 
     //salvar profilePic com a imagem do usuario que aparece no botao do logout
-   const profilePic = JSON.parse(localStorage.getItem("linkrUser")).profilePic;
+    const profilePic = JSON.parse(localStorage.getItem("linkrUser")).profilePic;
 
     function searchUser(){
         const promise = axios.get(`http://localhost:4000/search/${search}`);
@@ -27,8 +27,8 @@ export default function Header() {
     }
 
     function logout(){
-       // localStorage.setItem("linkrUser","")
-        
+       localStorage.setItem("linkrUser","");
+       navigate("/", { replace: true });
     }
 
     return (
