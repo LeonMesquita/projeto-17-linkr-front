@@ -83,23 +83,6 @@ const HeaderContainer = styled.div`
     }
 `;
 
-const LogoutBox = styled.div`
-    margin: 7px;
-    min-width: 60px;
-    min-height: 50px;
 
-    img{
-        width: 53px;
-        height: 53px;
-        border-radius: 26.5px;
-    }
-    @media screen and (max-width: 431px){
-        img{
-            width: 41px;
-            height: 41px;
-            border-radius: 26.5px;
-        }
-    }
-`
 
-export { CardContainer, PostContentSide, PostSide, HeaderContainer , LogoutBox};
+export { CardContainer, PostContentSide, PostSide, HeaderContainer };
