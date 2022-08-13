@@ -4,12 +4,24 @@ import UserContext from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 //import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
+import axios from "axios";
 
 export default function Header() {
     const { user } = useContext(UserContext);
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
-    let navigate = useNavigate(); 
+    const [users, setUsers] = useState([]);
+
+    function searchUser(){
+        const promise = axios.get(`http://localhost:4000/search/${search}`);
+        promise.then((res)=>{
+            setUsers(res.data);
+            });
+        promise.catch((e) => {
+            console.log(e);
+        });
+    }
+    
     user.pictureUrl="http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSE3zNnbeADg_Mk-hQ_A-cKTuUtXqdxfeAYYFOP7bGqkbXfp5fNMVVJcWwi7fRDLXg7xkmTSGGk2HqrsOQ8EYg";
     return (
         <HeaderContainer>
@@ -17,10 +29,10 @@ export default function Header() {
                 linkr
             </h1>
             <SearchContainer>
-                <ion-icon onClick={()=>navigate(`/`)} name="search"></ion-icon>
+                <ion-icon onClick={searchUser} name="search"></ion-icon>
                 <Search placeholder="    Search for people" value={search} onChange={e => setSearch(e.target.value)}></Search>
             </SearchContainer>
-            
+            {/* listar usuarios caso ocorra pesquisa (users) */}
             {isOpen ?
                 (<> 
                 <LogoutBoxOpen onClick={()=>setIsOpen(false)}>
