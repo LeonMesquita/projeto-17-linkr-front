@@ -11,41 +11,53 @@ import TrendingSideBar from "../components/TrendingSidebar";
 import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
 import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide, LoadingContainer } from "../components/timelines/style";
-import { ThreeDots } from "react-loader-spinner";
+import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function HashtagTimeline() {
-
+    const linkrStorage = JSON.parse(localStorage.getItem("linkrUser")).token
     const { url } = useContext(UserContext);
-    const { token } = useContext(TokenContext);
-
     const { hashtag } = useParams();
+
     const [posts, setPosts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
 
-    const handleGetPosts = () => {
-        //Quando rotas linkadas mudar para
-        //const promisse = axios.get(`${url}/hashtag/${hashtag}`, token)
+    const [isLoading, setIsLoading] = useState(true);
+
+    
+
+    const handleGetPosts = (token) => {
+        console.log(token)
         setIsLoading(true);
-        const promisse = axios.get(`https://linkr-back-api.herokuapp.com/posts`);
+        const promisse = axios.get(`${url}/hashtag/${hashtag}`,token)
+        const ONE_SECOND = 1000;
         promisse.then((res) => {
             setPosts(res.data);
-            setIsLoading(false);
+            handleGetTrendings(token)
         })
         promisse.catch((e) => {
-            setStatusCode(e)
+            setStatusCode(e.response.status)
+            handleGetTrendings(token)
             setIsLoading(false);
         });
     }
 
+    const handleGetTrendings = (token) => {
+        console.log(linkrStorage)
+        const promise = axios.get(`${url}/trendings`, token);
+        promise.then((res) => {
+            console.log(res)
+            setTrendings(res.data);
+            setIsLoading(false)
+        })
+    }
+
     useEffect( () => {
-        handleGetPosts()
+        handleGetPosts(linkrStorage)
     }, []);
 
     return (
         <Body>
-            <Header />
             <Main>
                 <TimelineTitle># {hashtag}</TimelineTitle>
                 <Feed>
@@ -57,12 +69,12 @@ export default function HashtagTimeline() {
                                     <PostSkeleton />
                                 </>
                                 :   statusCode
-                                    ?   <StatusCodeScreen statusCode={statusCode}/>
-                                    :   <RenderPosts posts={posts} />
+                                    ?  <StatusCodeScreen statusCode={statusCode}/>
+                                    :  <RenderPosts posts={posts}/>
                         }
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar />
+                        <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
                     </RightSide>
                 </Feed>
             </Main>
