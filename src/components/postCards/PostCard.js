@@ -49,16 +49,16 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
     }
 
     useEffect(() => {
-        // const promise = axios.post(`${url}/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
-        // promise.then((res)=>{
+        const promise = axios.post(`${url}/urls`,body); //`https://linkr-back-api.herokuapp.com/urls`
+        promise.then((res)=>{
             
-        //     setData(res.data);
+            setData(res.data);
 
-        //    // console.log(data);
-        // });
-        // promise.catch(() => {
+           // console.log(data);
+        });
+        promise.catch(() => {
 
-        // });
+        });
 
         getFavorites(postId, userId);
     },[]);
