@@ -90,7 +90,7 @@ const Content = styled.main`
 `;
 
 const Hashtag = styled.div`
-    margin: 2.5px 0px;
+    margin: 2.5px 0;
     a{
         word-break: break-all;
     }
