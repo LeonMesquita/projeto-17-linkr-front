@@ -16,7 +16,13 @@ import PublishCard from "../components/postCards/PublishCard.js";
 export default function Timeline(){
 
     const [ posts, setPosts ] = useState([]);
-     const { token, setToken, authorization } = useContext(TokenContext);
+
+    const [ isLoading, setIsLoading ] = useState(true);
+    // const { token, setToken } = useContext(TokenContext);
+    //const { url, user, setUser } = useContext(UserContext);
+     
+
+    const { token, setToken, authorization } = useContext(TokenContext);
     const { url, user, setUser } = useContext(UserContext);
     const [isUserPosts, setIsUserPosts] = useState(false);
     const [clickedUserPicture, setClickedUserPicture] = useState('');
@@ -24,17 +30,16 @@ export default function Timeline(){
 
     // const navigate = useNavigate();
     // pass the link directly
-    let isLoading;
+    
     useEffect(() => {
-        isLoading=true;
+        
         const promise = axios.get(`${url}/posts`);
         promise.then((res)=>{
             setPosts(res.data);
-            console.log(res.data)
-            isLoading=false;
+            setIsLoading(false);
         });
         promise.catch((e) => {
-           // alert(e)
+            alert("An error occured while trying to fetch the posts, please refresh the page");
         });
     }, []);
 //           // ADICIONAR TRENDINGS NA SIDEBAR 

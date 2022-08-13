@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const CardContainer = styled.section`
     display:flex;
-    max-width: 611px;
+    width: 611px;
     background: #171717;
     position: relative;
     border-radius: 16px;
@@ -12,19 +12,18 @@ const CardContainer = styled.section`
         height: 50px;
         border-radius: 26.5px; 
     }
+
     transition: ease all .5s;
     
     &.publish{
         background-color: #FFFFFF;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
-    &.post{
-        margin-top: 16px;
-    }
+    
+    &.post{margin-top: 16px;}
+    &.post:first-of-type{margin-top: 0px;}
+    &:last-of-type{margin-bottom: 50px;}
 
-    @media screen and (max-width: 630px){
-        margin: 10px 15px;
-    }
     @media screen and (max-width: 431px){
         div.publish:first-of-type{
             display:none;
@@ -60,6 +59,7 @@ const PostSide = styled.div`
         color: #707070;
         margin-bottom: 15px;
     }
+
 `;
 const HeaderContainer = styled.div`
     display:flex;
@@ -85,23 +85,6 @@ const HeaderContainer = styled.div`
     }
 `;
 
-const LogoutBox = styled.div`
-    margin: 7px;
-    min-width: 60px;
-    min-height: 50px;
 
-    img{
-        width: 53px;
-        height: 53px;
-        border-radius: 26.5px;
-    }
-    @media screen and (max-width: 431px){
-        img{
-            width: 41px;
-            height: 41px;
-            border-radius: 26.5px;
-        }
-    }
-`
 
-export { CardContainer, PostContentSide, PostSide, HeaderContainer , LogoutBox};
+export { CardContainer, PostContentSide, PostSide, HeaderContainer };

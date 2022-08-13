@@ -100,7 +100,8 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
                     <PostInfos>
                         <p onClick={onclick}>{author}</p>
                         <span>{description}</span>
-                        <UrlContainer>
+                        <a style={{display: "table-cell"}} href = {url} target = "_blank" 
+                            rel = "noopener noreferrer"><UrlContainer>
                             <UrlDescriptionSide>
                                 <h1>{data.title}</h1>
                                 <span>{data.description}</span>
@@ -109,7 +110,7 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
                             <UrlImageSide>
                                 <img src={data.favicons[0]} alt={data.title}></img>
                             </UrlImageSide>
-                        </UrlContainer>
+                            </UrlContainer></a>
                     </PostInfos>
                 </PostSide>
                 <FavoriteDiv iconColor={isFavorite ? '#AC0C00' : 'white'}>

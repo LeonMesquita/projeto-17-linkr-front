@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import TokenContext from "../contexts/TokenContext";
@@ -6,16 +6,18 @@ import UserContext from "../contexts/UserContext";
 import AuthArea from "../components/AuthArea";
 import Swal from 'sweetalert2'
 import AuthButton  from "../components/AuthButton";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function SignIn(){
     const navigate = useNavigate();
-    const { url, setUser } = useContext(UserContext);
-    const {setToken} = useContext(TokenContext);
+    const { url } = useContext(UserContext);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
 
-    
+    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "")
+
     async function submitLogin(e){
         e.preventDefault();
         setIsDisabled(true);
@@ -28,32 +30,36 @@ export default function SignIn(){
               setIsDisabled(false);
               return;
         }
-
         const userBody = {
             email,
             password
         }
         try{
             const promise = await axios.post(`${url}/signin`, userBody);
-            setToken(promise.data.token);
-            setUser({
+
+            setLinkirUser({
+                token: {
+                    headers:{
+                        Authorization: `Bearer ` + promise.data.token
+                    }
+                },
                 userId: promise.data.id,
                 username: promise.data.username,
-                pictureUrl: promise.data.pictureUrl
-            });
+                profilePic: promise.data.pictureUrl
+            })
             Swal.fire(
                 'Good job!',
                 'Login realizado com sucesso!',
                 'success'
-              );
-              navigate('/timeline');
+            )
+
+            navigate('/timeline');
         }catch(e){
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: 'Email ou senha incorretos!',
-              });
-
+            });
         }
 
        // setIsDisabled(false);
