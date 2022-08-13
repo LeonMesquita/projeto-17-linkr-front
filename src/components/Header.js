@@ -1,18 +1,21 @@
-import { useContext , useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import UserContext from "../contexts/UserContext";
 import { Link } from "react-router-dom";
 //import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
 import axios from "axios";
 
-
 export default function Header() {
-    const { user } = useContext(UserContext);
+
+    //const handleLogout = () => useLocalStorage("linkrUser", "");
+
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [users, setUsers] = useState([]);
-    
+
+    //salvar profilePic com a imagem do usuario que aparece no botao do logout
+   const profilePic = JSON.parse(localStorage.getItem("linkrUser")).profilePic;
+
     function searchUser(){
         const promise = axios.get(`http://localhost:4000/search/${search}`);
         promise.then((res)=>{
@@ -24,10 +27,10 @@ export default function Header() {
     }
 
     function logout(){
-        useLocalStorage("linkrUser", "");
+       // localStorage.setItem("linkrUser","")
+        
     }
 
-    user.pictureUrl="http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSE3zNnbeADg_Mk-hQ_A-cKTuUtXqdxfeAYYFOP7bGqkbXfp5fNMVVJcWwi7fRDLXg7xkmTSGGk2HqrsOQ8EYg";
     return (
         <HeaderContainer>
             <Link to={`/timeline`}><h1>
@@ -55,23 +58,24 @@ export default function Header() {
                 <LogoutBoxOpen onClick={()=>setIsOpen(false)}>
                     <div>
                     <ion-icon name="chevron-up"></ion-icon>
-                    <img src={user.pictureUrl} alt="user" />
+                    <img src={profilePic} alt="user" />
                     </div>
                     
-                    <h1 onClick={()=>logout()}>Logout</h1>
+                    <h1 onClick={logout}>Logout</h1>
                 </LogoutBoxOpen>
                 </>)
                 :
                 (<>
                     <LogoutBox onClick={()=>setIsOpen(true)}>
                         <ion-icon name="chevron-down"></ion-icon>
-                        <img src={user.pictureUrl} alt="user" />
+                        <img src={profilePic} alt="user" />
                     </LogoutBox>
                 </>)}
 
         </HeaderContainer>
     )
 };
+
 const ResultsContainer=styled.div`
     position: absolute;
     box-sizing: border-box;
