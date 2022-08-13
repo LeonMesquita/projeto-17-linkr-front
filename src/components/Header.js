@@ -1,17 +1,18 @@
 import { useContext , useState } from "react";
 import styled from "styled-components";
 import UserContext from "../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 //import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
 import axios from "axios";
+
 
 export default function Header() {
     const { user } = useContext(UserContext);
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [users, setUsers] = useState([]);
-
+    
     function searchUser(){
         const promise = axios.get(`http://localhost:4000/search/${search}`);
         promise.then((res)=>{
@@ -21,18 +22,34 @@ export default function Header() {
             console.log(e);
         });
     }
-    
+
+    function logout(){
+        useLocalStorage("linkrUser", "");
+    }
+
     user.pictureUrl="http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSE3zNnbeADg_Mk-hQ_A-cKTuUtXqdxfeAYYFOP7bGqkbXfp5fNMVVJcWwi7fRDLXg7xkmTSGGk2HqrsOQ8EYg";
     return (
         <HeaderContainer>
-            <h1>
+            <Link to={`/timeline`}><h1>
                 linkr
-            </h1>
+            </h1></Link>
             <SearchContainer>
                 <ion-icon onClick={searchUser} name="search"></ion-icon>
                 <Search placeholder="    Search for people" value={search} onChange={e => setSearch(e.target.value)}></Search>
+                <ResultsContainer>
+                        {users.map( user => {
+                            return (
+                                <Link to={`/user/${user.id}`}>
+                                    <Result key={user.id}>
+                                        <img src = {user.picture_url} alt="user"/>
+                                        <h1>{user.username}</h1>
+                                    </Result>
+                                </Link>
+                            )
+                            })  }  
+                </ResultsContainer>
             </SearchContainer>
-            {/* listar usuarios caso ocorra pesquisa (users) */}
+
             {isOpen ?
                 (<> 
                 <LogoutBoxOpen onClick={()=>setIsOpen(false)}>
@@ -41,7 +58,7 @@ export default function Header() {
                     <img src={user.pictureUrl} alt="user" />
                     </div>
                     
-                    <h1>Logout</h1>
+                    <h1 onClick={()=>logout()}>Logout</h1>
                 </LogoutBoxOpen>
                 </>)
                 :
@@ -55,6 +72,36 @@ export default function Header() {
         </HeaderContainer>
     )
 };
+const ResultsContainer=styled.div`
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    
+    background: #E7E7E7;
+`
+const Result=styled.div`
+    display: flex;  
+    flex-direction:row;
+    
+   
+    width: 25vw;
+    img{
+        margin-left: 15px;
+        width: 39px;
+        height: 39px;
+        border-radius: 30px;
+    }
+    h1{
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19px;
+        line-height: 23px;
+        color: #515151;
+    }
+`
 const SearchContainer = styled.div`
     position: relative;
     ion-icon{
@@ -79,9 +126,6 @@ const Search = styled.input`
         font-weight: 400;
         font-size: 19px;
         line-height: 23px;
-
-        /* identical to box height */
-
         color: #C6C6C6;
     }
 `
