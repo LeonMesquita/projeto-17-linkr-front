@@ -1,10 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link,useNavigate } from "react-router-dom";
-//import styled from "styled-components";
 import { HeaderContainer } from "./style.js";
 import axios from "axios";
-import {DebounceInput} from 'react-debounce-input';
 
 export default function Header() {
 
@@ -15,10 +13,10 @@ export default function Header() {
     const [users, setUsers] = useState([]);
 
     //salvar profilePic com a imagem do usuario que aparece no botao do logout
-    const profilePic = JSON.parse(localStorage.getItem("linkrUser")).profilePic;
+    const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
 
-    function searchUser(){
-        const promise = axios.get(`http://localhost:4000/search/${search}`);
+    function searchUser(value){
+        const promise = axios.get(`http://localhost:4000/search/${value}`, localstorage.token);
         promise.then((res)=>{
             setUsers(res.data);
             });
@@ -26,6 +24,21 @@ export default function Header() {
             console.log(e);
         });
     }
+    const handleChange = (event) => {
+        setSearch(event.target.value);
+        let myTimeout;
+        if(event.target.value.length>2){
+            myTimeout=setTimeout(searchUser(event.target.value), 200);
+            //searchUser();
+        }
+        if(event.target.value.length<=2){
+            setUsers([]);
+            if(myTimeout){
+                clearTimeout(myTimeout);
+            }
+        }
+        
+    };
 
     function logout(){
        localStorage.setItem("linkrUser",JSON.stringify(" - "));
@@ -38,12 +51,12 @@ export default function Header() {
                 linkr
             </h1></Link>
             <SearchContainer>
-            <DebounceInput
+            {/* <DebounceInput
                 minLength={3}
                 debounceTimeout={300}
-                onChange={searchUser} />
+                onChange={searchUser} /> */}
                 <ion-icon onClick={searchUser} name="search"></ion-icon>
-                <Search placeholder="    Search for people" value={search} onChange={e => setSearch(e.target.value)}></Search>
+                <Search placeholder="    Search for people" value={search} onChange={handleChange}></Search>
                 <ResultsContainer>
                         {users.map( user => {
                             return (
@@ -63,7 +76,7 @@ export default function Header() {
                 <LogoutBoxOpen onClick={()=>setIsOpen(false)}>
                     <div>
                     <ion-icon name="chevron-up"></ion-icon>
-                    <img src={profilePic} alt="user" />
+                    <img src={localstorage.profilePic} alt="user" />
                     </div>
                     
                     <h1 onClick={logout}>Logout</h1>
@@ -73,7 +86,7 @@ export default function Header() {
                 (<>
                     <LogoutBox onClick={()=>setIsOpen(true)}>
                         <ion-icon name="chevron-down"></ion-icon>
-                        <img src={profilePic} alt="user" />
+                        <img src={localstorage.profilePic} alt="user" />
                     </LogoutBox>
                 </>)}
 
