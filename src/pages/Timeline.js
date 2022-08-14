@@ -5,8 +5,10 @@ import Swal from "sweetalert2";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
+
 import handleGetTrendings from "../handlers/handleGetTrendings";
 import handleTokenVerify from "../handlers/handleGetToken";
+import handleAlertNotifications from "../handlers/handleAlertNotifications";
 
 import Header from "../components/Header.js";
 import TimelineTitleSkeleton from "../components/timelines/titlePage";
@@ -51,38 +53,29 @@ export default function Timeline() {
     //     } catch (e) {
     // }
 
-    const AlertError = (result) => {
-        if (result.isConfirmed === true || result.isDismissed === true) return navigate(`/`)
-    }
-    const Alert = {
-        icon: 'error',
-        titleText: `Aparentemente você não esta logado(a) :(`,
-        text: `Retornando para a página de login`,
-        color: `#FFFFFF`,
-        background: `#333333`,
-        confirmButtonColor: `#1877F2`,
-        padding: `10px`,
-        timer: 4000,
-        timerProgressBar: true,
-        timerProgressBar: `#ffffff`
-    }
+    const AlertNotification = handleAlertNotifications(
+            'error', 
+            `Aparentemente você não esta logado(a) :(`,
+            `Retornando para a página de login`, 
+            4000, 
+            'ToSignIn'
+        ).then( (result) => {
+            if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
+        });
 
     const handleGetPost = async (token) => { //Recebe os Posts
-        try {
-            const promise = await axios.get(`${url}/posts`);
+        const promise = await axios.get(`${url}/posts`);
+        promise.then( (res) => {
             setPosts(promise.data)
             handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
-        } catch (e) {
-            Swal.fire(Alert).then(AlertError);
-        }
-
+        })
+        promise.catch( (e) => AlertNotification);
     }
 
     useEffect(() => {
         const token = handleTokenVerify()
-        if (!token) return Swal.fire(Alert).then(AlertError);
+        if (!token) return AlertNotification
         handleGetPost(token)
-
     }, []);
 
     return (
