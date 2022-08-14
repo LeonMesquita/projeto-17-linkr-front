@@ -83,19 +83,7 @@ export default function Timeline() {
 
 
 
-    // const handleTokenVerify = () => {
-    //     let linkrStorage = JSON.parse(localStorage.getItem("linkrUser"))
-    //     if( linkrStorage === null || linkrStorage.token === undefined ) return false
-    //     return linkrStorage.token
-    // }
     // const [trendings, setTrendings] = useState([])
-    // const handleGetTrendings = (token) => {
-    //     const promise = axios.get(`${url}/trendings`, token);
-    //     promise.then((res) => {
-    //         setTrendings(res.data);
-    //         setIsLoading(false)
-    //     })
-    // }
     // useEffect(() => {
     //     const token = handleTokenVerify()
     //     if(!token) return Swal.fire(Alert).then(AlertError);
