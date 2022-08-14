@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { CardContainer } from "../style";
-import { Container } from "../TrendingSidebar";
+
 const Main = styled.main`
     width: 100%;
     display:flex;
@@ -62,33 +62,20 @@ const Body = styled.div`
         ${RightSide}{display:none;}
         ${LeftSide}{margin-right: 0px;}
     }
-    @media screen and (max-width: 820px){
-        margin-top: 80px;
-    }
+
     @media screen and (max-width: 655px){
         ${TimelineTitle}{padding-left: 17px;}
-
     }
-    @media screen and (max-width: 645px){
-        ${Feed}{width: calc(100% - 34px)}
-        ${LeftSide}{width: 100%}
-        ${CardContainer}{width: 100%}
-    }
-
-    @media screen and (max-width: 431px){
+    @media screen and (max-width: 611px){
+        margin-top: 82px;
         ${Feed}{
             margin-top: 19px;
             width: 100%;
         }
-        ${LeftSide}{width: 100%;}
+        ${LeftSide}{width: 100%}
+        ${CardContainer}{width: 100%}
     }
 `
-
-
-
-
-
-
 
 const PostSection = styled.section`
 `

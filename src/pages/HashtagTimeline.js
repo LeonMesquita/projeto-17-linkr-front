@@ -5,12 +5,11 @@ import axios from "axios";
 import UserContext from "../contexts/UserContext";
 
 import Header from "../components/Header";
+import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
-import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
-import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
+import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function HashtagTimeline() {
     const linkrStorage = JSON.parse(localStorage.getItem("linkrUser")).token
@@ -57,21 +56,12 @@ export default function HashtagTimeline() {
 
     return (
         <Body>
-            <Header />
+            {/* <Header /> */}
             <Main>
-                <TimelineTitle># {hashtag}</TimelineTitle>
+                <PageTitle title={`# ${hashtag}`} isLoading={isLoading}/>
                 <Feed>
                     <LeftSide>
-                        {
-                            isLoading
-                                ?
-                                <>
-                                    <PostSkeleton />
-                                </>
-                                : statusCode
-                                    ? <StatusCodeScreen statusCode={statusCode} />
-                                    : <RenderPosts posts={posts} />
-                        }
+                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />

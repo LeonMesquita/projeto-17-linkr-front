@@ -24,7 +24,7 @@ const CardContainer = styled.section`
     &.post:first-of-type{margin-top: 0px;}
     &:last-of-type{margin-bottom: 50px;}
 
-    @media screen and (max-width: 431px){
+    @media screen and (max-width: 611px){
         div.publish:first-of-type{
             display:none;
         }

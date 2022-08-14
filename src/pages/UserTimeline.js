@@ -4,12 +4,11 @@ import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
 
-import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
-import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
+import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
+import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function UserTimeline(){
     
@@ -50,27 +49,19 @@ export default function UserTimeline(){
     }, []);
 
     return(
-    <Body>
-        <Main>
-            <TimelineTitle># {posts[0].username}</TimelineTitle>
-            <Feed>
-                <LeftSide>
-                    {
-                        isLoading
-                            ?
-                            <>
-                                <PostSkeleton />
-                            </>
-                            :   statusCode
-                                ?  <StatusCodeScreen statusCode={statusCode}/>
-                                :  <RenderPosts posts={posts}/>
-                    }
-                </LeftSide>
-                <RightSide>
-                    <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
-                </RightSide>
-            </Feed>
-        </Main>
-    </Body>)
+        <Body>
+            <Main>
+                <PageTitle title={posts[0].username} isLoading={isLoading}/>
+                <Feed>
+                    <LeftSide>
+                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
+                    </LeftSide>
+                    <RightSide>
+                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
+                    </RightSide>
+                </Feed>
+            </Main>
+        </Body>
+    )
 };
 
