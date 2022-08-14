@@ -5,15 +5,20 @@ import Swal from "sweetalert2";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
+import handleGetTrendings from "../handlers/handleGetTrendings";
+import handleTokenVerify from "../handlers/handleGetToken";
 
 import Header from "../components/Header.js";
 import TimelineTitleSkeleton from "../components/timelines/titlePage";
 import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
+import PublishSkeleton from "../components/postCards/Skeletons/PublishSkeleton";
+import PublishCard from "../components/postCards/PublishCard"
 import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 
 import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
+
 
 export default function Timeline() {
 
@@ -21,8 +26,10 @@ export default function Timeline() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
+    const [posts, setPosts] = useState([]);
+    const [trendings, setTrendings] = useState([])
+    const [statusCode, setStatusCode] = useState(false);
 
-    // const [posts, setPosts] = useState([]);
 
 
 
@@ -32,20 +39,6 @@ export default function Timeline() {
     // const [clickedUserPicture, setClickedUserPicture] = useState('');
     // const [clickedUseName, setClickedUseName] = useState('');
 
-
-    // pass the link directly
-
-    // useEffect(() => {
-
-    //     const promise = axios.get(`${url}/posts`);
-    //     promise.then((res) => {
-    //         setPosts(res.data);
-    //         setIsLoading(false);
-    //     });
-    //     promise.catch((e) => {
-    //         alert("An error occured while trying to fetch the posts, please refresh the page");
-    //     });
-    // }, []);
     // //           // ADICIONAR TRENDINGS NA SIDEBAR 
     // //
     // async function onClickUser(userId) {
@@ -58,33 +51,38 @@ export default function Timeline() {
     //     } catch (e) {
     // }
 
-    // const AlertError = (result) => {
-    //     console.log(`Oi`)
-    //     console.log(`Oi`)
-    //     if (result.isConfirmed === true || result.isDismissed === true) return navigate(`/`)
-    // }
-    // const Alert = {
-    //     icon: 'error',
-    //     titleText: `Aparentemente você não esta logado(a) :(`,
-    //     text: `Retornando para a página de login`,
-    //     color: `#FFFFFF`,
-    //     background: `#333333`,
-    //     confirmButtonColor: `#1877F2`,
-    //     padding: `10px`,
-    //     timer: 4000,
-    //     timerProgressBar: true,
-    //     timerProgressBar: `#ffffff`
-    // }
+    const AlertError = (result) => {
+        if (result.isConfirmed === true || result.isDismissed === true) return navigate(`/`)
+    }
+    const Alert = {
+        icon: 'error',
+        titleText: `Aparentemente você não esta logado(a) :(`,
+        text: `Retornando para a página de login`,
+        color: `#FFFFFF`,
+        background: `#333333`,
+        confirmButtonColor: `#1877F2`,
+        padding: `10px`,
+        timer: 4000,
+        timerProgressBar: true,
+        timerProgressBar: `#ffffff`
+    }
 
-    // const handleGetPost = () => {
-    //     const promise = axios.get(`${url}/posts`, token)
-    // }
+    const handleGetPost = async (token) => { //Recebe os Posts
+        try {
+            const promise = await axios.get(`${url}/posts`);
+            setPosts(promise.data)
+            handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
+        } catch (e) {
+            Swal.fire(Alert).then(AlertError);
+        }
 
-    const [trendings, setTrendings] = useState([])
+    }
+
     useEffect(() => {
         const token = handleTokenVerify()
-        if(!token) return Swal.fire(Alert).then(AlertError);
-        handleGetTrendings(token)
+        if (!token) return Swal.fire(Alert).then(AlertError);
+        handleGetPost(token)
+
     }, []);
 
     return (
@@ -93,21 +91,39 @@ export default function Timeline() {
                  isLoading
                ?  <></>
                  : <Header />
-            } 
-           <Main>
+            }  */}
+            <Main>
                 {
-                  isLoading
-                    ?   <TimelineTitleSkeleton />
-                 :   <TimelineTitle>timeline</TimelineTitle>
-                 }
-                 <Feed>
-                 <LeftSide>
-                     </LeftSide>
+                    isLoading
+                        ? <TimelineTitleSkeleton />
+                        : <TimelineTitle>timeline</TimelineTitle>
+                }
+                <Feed>
+                    <LeftSide>
+                        {
+                            isLoading
+                                ?
+                                <>
+                                    <PublishSkeleton />
+                                    <PostSkeleton />
+                                </>
+                                : statusCode
+                                    ?
+                                    <>
+                                        <StatusCodeScreen statusCode={statusCode} />
+                                    </>
+                                    :
+                                    <>
+                                        <PublishCard />
+                                        <RenderPosts posts={posts} />
+                                    </>
+                        }
+                    </LeftSide>
                     <RightSide>
-                     <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
+                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
                     </RightSide>
                 </Feed>
-            </Main> */}
+            </Main>
         </Body>
     )
 };
