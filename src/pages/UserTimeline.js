@@ -49,7 +49,8 @@ export default function UserTimeline(){
         handleGetUserPosts(linkrStorage);
     }, []);
 
-    return(<Body>
+    return(
+    <Body>
         <Main>
             <TimelineTitle># {posts[0].username}</TimelineTitle>
             <Feed>

@@ -1,179 +1,147 @@
 import { useState, useEffect, useContext } from "react";//useContext,
-
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import styled from "styled-components";
 import Swal from "sweetalert2";
 
 import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 
-import TrendingSideBar from "../components/TrendingSidebar";
 import Header from "../components/Header.js";
-import PostCard from "../components/postCards/PostCard.js";
-import PublishCard from "../components/postCards/PublishCard.js";
+import TimelineTitleSkeleton from "../components/timelines/titlePage";
+import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
+import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
+import RenderPosts from "../components/postCards/RenderPosts";
+import TrendingSideBar from "../components/TrendingSidebar";
 
-export default function Timeline(){
+import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
-    const [ posts, setPosts ] = useState([]);
+export default function Timeline() {
 
-    const [ isLoading, setIsLoading ] = useState(true);
-    // const { token, setToken } = useContext(TokenContext);
-    //const { url, user, setUser } = useContext(UserContext);
-     
+    const { url } = useContext(UserContext);
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const { token, setToken, authorization } = useContext(TokenContext);
-    const { url, user, setUser } = useContext(UserContext);
-    const [isUserPosts, setIsUserPosts] = useState(false);
-    const [clickedUserPicture, setClickedUserPicture] = useState('');
-    const [clickedUseName, setClickedUseName] = useState('');
 
-    // const navigate = useNavigate();
+    // const [posts, setPosts] = useState([]);
+
+
+
+
+
+    // const [isUserPosts, setIsUserPosts] = useState(false);
+    // const [clickedUserPicture, setClickedUserPicture] = useState('');
+    // const [clickedUseName, setClickedUseName] = useState('');
+
+
     // pass the link directly
-    
-    useEffect(() => {
-        
-        const promise = axios.get(`${url}/posts`);
-        promise.then((res)=>{
-            setPosts(res.data);
-            setIsLoading(false);
-        });
-        promise.catch((e) => {
-            alert("An error occured while trying to fetch the posts, please refresh the page");
-        });
-    }, []);
-//           // ADICIONAR TRENDINGS NA SIDEBAR 
-//
-    async function onClickUser(userId){
-        try{
-            const promise = await axios.get(`${url}/user/${userId}`, authorization);
-            setClickedUseName(promise.data[0].username);
-            setClickedUserPicture(promise.data[0].picture_url);
-            setPosts(promise.data);
-            setIsUserPosts(true);
-        }catch(e){
-            Swal.fire({
-                icon: 'error',
-                titleText: `Falha de autenticação`,
-                text: `Você precisa estar logado!`,
-                color: `#FFFFFF`,
-                background: `#333333`,
-                confirmButtonColor:`#1877F2`,
-                padding: `10px`,
-                timer: 4000,
-                timerProgressBar: true,
-                timerProgressBar: `#ffffff`
-            })
-        }
-       
-    }
-    return(
-        <>
-            <Header/>
-            <Container>
-            {isLoading ?
-                (<Title>Loading . . .</Title>)
-                :
-                (<>{posts.length > 0 ?  
-                    (<>
-                    <Feed>
-                    {isUserPosts ? null
-                    :
-                        <Title>
-                            timeline
-                        </Title>
-                    }
-                        {isUserPosts ? 
-                        <UserTitle>
-                            <img src={clickedUserPicture} alt=""/>
-                            <h1>{clickedUseName}'s posts</h1>
-                        </UserTitle>
-                         : 
-                        <PublishCard/>}
-                        {posts.map( post => {
-                            return (<PostCard key={post.post_id} author_pic={post.picture_url} author={post.username} description={post.description} postUrl={post.url} postId={post.post_id} userId={user.userId} onclick={() => onClickUser(post.user_id)}></PostCard>
-                            )
-                            })  }  
-                    </Feed>
-                    <TrendingSideBar trendings={["arroz","react","driven"]}/> 
-                    </>)
-                    :
-                    (<Title>There are no posts yet . . .</Title>) 
-                }</>)
-            }
-            </Container>
-        </>
+
+    // useEffect(() => {
+
+    //     const promise = axios.get(`${url}/posts`);
+    //     promise.then((res) => {
+    //         setPosts(res.data);
+    //         setIsLoading(false);
+    //     });
+    //     promise.catch((e) => {
+    //         alert("An error occured while trying to fetch the posts, please refresh the page");
+    //     });
+    // }, []);
+    // //           // ADICIONAR TRENDINGS NA SIDEBAR 
+    // //
+    // async function onClickUser(userId) {
+    //     try {
+    //         const promise = await axios.get(`${url}/user/${userId}`, authorization);
+    //         setClickedUseName(promise.data[0].username);
+    //         setClickedUserPicture(promise.data[0].picture_url);
+    //         setPosts(promise.data);
+    //         setIsUserPosts(true);
+    //     } catch (e) {
+    // }
+
+    // const AlertError = (result) => {
+    //     console.log(`Oi`)
+    //     console.log(`Oi`)
+    //     if (result.isConfirmed === true || result.isDismissed === true) return navigate(`/`)
+    // }
+    // const Alert = {
+    //     icon: 'error',
+    //     titleText: `Aparentemente você não esta logado(a) :(`,
+    //     text: `Retornando para a página de login`,
+    //     color: `#FFFFFF`,
+    //     background: `#333333`,
+    //     confirmButtonColor: `#1877F2`,
+    //     padding: `10px`,
+    //     timer: 4000,
+    //     timerProgressBar: true,
+    //     timerProgressBar: `#ffffff`
+    // }
+
+    // const handleGetPost = () => {
+    //     const promise = axios.get(`${url}/posts`, token)
+    // }
+
+
+
+
+    // const handleTokenVerify = () => {
+    //     let linkrStorage = JSON.parse(localStorage.getItem("linkrUser"))
+    //     if( linkrStorage === null || linkrStorage.token === undefined ) return false
+    //     return linkrStorage.token
+    // }
+    // const [trendings, setTrendings] = useState([])
+    // const handleGetTrendings = (token) => {
+    //     const promise = axios.get(`${url}/trendings`, token);
+    //     promise.then((res) => {
+    //         setTrendings(res.data);
+    //         setIsLoading(false)
+    //     })
+    // }
+    // useEffect(() => {
+    //     const token = handleTokenVerify()
+    //     if(!token) return Swal.fire(Alert).then(AlertError);
+    //     handleGetTrendings(token)
+    // }, []);
+
+    return (
+        <Body>
+            {/* {
+                 isLoading
+               ?  <></>
+                 : <Header />
+            } 
+           <Main>
+                {
+                  isLoading
+                    ?   <TimelineTitleSkeleton />
+                 :   <TimelineTitle>timeline</TimelineTitle>
+                 }
+                 <Feed>
+                 <LeftSide>
+                     </LeftSide>
+                    <RightSide>
+                     <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
+                    </RightSide>
+                </Feed>
+            </Main> */}
+        </Body>
     )
 };
 
-const Container =styled.div`
-    display: flex;
-    justify-content: center;
-`
-const Feed = styled.div`
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
-    input{
-    background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-}
-`
-
-const Title = styled.div`
-    display:flex;
-    width: 611px;
-
-    justify-content: left;
-
-    margin-top: 82px;
-    margin-bottom: 25px;
-    margin-left: 0px;
-    font-family: 'Oswald';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 43px;
-    line-height: 64px;
-
-    /* identical to box height */
-
-    color: #FFFFFF;
-
-    @media screen and (max-width: 630px){
-        margin-left: 25px;
-        width: 100%;
+{/* <Feed>
+<LeftSide>
+    {
+        isLoading
+            ?
+            <>
+                <PostSkeleton />
+            </>
+            : statusCode
+                ? <StatusCodeScreen statusCode={statusCode} />
+                : <RenderPosts posts={posts} />
     }
-`;
-
-
-const UserTitle = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding-left: 10px;
-    margin-top: 130px;
-    margin-bottom: 20px;
-
-    img{
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 20px;
-    }
-
-    h1{
-        font-family: 'Oswald';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 43px;
-        line-height: 64px;
-        color: #FFFFFF;
-    }
-`
+</LeftSide>
+<RightSide>
+    <TrendingSideBar trendings={trendings} isLoading={isLoading} />
+</RightSide>
+</Feed> */}

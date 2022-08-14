@@ -2,7 +2,6 @@ import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
 
 import Header from "../components/Header";
@@ -24,12 +23,12 @@ export default function HashtagTimeline() {
 
     const [isLoading, setIsLoading] = useState(true);
 
-    
+
 
     const handleGetPosts = (token) => {
         console.log(token)
         setIsLoading(true);
-        const promisse = axios.get(`${url}/hashtag/${hashtag}`,token)
+        const promisse = axios.get(`${url}/hashtag/${hashtag}`, token)
         const ONE_SECOND = 1000;
         promisse.then((res) => {
             setPosts(res.data);
@@ -52,12 +51,13 @@ export default function HashtagTimeline() {
         })
     }
 
-    useEffect( () => {
+    useEffect(() => {
         handleGetPosts(linkrStorage)
     }, []);
 
     return (
         <Body>
+            <Header />
             <Main>
                 <TimelineTitle># {hashtag}</TimelineTitle>
                 <Feed>
@@ -68,13 +68,13 @@ export default function HashtagTimeline() {
                                 <>
                                     <PostSkeleton />
                                 </>
-                                :   statusCode
-                                    ?  <StatusCodeScreen statusCode={statusCode}/>
-                                    :  <RenderPosts posts={posts}/>
+                                : statusCode
+                                    ? <StatusCodeScreen statusCode={statusCode} />
+                                    : <RenderPosts posts={posts} />
                         }
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
+                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
                     </RightSide>
                 </Feed>
             </Main>
