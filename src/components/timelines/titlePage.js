@@ -16,7 +16,7 @@ export default function PageTitle({ title, isLoading }){
             {
                 isLoading
                 ? <p><Skeleton  count={1} baseColor="#333333" highlightColor="#272727" width="100%" height="64px" borderRadius="15px" duration={2}/></p>
-                : <TimelineTitle>trending</TimelineTitle>
+                : <TimelineTitle>{title}</TimelineTitle>
             }    
             </TitleContainer>
         </SubHeaderContainer>

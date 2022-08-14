@@ -56,7 +56,7 @@ export default function HashtagTimeline() {
 
     return (
         <Body>
-            {/* <Header /> */}
+            <Header isLoading={isLoading}/>
             <Main>
                 <PageTitle title={`# ${hashtag}`} isLoading={isLoading}/>
                 <Feed>

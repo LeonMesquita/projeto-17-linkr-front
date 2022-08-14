@@ -9,6 +9,7 @@ import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
 
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
+import Header from "../components/Header";
 
 export default function UserTimeline(){
     
@@ -50,8 +51,9 @@ export default function UserTimeline(){
 
     return(
         <Body>
+            <Header isLoading={isLoading} />
             <Main>
-                <PageTitle title={posts[0].username} isLoading={isLoading}/>
+                <PageTitle title={posts[0]?.username} isLoading={isLoading}/>
                 <Feed>
                     <LeftSide>
                         <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
