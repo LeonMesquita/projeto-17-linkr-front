@@ -80,15 +80,12 @@ export default function Timeline() {
     //     const promise = axios.get(`${url}/posts`, token)
     // }
 
-
-
-
-    // const [trendings, setTrendings] = useState([])
-    // useEffect(() => {
-    //     const token = handleTokenVerify()
-    //     if(!token) return Swal.fire(Alert).then(AlertError);
-    //     handleGetTrendings(token)
-    // }, []);
+    const [trendings, setTrendings] = useState([])
+    useEffect(() => {
+        const token = handleTokenVerify()
+        if(!token) return Swal.fire(Alert).then(AlertError);
+        handleGetTrendings(token)
+    }, []);
 
     return (
         <Body>
