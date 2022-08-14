@@ -64,6 +64,7 @@ const PostSide = styled.div`
 const HeaderContainer = styled.div`
     display:flex;
     justify-content: space-between;
+    align-items: center;
     width:100%;
     height: 72px;
     background: #151515;
