@@ -33,7 +33,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
     const linkrUserToken = linkrUser.token;
-    const linkrUserId = linkrUser.id;
+    const linkrUserId = linkrUser.userId;
 
     console.log(userId)
     console.log(linkrUserId)

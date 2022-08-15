@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 
 
-export default function RenderPosts({ posts, isLoading, statusCode }) {
+export default function RenderPosts({ posts, isLoading, statusCode, isRefreshing }) {
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
 
@@ -38,10 +38,13 @@ export default function RenderPosts({ posts, isLoading, statusCode }) {
        
     // }
 
+
+
+
     return (
         <>
             {
-                isLoading
+                isLoading || isRefreshing
                     ? <PostSkeleton />
                     :   statusCode
                         ?    <StatusCodeScreen statusCode={statusCode} />

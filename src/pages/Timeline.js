@@ -20,6 +20,7 @@ export default function Timeline() {
     const { url } = useContext(UserContext);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
@@ -77,8 +78,8 @@ export default function Timeline() {
                 <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading} isUserPosts={isUserPosts} clickedUserPicture={clickedUserPicture}/>
                 <Feed>
                     <LeftSide>
-                        {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
-                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode}/>
+                        {isUserPosts ? null : <PublishCard isLoading={isLoading} setPosts={setPosts} setStatusCode={setStatusCode} setIsRefreshing={setIsRefreshing}/>}
+                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode} isRefreshing={isRefreshing} />
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
@@ -89,21 +90,3 @@ export default function Timeline() {
     )
 };
 
-
-{/* <Feed>
-<LeftSide>
-    {
-        isLoadingg
-            ?
-            <>
-                <PostSkeleton />
-            </>
-            : statusCode
-                ? <StatusCodeScreen statusCode={statusCode} />
-                : <RenderPosts posts={posts} />
-    }
-</LeftSide>
-<RightSide>
-    <TrendingSideBar trendings={trendings} isLoading={isLoading} />
-</RightSide>
-</Feed> */}

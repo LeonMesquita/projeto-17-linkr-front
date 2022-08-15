@@ -50,7 +50,10 @@ export default function HashtagTimeline() {
             4000
             ).then(returnToLogin)
         handleGetPosts(token)
-    }, []);
+
+    }, [hashtag]);
+
+
 
     return (
         <Body>
