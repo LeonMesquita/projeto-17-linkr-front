@@ -201,7 +201,6 @@ const TextArea = styled.textarea`
     margin-top: 2.5px;
     padding: 10px;
     resize: none;
-
     &::placeholder{
         color: #949494;
     }
@@ -246,7 +245,6 @@ const LikeContainer = styled.div`
 `
 
 const PostInfos = styled.div`
-
     h1,span{font-weight: 400;}
     h1,p{
         font-size: 19px;
@@ -272,7 +270,6 @@ const PostInfos = styled.div`
             line-height: 18px;
         }
     }
-
     p{
         cursor: pointer;
         &:hover{
@@ -377,5 +374,4 @@ const LinkPreview = styled.a`
             width: 95px;
         }
     }
-
 `

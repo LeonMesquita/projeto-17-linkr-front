@@ -55,8 +55,7 @@ export default function SignInForm() {
         e.preventDefault();
         setIsDisabled("disabled");
         handleIsEmpty();
-        console.log(userInfos)
-        console.log(url)
+        
         const promise = axios.post(`${url}/signin`, userInfos);
         promise.then((res) => {
             setLinkirUser({
