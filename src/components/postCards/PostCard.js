@@ -4,6 +4,9 @@ import axios from "axios";
 import { ReactTagify } from "react-tagify";
 import { IoMdTrash } from 'react-icons/io'
 import { TiPencil } from 'react-icons/ti'
+import ReactTooltip from 'react-tooltip';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
@@ -22,13 +25,18 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     }
     const navigate = useNavigate();
     const { authorization } = useContext(TokenContext);
-    const { url } = useContext(UserContext);
+    const { url, user } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
+    const [likedBy, setLikedBy] = useState('');
+    //João, Maria e outras 11 pessoas
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
     const linkrUserToken = linkrUser.token;
     const linkrUserId = linkrUser.userId;
+
+    console.log(userId)
+    console.log(linkrUserId)
 
     const [data, setData] = useState();
 
@@ -40,8 +48,14 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
         try {
             const promise = await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
-            setNumberOfFavorites(promise.data.favoriteQuantity);
+            const quantity = promise.data.favoriteQuantity;
+            setNumberOfFavorites(quantity);
             setIsFavorite(promise.data.isFavorite);
+            if(promise.data.isFavorite){
+                const str = quantity > 1 ? `e outras ${quantity-1} pessoas` : 'curtiu isso';
+                setLikedBy(`Você ${str}`);
+               
+            }
 
         } catch (e) {
 
@@ -60,18 +74,24 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
             setIsFavorite(!isFavorite);
             getFavorites(postId, userId);
+            
         } catch (e) {
 
         }
     }
+    // useEffect(() => {
+    //     ReactTooltip.rebuild();
+    // });
 
 
     async function removeFavorite() {
         try {
             await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,linkirUser.token);
 
-            setIsFavorite(!isFavorite);
+            setIsFavorite(false);
             getFavorites(postId, userId);
+            setLikedBy(`${numberOfFavorites} pessoas curtiram isso`);
+
         } catch (e) {
             console.log(e)
 
@@ -101,11 +121,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                     <CardContainer className="post">
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
-                            <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}>
+                            <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
                                 <h6>{numberOfFavorites} Likes</h6>
                             </LikeContainer>
+                            <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
                         <PostSide>
                             <PostInfos>

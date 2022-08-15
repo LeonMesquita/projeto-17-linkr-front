@@ -10,7 +10,7 @@ import { Button, Form, Input } from "./style";
 
 export default function SignInForm() {
     const navigate = useNavigate();
-    const { url } = useContext(UserContext)
+    const { url, setUser } = useContext(UserContext)
     const [isDisabled, setIsDisabled] = useState("enabled");
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "")
 
@@ -67,7 +67,7 @@ export default function SignInForm() {
                 userId: res.data.id,
                 username: res.data.username,
                 profilePic: res.data.pictureUrl
-            })
+            });
 
             Swal.fire(AlertObject(
                 'success',
