@@ -44,6 +44,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     }
 
     async function getFavorites(postId) {
+        let str;
 
         try {
             const promise = await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
@@ -52,14 +53,15 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             setLikers(likersList);
             setNumberOfFavorites(quantity);
             if(likersList.find(liker => liker.liker_id == userId)){
+                const otherLikers = likersList.filter(like => like.liker_id !== userId);
                 
                 setIsFavorite(true);
-                let str;
-                if(quantity > 2){
-                    str = `Você, ${likersList[0].username}, e outras ${quantity-1} pessoas`
+                
+                if(otherLikers.length > 1){
+                    str = `Você, ${otherLikers[0].username}, e outras ${quantity-2} pessoas`
                 }
-                else if (quantity === 1){
-                    str = `Você e ${likersList[0].username} curtiram isso`
+                else if (otherLikers.length === 1){
+                    str = `Você e ${otherLikers[0].username} curtiram isso`
                 }
                 else{
                     str = 'Você curtiu isso'
@@ -70,7 +72,16 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             }
 
             else{
-                setLikedBy(`${quantity} pessoas curtiram isso`);
+                if(quantity > 2){
+                    str = `${likersList[0].username}, ${likersList[1].username} e outras ${quantity-2} pessoas`
+                }
+                else if (quantity === 2){
+                    str = `${likersList[0].username} e ${likersList[1].username} curtiram isso`
+                }
+                else if(quantity === 1){
+                    str = `${likersList[0].username} curtiu isso`
+                }
+                setLikedBy(str);
             }
 
         } catch (e) {
@@ -104,7 +115,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
             setIsFavorite(false);
             getFavorites(postId);
-            setLikedBy(`${numberOfFavorites} pessoas curtiram isso`);
 
         } catch (e) {
             console.log(e)
@@ -138,7 +148,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
-                                <h6>{numberOfFavorites} Likes</h6>
+                                <h6>{likers.length} Likes</h6>
                             </LikeContainer>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
