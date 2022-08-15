@@ -16,38 +16,24 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 
-export default function PostCard({author,author_pic,description, postUrl, postId, userId, onclick}){
+export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview}){
     if(!userId){
         userId = -1;
     }
-
     const navigate = useNavigate();
-
     const { authorization } = useContext(TokenContext);
-    const { url, user, setUser } = useContext(UserContext);
+    const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-
-    const urldata = {
-        postUrl: "",
-        title: "",
-        siteName: "",
-        description: "",
-        mediaType: "",
-        contentType: "",
-        images: [],
-        favicons: [],
-        videos: []
-    }
     const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
     const linkrUserToken = linkrUser.token;
     const linkrUserId = linkrUser.id;
 
-    const [data, setData] = useState(urldata);
+    const [data, setData] = useState();
 
     let body = {
-        "url": postUrl
+        "url": pictureUrl
     }
 
     async function getFavorites(postId, userId) {
@@ -63,17 +49,6 @@ export default function PostCard({author,author_pic,description, postUrl, postId
     }
 
     useEffect(() => {
-        const promise = axios.post(`${url}/urls`, body); //`https://linkr-back-api.herokuapp.com/urls`
-        promise.then((res) => {
-
-            setData(res.data);
-
-            // console.log(data);
-        });
-        promise.catch(() => {
-
-        });
-
         getFavorites(postId, userId);
     }, []);
 
@@ -122,10 +97,10 @@ export default function PostCard({author,author_pic,description, postUrl, postId
     return (
         <>
             {
-                data ? (
+                (
                     <CardContainer className="post">
                         <PostContentSide>
-                            <img src="https://pbs.twimg.com/media/FP3A-hnWQAMTQuK?format=jpg" alt="user" />
+                            <img src={pictureUrl} alt="user" />
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
@@ -135,8 +110,7 @@ export default function PostCard({author,author_pic,description, postUrl, postId
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    {/* <p onClick={onclick}>{author}</p> */}
-                                    <p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
+                                    <p>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
@@ -172,17 +146,17 @@ export default function PostCard({author,author_pic,description, postUrl, postId
                                     rel="noopener noreferrer"
                                 >
                                     <PreviewDescription>
-                                        <h1>{data.title}</h1>
-                                        <span>{data.description}</span>
-                                        <h2>{postUrl}</h2>
+                                        <h1>{preview[0].title}</h1>
+                                        <span>{preview[0].description}</span>
+                                        <h2>{preview[0].url}</h2>
                                     </PreviewDescription>
-                                    <img src="https://pbs.twimg.com/media/FP3A-hnWQAMTQuK?format=jpg" alt={data.title}></img>
+                                    <img src={preview[0].favicon} alt={preview[0].title}></img>
                                 </LinkPreview>
                             </PostInfos>
                         </PostSide>
                     </CardContainer>
                 )
-                    : <></>
+                
             }
 
         </>
