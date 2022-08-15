@@ -71,7 +71,7 @@ export default function Timeline() {
     return (
         <Body>
             <Header isLoading={isLoading}/>
-            {/* <Main>
+            <Main>
                 <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading} isUserPosts={isUserPosts} clickedUserPicture={clickedUserPicture}/>
                 <Feed>
                     <LeftSide>
@@ -84,7 +84,7 @@ export default function Timeline() {
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
                     </RightSide>
                 </Feed>
-            </Main> */}
+            </Main>
         </Body>
     )
 };
@@ -93,7 +93,7 @@ export default function Timeline() {
 {/* <Feed>
 <LeftSide>
     {
-        isLoading
+        isLoadingg
             ?
             <>
                 <PostSkeleton />
