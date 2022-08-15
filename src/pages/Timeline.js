@@ -52,6 +52,7 @@ export default function Timeline() {
             handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
         })
         promise.catch( (e) => {
+            console.log(e)
             setStatusCode(e.response.status)
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         });

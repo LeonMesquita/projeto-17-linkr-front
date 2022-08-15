@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReactTooltip from 'react-tooltip';
 
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from  "../style.js";
@@ -15,6 +16,7 @@ export default function PostCard({author,author_pic,description, postUrl, postId
     if(!userId){
         userId = -1;
     }
+
     
     const navigate = useNavigate();
     
@@ -129,11 +131,13 @@ export default function PostCard({author,author_pic,description, postUrl, postId
                             </UrlContainer></a>
                     </PostInfos>
                 </PostSide>
-                <FavoriteDiv iconColor={isFavorite ? '#AC0C00' : 'white'}>
+                <FavoriteDiv iconColor={isFavorite ? '#AC0C00' : 'white'} data-tip="Curtido por João e outras 100 pessoas">
                     {isFavorite ? <IoIosHeart onClick={removeFavorite}/> : <IoIosHeartEmpty  onClick={onClickFavorite}/>}
                     
                     <h6>{numberOfFavorites} Likes</h6>
+
                 </FavoriteDiv>
+                <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
             </CardContainer>
             )
             : (<h1>Loading . . . </h1>)
