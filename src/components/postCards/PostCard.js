@@ -19,7 +19,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview}){
+export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
     if(!userId){
         userId = -1;
     }
@@ -155,7 +155,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    <p>{username}</p>
+                                    <p onClick={onclick}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />

@@ -78,8 +78,12 @@ export default function Timeline() {
                 <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading} isUserPosts={isUserPosts} clickedUserPicture={clickedUserPicture}/>
                 <Feed>
                     <LeftSide>
-                        {isUserPosts ? null : <PublishCard isLoading={isLoading} setPosts={setPosts} setStatusCode={setStatusCode} setIsRefreshing={setIsRefreshing}/>}
-                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode} isRefreshing={isRefreshing} />
+                        {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
+                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode}
+                        setClickedUseName={setClickedUseName} setClickedUserPicture={setClickedUserPicture}
+                        setPosts={setPosts} setIsUserPosts={setIsUserPosts}
+                        />
+
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
