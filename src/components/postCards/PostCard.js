@@ -1,23 +1,25 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ReactTagify } from "react-tagify";
+import { IoMdTrash } from 'react-icons/io'
+import { TiPencil } from 'react-icons/ti'
 
-import styled from "styled-components";
+import handleDeletePost from "../../handlers/handleDeletePost.js";
+import handleEditPost from "../../handlers/handleEditPost.js";
+
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
 import TokenContext from "../../contexts/TokenContext.js";
 import UserContext from "../../contexts/UserContext.js";
 
-import { ReactTagify } from "react-tagify";
-import { IoMdTrash } from 'react-icons/io'
-import { TiPencil } from 'react-icons/ti'
+import styled from "styled-components";
 
 export default function PostCard({ author, author_pic, description, postUrl, onclick, postId, userId }) {
-    console.log(userId)
     if (!userId) {
         userId = -1;
     }
-    
+
     const navigate = useNavigate();
 
     const { authorization } = useContext(TokenContext);
@@ -36,8 +38,8 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
         videos: []
     }
     const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
-    const linkrUserToken =  linkrUser.token;
-    const linkrUserId = linkrUser.id ;
+    const linkrUserToken = linkrUser.token;
+    const linkrUserId = linkrUser.id;
 
     const [data, setData] = useState(urldata);
 
@@ -99,17 +101,16 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
         }
     }
 
-    const handleDeletePost = () => {
+    const deletePost = () => handleDeletePost(url, linkrUserToken); //Model para deletar o post!
 
-    }
-
-    const EditPost = () => {
-
-    }
+    const [postDescription, setPostDescription] = useState({ description: description })
+    const [canEdit, setCanEdit] = useState(false);
+    const [editIsEnabled, setEditIsEnabled] = useState("enabled");
+    const handleDescriptionChanges = (e) => setPostDescription({...postDescription, [e.target.name]: e.target.value })
+    const editPost = () => setCanEdit(!canEdit)
+    const handleKeyDown = (e) => handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription);
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
-
-
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
     return (
         <>
@@ -130,19 +131,33 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
                                     {/* <p onClick={onclick}>{author}</p> */}
                                     <p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
-                                        <TiPencil />
-                                        <IoMdTrash />
+                                        <TiPencil onClick={editPost} />
+                                        <IoMdTrash onClick={deletePost} />
                                     </InteractionContainer>
                                 </PostOwnerContainer>
-                                <ReactTagify
-                                    tagStyle={tagStyle}
-                                    detectLinks={false}
-                                    tagClicked={(tag) => handleNavigate(tag)}
-                                >
-                                    <span>{description}</span>
-
-                                </ReactTagify>
-
+                                {
+                                    canEdit
+                                        ?
+                                        <TextArea
+                                            className={editIsEnabled}
+                                            type="text"
+                                            placeholder="Digite algo"
+                                            id="descriptionInput"
+                                            value={postDescription.description}
+                                            name="description"
+                                            autoSize={{ minRows: 4 }}
+                                            onChange={handleDescriptionChanges}
+                                            onKeyDown={handleKeyDown}
+                                        />
+                                        :
+                                        <ReactTagify
+                                            tagStyle={tagStyle}
+                                            detectLinks={false}
+                                            tagClicked={(tag) => handleNavigate(tag)}
+                                        >
+                                            <span>{postDescription.description}</span>
+                                        </ReactTagify>
+                                }
                                 <LinkPreview
                                     href={url}
                                     target="_blank"
@@ -165,6 +180,43 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
         </>
     )
 };
+
+const TextArea = styled.textarea`
+    border-radius: 5px;
+    transition: ease all .5s;
+    width: 100%;
+    background-color: #EFEFEF;
+    font-size: 15px;
+    line-height: 18px;
+    color: #000000;
+    max-height: 100%;
+    margin-top: 2.5px;
+    padding: 10px;
+    resize: none;
+
+    &::placeholder{
+        color: #949494;
+    }
+    &.disabled{
+        &{
+            pointer-events:none;
+            overflow: hidden;
+            background-color: #e0e0e0;
+            color: #AFAFAF;
+        }
+        &:-webkit-autofill
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus{
+            -webkit-text-fill-color: #AFAFAF;
+            -webkit-box-shadow: 0 0 0 50px #e0e0e0 inset !important;
+        }   
+    }
+    @media screen and (max-width: 611px){
+        font-size: 13px;
+        line-height: 16px;
+        min-height: 47px;
+    }
+`
 
 const LikeContainer = styled.div`
     display:flex;
@@ -245,8 +297,6 @@ const InteractionContainer = styled.div`
         display:none;
     }
 `
-
-
 
 const PreviewDescription = styled.div`
     display:flex;
