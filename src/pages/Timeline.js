@@ -20,6 +20,7 @@ export default function Timeline() {
     const { url } = useContext(UserContext);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
@@ -82,6 +83,7 @@ export default function Timeline() {
                         setClickedUseName={setClickedUseName} setClickedUserPicture={setClickedUserPicture}
                         setPosts={setPosts} setIsUserPosts={setIsUserPosts}
                         />
+
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
@@ -92,21 +94,3 @@ export default function Timeline() {
     )
 };
 
-
-{/* <Feed>
-<LeftSide>
-    {
-        isLoading
-            ?
-            <>
-                <PostSkeleton />
-            </>
-            : statusCode
-                ? <StatusCodeScreen statusCode={statusCode} />
-                : <RenderPosts posts={posts} />
-    }
-</LeftSide>
-<RightSide>
-    <TrendingSideBar trendings={trendings} isLoading={isLoading} />
-</RightSide>
-</Feed> */}
