@@ -93,7 +93,7 @@ export default function Timeline() {
 {/* <Feed>
 <LeftSide>
     {
-        isLoading
+        isLoadingg
             ?
             <>
                 <PostSkeleton />

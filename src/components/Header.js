@@ -2,45 +2,16 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { HeaderContainer } from "./style.js";
-import axios from "axios";
+import SearchBar from './SearchBar';
 import HeaderSkeleton from "./skeletonComponents/HeaderSkeleton.js";
 
 export default function Header({ isLoading }) {
 
-    //const handleLogout = () => useLocalStorage("linkrUser", "");
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
-    const [search, setSearch] = useState("");
-    const [users, setUsers] = useState([]);
 
-    //salvar profilePic com a imagem do usuario que aparece no botao do logout
     const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
-
-    function searchUser(value) {
-        const promise = axios.get(`http://localhost:4000/search/${value}`, localstorage.token);
-        promise.then((res) => {
-            setUsers(res.data);
-        });
-        promise.catch((e) => {
-            console.log(e);
-        });
-    }
-    const handleChange = (event) => {
-        setSearch(event.target.value);
-        let myTimeout;
-        if (event.target.value.length > 2) {
-            myTimeout = setTimeout(searchUser(event.target.value), 200);
-            //searchUser();
-        }
-        if (event.target.value.length <= 2) {
-            setUsers([]);
-            if (myTimeout) {
-                clearTimeout(myTimeout);
-            }
-        }
-
-    };
-
+  
     function logout() {
         localStorage.setItem("linkrUser", JSON.stringify(" - "));
         navigate("/", { replace: true });
@@ -53,30 +24,14 @@ export default function Header({ isLoading }) {
                     ? <HeaderSkeleton />
                     :
                     <HeaderContainer>
-                        <Link to={`/timeline`}><h1>
-                            linkr
-                        </h1></Link>
+                        <Link to={`/timeline`}>
+                            <h1>linkr</h1>
+                        </Link>
+                      
                         <SearchContainer>
-                            {/* <DebounceInput
-                minLength={3}
-                debounceTimeout={300}
-                onChange={searchUser} /> */}
-                            <ion-icon onClick={searchUser} name="search"></ion-icon>
-                            <Search placeholder="    Search for people" value={search} onChange={handleChange}></Search>
-                            <ResultsContainer>
-                                {users.map(user => {
-                                    return (
-                                        <Link to={`/user/${user.id}`}>
-                                            <Result key={user.id}>
-                                                <img src={user.picture_url} alt="user" />
-                                                <h1>{user.username}</h1>
-                                            </Result>
-                                        </Link>
-                                    )
-                                })}
-                            </ResultsContainer>
+                            <SearchBar/>
                         </SearchContainer>
-
+                      
                         {isOpen ?
                             (<>
                                 <LogoutBoxOpen onClick={() => setIsOpen(false)}>
@@ -102,62 +57,9 @@ export default function Header({ isLoading }) {
     )
 };
 
-const ResultsContainer = styled.div`
-    position: absolute;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    border-radius: 8px;
-    
-    background: #E7E7E7;
-`
-const Result = styled.div`
-    display: flex;  
-    flex-direction:row;
-    
-   
-    width: 25vw;
-    img{
-        margin-left: 15px;
-        width: 39px;
-        height: 39px;
-        border-radius: 30px;
-    }
-    h1{
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 19px;
-        line-height: 23px;
-        color: #515151;
-    }
-`
 const SearchContainer = styled.div`
-    position: relative;
-    ion-icon{
-        position: absolute;
-        left:23vw;
-        top:10px;
-        color: #C6C6C6;
-        margin-right: 5px;
-        font-size: 25px;
-    }
-
-`
-const Search = styled.input`
-    
-    border-radius: 8px;
-    width: 25vw;
-    height: 45px;
-    ::placeholder{
-        margin-left: 20px;
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 19px;
-        line-height: 23px;
-        color: #C6C6C6;
-    }
+    width: 563px;
+    display:flex;
 `
 
 const LogoutBox = styled.div`
@@ -228,7 +130,7 @@ const LogoutBoxOpen = styled.div`
         color: #FFFFFF;
     }
     img{
-        margin-top: -2px;
+        margin-top: -1px;
         width: 53px;
         height: 53px;
         border-radius: 26.5px;
