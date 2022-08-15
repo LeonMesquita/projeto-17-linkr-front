@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
+import handleGetTrendings from "../handlers/handleGetTrendings";
+import handleAlertNotifications from "../handlers/handleAlertNotifications";
+import handleTokenVerify from "../handlers/handleGetToken";
 
 import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
@@ -12,41 +15,39 @@ import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/s
 import Header from "../components/Header";
 
 export default function UserTimeline(){
-    
     const { url } = useContext(UserContext);
     const { id } = useParams();
     const navigate = useNavigate();
-
     const [isLoading, setIsLoading] = useState(true)
-
     const [trendings, setTrendings] = useState([]);
-    const handleGetTrendings = (token) => {
-        const promise = axios.get(`${url}/trendings`, token);
-        promise.then((res) => {
-            setTrendings(res.data);
-            setIsLoading(false)
-        });
-    };
-
     const [posts, setPosts] = useState([]);
     const [statusCode, setStatusCode] = useState(false);
+
     const handleGetUserPosts = (token) => {
         const promisse = axios.get(`${url}/user/${id}`, token);
         promisse.then((res) => {
             setPosts(res.data);
-            handleGetTrendings(token);
+            handleGetTrendings(url, token, setTrendings, setIsLoading);
         });
         promisse.catch((e) => {
             setStatusCode(e.response.status)
-            handleGetTrendings(token)
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
             setIsLoading(false);
         });
     }
 
+    const returnToLogin = (result) => {
+        if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
+    }
     useEffect(() => {
-        const linkrStorage = JSON.parse(localStorage.getItem("linkrUser")).token
-        if(linkrStorage.length === 0) return navigate(`${url}/singin`);
-        handleGetUserPosts(linkrStorage);
+        const token = handleTokenVerify()
+        if (!token) return handleAlertNotifications(
+            'error', 
+            `Aparentemente você não esta logado(a) :(`,
+            `Retornando para a página de login`, 
+            4000
+            ).then(returnToLogin)
+        handleGetUserPosts(token);
     }, []);
 
     return(

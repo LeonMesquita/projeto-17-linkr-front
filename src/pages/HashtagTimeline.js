@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
+import handleAlertNotifications from "../handlers/handleAlertNotifications";
+import handleGetTrendings from "../handlers/handleGetTrendings";
+import handleTokenVerify from "../handlers/handleGetToken";
 
 import Header from "../components/Header";
 import PageTitle from "../components/timelines/titlePage";
@@ -31,27 +34,26 @@ export default function HashtagTimeline() {
         const ONE_SECOND = 1000;
         promisse.then((res) => {
             setPosts(res.data);
-            handleGetTrendings(token)
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promisse.catch((e) => {
             setStatusCode(e.response.status)
-            handleGetTrendings(token)
-            setIsLoading(false);
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }
 
-    const handleGetTrendings = (token) => {
-        console.log(linkrStorage)
-        const promise = axios.get(`${url}/trendings`, token);
-        promise.then((res) => {
-            console.log(res)
-            setTrendings(res.data);
-            setIsLoading(false)
-        })
+    const returnToLogin = (result) => {
+        if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
     }
-
     useEffect(() => {
-        handleGetPosts(linkrStorage)
+        const token = handleTokenVerify()
+        if (!token) return handleAlertNotifications(
+            'error', 
+            `Aparentemente você não esta logado(a) :(`,
+            `Retornando para a página de login`, 
+            4000
+            ).then(returnToLogin)
+        handleGetPosts(token)
     }, []);
 
     return (

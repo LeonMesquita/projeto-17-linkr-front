@@ -17,7 +17,6 @@ import TrendingSideBar from "../components/TrendingSidebar";
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function Timeline() {
-
     const { url } = useContext(UserContext);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
@@ -25,11 +24,6 @@ export default function Timeline() {
     const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
-
-
-
-
-
 
     // const [isUserPosts, setIsUserPosts] = useState(false);
     // const [clickedUserPicture, setClickedUserPicture] = useState('');
@@ -58,13 +52,8 @@ export default function Timeline() {
             handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
         })
         promise.catch( (e) => {
-            handleAlertNotifications(
-                'error', 
-                `Aparentemente você não esta logado(a) :(`,
-                `Retornando para a página de login`, 
-                4000
-                ).then(returnToLogin)
-            handleGetPost(token)
+            setStatusCode(e.response.status)
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }
 
