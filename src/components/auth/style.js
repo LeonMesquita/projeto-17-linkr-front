@@ -1,18 +1,67 @@
-import styled from 'styled-components';
+import styled from "styled-components"
 
-export default function AuthArea(props){
-    return(
-        <AvailableArea>
-            <div>
-                <h1>linkr</h1>
-                <h2>save, share and discover the best links on the web</h2>
-            </div>
-            <span>
-                {props.children}
-            </span>
-        </AvailableArea>
-    );
-}
+const Input = styled.input`
+    width: 85%;
+    height: 65px;
+    background: #FFFFFF;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border: none;
+    text-indent:15px;
+    color: black;
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    color: #000000;
+    &::placeholder{
+        color: #9F9F9F;
+    }
+    &:focus {
+        outline: none;
+        border: 2px solid #05e3fc;
+    }
+`
+
+const Button = styled.button`
+    width: 85%;
+    height: 65px;
+    background: #3B78F2;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    font-family: 'Oswald';
+    font-weight: 700;
+    font-size: 27px;
+    color: #FFFFFF;
+
+    &:hover {
+        background-color: #1659e0;
+    }
+`
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    &.disabled{
+        a,
+        ${Button},
+        ${Input}{
+            pointer-events: none;
+            overflow:hidden;
+            opacity: 0.6;
+        }
+        ${Input}{
+            color: 9F9F9F;
+        }
+    }
+`
+
+
 const AvailableArea = styled.div`
     display: flex;
     min-height: 100vh;
@@ -59,36 +108,7 @@ const AvailableArea = styled.div`
         align-items: center;
      }
 
-     form{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-     }
 
-     input{
-        width: 85%;
-        height: 65px;
-        background: #FFFFFF;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        border: none;
-        text-indent:15px;
-
-        &::placeholder{	
-            font-family: 'Oswald';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 25px;
-            color: #9F9F9F;
-        }
-
-
-     }
-     input:focus {
-        outline: none;
-        border: 2px solid #05e3fc;
-     }
 
 
 
@@ -160,3 +180,5 @@ const AvailableArea = styled.div`
 
 
 `
+
+export { AvailableArea, Button, Form, Input };
