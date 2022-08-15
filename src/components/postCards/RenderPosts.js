@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 
 
-export default function RenderPosts({ posts, isLoading, statusCode, setClickedUseName, setClickedUserPicture, setPosts, setIsUserPosts}) {
+export default function RenderPosts({ posts, isLoading, statusCode, setClickedUseName, setClickedUserPicture, setPosts, setIsUserPosts, isRefreshing}) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
