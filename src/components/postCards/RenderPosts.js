@@ -52,7 +52,7 @@ export default function RenderPosts({ posts, isLoading, statusCode }) {
                                     <PostCard
                                         key={post.post_id}
                                         postId={post.post_id}
-                                        userId={post.user_id}
+                                        userId={linkirUser.userId}
                                         username={post.username}
                                         pictureUrl={post.picture_url}
                                         description={post.description}
