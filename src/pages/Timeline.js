@@ -25,9 +25,9 @@ export default function Timeline() {
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
 
-    // const [isUserPosts, setIsUserPosts] = useState(false);
-    // const [clickedUserPicture, setClickedUserPicture] = useState('');
-    // const [clickedUseName, setClickedUseName] = useState('');
+    const [isUserPosts, setIsUserPosts] = useState(false);
+    const [clickedUserPicture, setClickedUserPicture] = useState('');
+    const [clickedUseName, setClickedUseName] = useState('');
 
     // //           // ADICIONAR TRENDINGS NA SIDEBAR 
     // //
@@ -72,11 +72,13 @@ export default function Timeline() {
         <Body>
             <Header isLoading={isLoading}/>
             <Main>
-                <PageTitle title="timeline" isLoading={isLoading}/>
+                <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading} isUserPosts={isUserPosts} clickedUserPicture={clickedUserPicture}/>
                 <Feed>
                     <LeftSide>
-                        <PublishCard isLoading={isLoading}/>
-                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
+                        {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
+                        
+                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode} setClickedUseName={setClickedUseName}
+                        setClickedUserPicture={setClickedUserPicture} setPosts={setPosts} setIsUserPosts={setIsUserPosts}/>
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />

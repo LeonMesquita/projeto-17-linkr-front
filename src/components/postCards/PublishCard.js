@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
@@ -13,6 +14,7 @@ import PublishSkeleton from "../skeletonComponents/PublishSkeleton";
 export default function PublishCard({ isLoading, refreshPosts }) {
     const { authorization } = useContext(TokenContext);
     const { url, user } = useContext(UserContext);
+    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
 
     const [newPostInfos, setNewPostInfos] = useState({
         url: "",
@@ -87,7 +89,7 @@ export default function PublishCard({ isLoading, refreshPosts }) {
                     :
                     <CardContainer className="publish">
                         <PostContentSide className="publish">
-                            <img src={user.pictureUrl} alt="" />
+                            <img src={linkirUser.profilePic} alt="" />
                         </PostContentSide>
                         <PostSide>
                             <h1>What are you going to share today?</h1>

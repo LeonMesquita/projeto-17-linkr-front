@@ -7,10 +7,11 @@ import { CardContainer, PostContentSide, PostSide } from  "../style.js";
 import {IoIosHeartEmpty, IoIosHeart} from "react-icons/io";
 import TokenContext from "../../contexts/TokenContext.js";
 import UserContext from "../../contexts/UserContext.js";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 import { ReactTagify } from "react-tagify";
 
-export default function PostCard({author,author_pic,description, postUrl, onclick, postId, userId}){
+export default function PostCard({author,author_pic,description, postUrl, postId, userId, onclick}){
     if(!userId){
         userId = -1;
     }
@@ -21,6 +22,8 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
     const { url, user, setUser } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
+    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
+
     const urldata = {
         postUrl: "",
         title: "",
@@ -70,7 +73,7 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
         try{
             await axios.post(`${url}/posts/favorite`,
             {postId, userId},
-            authorization);
+            linkirUser.token);
 
             setIsFavorite(!isFavorite);
             getFavorites(postId, userId);
@@ -84,7 +87,7 @@ export default function PostCard({author,author_pic,description, postUrl, onclic
         try{
             await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,
             
-            authorization);
+            linkirUser.token);
             setIsFavorite(!isFavorite);
             getFavorites(postId, userId);
         }catch(e){
