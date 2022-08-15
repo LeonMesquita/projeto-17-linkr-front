@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
@@ -15,17 +15,13 @@ import TrendingSideBar from "../components/TrendingSidebar";
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function HashtagTimeline() {
-    const linkrStorage = JSON.parse(localStorage.getItem("linkrUser")).token
     const { url } = useContext(UserContext);
     const { hashtag } = useParams();
-
+    const navigate = useNavigate()
     const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
-
     const [isLoading, setIsLoading] = useState(true);
-
-
 
     const handleGetPosts = (token) => {
         console.log(token)
