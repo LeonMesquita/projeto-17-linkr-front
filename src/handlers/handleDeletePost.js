@@ -36,7 +36,7 @@ const deletePost = (url, token) => {
     const promise = axios.delete(`${url}/posts`, token);
     promise.then(
         Swal.fire(AlertObject(
-            "sucess",
+            "success",
             "Seu post foi deletado com sucesso!",
             "Recarregando os posts novamente..."
         )).then((result) => {

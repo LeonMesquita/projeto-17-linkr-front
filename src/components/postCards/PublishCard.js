@@ -3,23 +3,26 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
-import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
+import handleGetPostsRefresh from "../../handlers/handleGetPostsRefresh"
 
 import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import PublishSkeleton from "../skeletonComponents/PublishSkeleton";
 
 
-export default function PublishCard({ isLoading, refreshPosts }) {
-    const { authorization } = useContext(TokenContext);
-    const { url, user } = useContext(UserContext);
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
+
+export default function PublishCard({ isLoading, setPosts, setStatusCode, setIsRefreshing }) {
+    const { url } = useContext(UserContext);
 
     const [newPostInfos, setNewPostInfos] = useState({
         url: "",
         description: ""
     });
+
+    const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
+
+
     const [isDisable, setIsDisable] = useState("");
 
     const alert = (titleText, text) => {
@@ -50,23 +53,25 @@ export default function PublishCard({ isLoading, refreshPosts }) {
             await alert(titleText, text)
             return setIsDisable("")
         }
-        const promisse = axios.post(`${url}/timeline`, newPostInfos, authorization);
+        const promisse = axios.post(`${url}/timeline`, newPostInfos, linkrUser.token);
         const TWO_SECONDS = 2000;
 
-        promisse.then(() => {
+        promisse.then(async () => {
+            setIsRefreshing(true);
+            handleGetPostsRefresh(url, 'posts', linkrUser.token, setPosts, setStatusCode, setIsRefreshing)
 
-            refreshPosts();
-            setNewPostInfos({
-                url: "",
-                description: ""
-            })
+                setNewPostInfos({
+                    url: "",
+                    description: ""
+                })
+                setIsDisable("enabled")
         })
         promisse.catch(async (res) => {
             const errors = res.response.data;
             let titleText = `Oops... Unauthorized`
             let text = `Sign out...`
             if (errors !== "Unauthorized") {
-                titleText = `Oops... u have ${errors.length} error(s)`;
+                titleText = `Oops... u have an error(s)`;
                 text = "";
                 for (let i = 0; i < errors.length; i++) {
                     const erro = errors[i];
@@ -89,7 +94,7 @@ export default function PublishCard({ isLoading, refreshPosts }) {
                     :
                     <CardContainer className="publish">
                         <PostContentSide className="publish">
-                            <img src={linkirUser.profilePic} alt="" />
+                            <img src={linkrUser.profilePic} alt="" />
                         </PostContentSide>
                         <PostSide>
                             <h1>What are you going to share today?</h1>
