@@ -28,6 +28,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const { url, user } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
+    const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
     //João, Maria e outras 11 pessoas
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
@@ -35,8 +36,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const linkrUserToken = linkrUser.token;
     const linkrUserId = linkrUser.userId;
 
-    console.log(userId)
-    console.log(linkrUserId)
 
     const [data, setData] = useState();
 
@@ -44,17 +43,34 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         "url": pictureUrl
     }
 
-    async function getFavorites(postId, userId) {
+    async function getFavorites(postId) {
 
         try {
             const promise = await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
-            const quantity = promise.data.favoriteQuantity;
+            const quantity = promise.data.length;
+            const likersList = promise.data;
+            setLikers(likersList);
             setNumberOfFavorites(quantity);
-            setIsFavorite(promise.data.isFavorite);
-            if(promise.data.isFavorite){
-                const str = quantity > 1 ? `e outras ${quantity-1} pessoas` : 'curtiu isso';
-                setLikedBy(`Você ${str}`);
-               
+            if(likersList.find(liker => liker.liker_id == userId)){
+                
+                setIsFavorite(true);
+                let str;
+                if(quantity > 2){
+                    str = `Você, ${likersList[0].username}, e outras ${quantity-1} pessoas`
+                }
+                else if (quantity === 1){
+                    str = `Você e ${likersList[0].username} curtiram isso`
+                }
+                else{
+                    str = 'Você curtiu isso'
+                }
+
+                setLikedBy(str);
+
+            }
+
+            else{
+                setLikedBy(`${quantity} pessoas curtiram isso`);
             }
 
         } catch (e) {
@@ -63,7 +79,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     }
 
     useEffect(() => {
-        getFavorites(postId, userId);
+        getFavorites(postId);
     }, []);
 
     async function onClickFavorite() {
@@ -73,15 +89,13 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             linkirUser.token);
 
             setIsFavorite(!isFavorite);
-            getFavorites(postId, userId);
+            getFavorites(postId);
             
         } catch (e) {
 
         }
     }
-    // useEffect(() => {
-    //     ReactTooltip.rebuild();
-    // });
+
 
 
     async function removeFavorite() {
@@ -89,7 +103,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,linkirUser.token);
 
             setIsFavorite(false);
-            getFavorites(postId, userId);
+            getFavorites(postId);
             setLikedBy(`${numberOfFavorites} pessoas curtiram isso`);
 
         } catch (e) {
