@@ -46,8 +46,9 @@ export default function Timeline() {
     }
 
     const handleGetPost =  (token) => { //Recebe os Posts
-        const promise = axios.get(`${url}/posts`);
+        const promise = axios.get(`${url}/posts`, token);
         promise.then( (res) => {
+            console.log(res.data);
             setPosts(res.data)
             handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
         })
@@ -77,9 +78,7 @@ export default function Timeline() {
                 <Feed>
                     <LeftSide>
                         {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
-                        
-                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode} setClickedUseName={setClickedUseName}
-                        setClickedUserPicture={setClickedUserPicture} setPosts={setPosts} setIsUserPosts={setIsUserPosts}/>
+                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode}/>
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
