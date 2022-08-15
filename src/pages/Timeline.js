@@ -78,7 +78,10 @@ export default function Timeline() {
                 <Feed>
                     <LeftSide>
                         {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
-                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode}/>
+                        <RenderPosts posts={posts} isLoading={isLoading} statusCode={statusCode}
+                        setClickedUseName={setClickedUseName} setClickedUserPicture={setClickedUserPicture}
+                        setPosts={setPosts} setIsUserPosts={setIsUserPosts}
+                        />
                     </LeftSide>
                     <RightSide>
                         <TrendingSideBar trendings={trendings} isLoading={isLoading} />
