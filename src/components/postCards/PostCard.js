@@ -145,7 +145,7 @@ export default function PostCard({author,author_pic,description, postUrl, postId
         </>
     )
 };
-
+//
 const PostInfos = styled.div`
 
     h1,span{font-weight: 400;}
