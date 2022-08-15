@@ -1,5 +1,18 @@
 import styled from "styled-components";
 
+const PostContentSide = styled.div`
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-right: 18px;
+    img{
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        margin-bottom:20px; 
+    }
+`;
+
 const CardContainer = styled.section`
     display:flex;
     width: 611px;
@@ -7,11 +20,6 @@ const CardContainer = styled.section`
     position: relative;
     border-radius: 16px;
     padding: 18px;
-    img{
-        width: 50px;
-        height: 50px;
-        border-radius: 26.5px; 
-    }
 
     transition: ease all .5s;
     
@@ -36,18 +44,16 @@ const CardContainer = styled.section`
             line-height: 20px;
             text-align: center;
         }
-        img{
-            width: 40px;
-            height: 40px;
-
+        ${PostContentSide}{
+            img{
+                width: 40px;
+                height: 40px;
+                margin-bottom: 15px;
+            }
         }
     }
 `;
-const PostContentSide = styled.div`
-    display:flex;
-    justify-content:center;
-    margin-right: 18px;
-`;
+
 const PostSide = styled.div`
     display:flex;
     flex-direction: column;
