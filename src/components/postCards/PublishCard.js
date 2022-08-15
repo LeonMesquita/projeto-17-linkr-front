@@ -6,10 +6,11 @@ import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
 
 import styled from "styled-components";
-import { CardContainer, PostContentSide, PostSide } from  "../style.js";
+import { CardContainer, PostContentSide, PostSide } from "../style.js";
+import PublishSkeleton from "../skeletonComponents/PublishSkeleton";
 
 
-export default function PublishCard({ refreshPosts }) {
+export default function PublishCard({ isLoading, refreshPosts }) {
     const { authorization } = useContext(TokenContext);
     const { url, user } = useContext(UserContext);
 
@@ -26,7 +27,7 @@ export default function PublishCard({ refreshPosts }) {
             text: `${text}`,
             color: `#FFFFFF`,
             background: `#333333`,
-            confirmButtonColor:`#1877F2`,
+            confirmButtonColor: `#1877F2`,
             padding: `10px`,
             timer: 4000,
             timerProgressBar: true,
@@ -41,7 +42,7 @@ export default function PublishCard({ refreshPosts }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsDisable("disabled");
-        if(newPostInfos.url.length === 0){
+        if (newPostInfos.url.length === 0) {
             const titleText = "Oops... Url camp is empty";
             const text = "For be able to publish an post, is required to the link camp is filled";
             await alert(titleText, text)
@@ -62,59 +63,68 @@ export default function PublishCard({ refreshPosts }) {
             const errors = res.response.data;
             let titleText = `Oops... Unauthorized`
             let text = `Sign out...`
-            if(errors !== "Unauthorized"){
+            if (errors !== "Unauthorized") {
                 titleText = `Oops... u have ${errors.length} error(s)`;
                 text = "";
-                for(let i = 0; i < errors.length; i++){
+                for (let i = 0; i < errors.length; i++) {
                     const erro = errors[i];
                     const title = Object.keys(erro)[0];
                     const description = Object.keys(erro)[0];
                     text += `${titleText} : ${description} \n`
                 }
-               
+
             } await alert(titleText, text)
             return setIsDisable("")
         });
     }
 
     return (
-        <CardContainer className="publish">
-            <PostContentSide className="publish">
-                <img src={user.pictureUrl} alt="" />
-            </PostContentSide>
-            <PostSide>
-                <h1>What are you going to share today?</h1>
-                <Form 
-                    onSubmit={handleSubmit}
-                    className={isDisable}
-                >
-                    <Input
-                        type="url"
-                        placeholder="http://..."
-                        id="urlInput"
-                        value={newPostInfos.url}
-                        name="url"
-                        onChange={handleInputs}
-                    />
-                    <DescriptionBox
-                        className="big"
-                        type="text"
-                        placeholder="Awesome article about #javascript"
-                        id="descriptionInput"
-                        value={newPostInfos.description}
-                        name="description"
-                        onChange={handleInputs}
-                    />
-                    <PublishButton type="submit">
-                        {
-                            isDisable === "disabled"
-                                ? `Publishing...`
-                                : `Publish`
-                        }
-                    </PublishButton>
-                </Form>
-            </PostSide>
-        </CardContainer>
+        <>
+            {
+                isLoading
+                    ?
+                    <PublishSkeleton />
+                    :
+                    <CardContainer className="publish">
+                        <PostContentSide className="publish">
+                            <img src={user.pictureUrl} alt="" />
+                        </PostContentSide>
+                        <PostSide>
+                            <h1>What are you going to share today?</h1>
+                            <Form
+                                onSubmit={handleSubmit}
+                                className={isDisable}
+                            >
+                                <Input
+                                    type="url"
+                                    placeholder="http://..."
+                                    id="urlInput"
+                                    value={newPostInfos.url}
+                                    name="url"
+                                    onChange={handleInputs}
+                                />
+                                <DescriptionBox
+                                    className="big"
+                                    type="text"
+                                    placeholder="Awesome article about #javascript"
+                                    id="descriptionInput"
+                                    value={newPostInfos.description}
+                                    name="description"
+                                    onChange={handleInputs}
+                                />
+                                <PublishButton type="submit">
+                                    {
+                                        isDisable === "disabled"
+                                            ? `Publishing...`
+                                            : `Publish`
+                                    }
+                                </PublishButton>
+                            </Form>
+                        </PostSide>
+                    </CardContainer>
+            }
+        </>
+
     )
 };
 

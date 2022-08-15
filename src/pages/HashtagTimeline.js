@@ -1,80 +1,68 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-import TokenContext from "../contexts/TokenContext";
 import UserContext from "../contexts/UserContext";
+import handleAlertNotifications from "../handlers/handleAlertNotifications";
+import handleGetTrendings from "../handlers/handleGetTrendings";
+import handleTokenVerify from "../handlers/handleGetToken";
 
 import Header from "../components/Header";
+import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
-import PostSkeleton from "../components/postCards/Skeletons/PostSkeleton";
-import StatusCodeScreen from "../components/timelines/StatusCodeScreen";
 
-import { Body, Main, TimelineTitle, Feed, LeftSide, RightSide } from "../components/timelines/style";
+import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function HashtagTimeline() {
-    const linkrStorage = JSON.parse(localStorage.getItem("linkrUser")).token
     const { url } = useContext(UserContext);
     const { hashtag } = useParams();
-
+    const navigate = useNavigate()
     const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
-
     const [isLoading, setIsLoading] = useState(true);
-
-    
 
     const handleGetPosts = (token) => {
         console.log(token)
         setIsLoading(true);
-        const promisse = axios.get(`${url}/hashtag/${hashtag}`,token)
+        const promisse = axios.get(`${url}/hashtag/${hashtag}`, token)
         const ONE_SECOND = 1000;
         promisse.then((res) => {
             setPosts(res.data);
-            handleGetTrendings(token)
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promisse.catch((e) => {
             setStatusCode(e.response.status)
-            handleGetTrendings(token)
-            setIsLoading(false);
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }
 
-    const handleGetTrendings = (token) => {
-        console.log(linkrStorage)
-        const promise = axios.get(`${url}/trendings`, token);
-        promise.then((res) => {
-            console.log(res)
-            setTrendings(res.data);
-            setIsLoading(false)
-        })
+    const returnToLogin = (result) => {
+        if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
     }
-
-    useEffect( () => {
-        handleGetPosts(linkrStorage)
+    useEffect(() => {
+        const token = handleTokenVerify()
+        if (!token) return handleAlertNotifications(
+            'error', 
+            `Aparentemente você não esta logado(a) :(`,
+            `Retornando para a página de login`, 
+            4000
+            ).then(returnToLogin)
+        handleGetPosts(token)
     }, []);
 
     return (
         <Body>
+            <Header isLoading={isLoading}/>
             <Main>
-                <TimelineTitle># {hashtag}</TimelineTitle>
+                <PageTitle title={`# ${hashtag}`} isLoading={isLoading}/>
                 <Feed>
                     <LeftSide>
-                        {
-                            isLoading
-                                ?
-                                <>
-                                    <PostSkeleton />
-                                </>
-                                :   statusCode
-                                    ?  <StatusCodeScreen statusCode={statusCode}/>
-                                    :  <RenderPosts posts={posts}/>
-                        }
+                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar trendings={trendings} isLoading={isLoading}/>
+                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
                     </RightSide>
                 </Feed>
             </Main>
