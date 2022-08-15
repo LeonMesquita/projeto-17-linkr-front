@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ReactTagify } from "react-tagify";
@@ -102,12 +102,17 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
     }
 
     const deletePost = () => handleDeletePost(url, linkrUserToken); //Model para deletar o post!
-
+    const textareaRef = useRef(null);
     const [postDescription, setPostDescription] = useState({ description: description })
     const [canEdit, setCanEdit] = useState(false);
     const [editIsEnabled, setEditIsEnabled] = useState("enabled");
     const handleDescriptionChanges = (e) => setPostDescription({...postDescription, [e.target.name]: e.target.value })
-    const editPost = () => setCanEdit(!canEdit)
+    const EditPost = () => setCanEdit(!canEdit)
+    useEffect(() => {
+        if(canEdit) {
+            textareaRef.current.focus();
+        }
+    }, [canEdit])
     const handleKeyDown = (e) => handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription);
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
@@ -131,7 +136,7 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
                                     {/* <p onClick={onclick}>{author}</p> */}
                                     <p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
-                                        <TiPencil onClick={editPost} />
+                                        <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
                                     </InteractionContainer>
                                 </PostOwnerContainer>
@@ -146,6 +151,7 @@ export default function PostCard({ author, author_pic, description, postUrl, onc
                                             value={postDescription.description}
                                             name="description"
                                             autoSize={{ minRows: 4 }}
+                                            ref={textareaRef}
                                             onChange={handleDescriptionChanges}
                                             onKeyDown={handleKeyDown}
                                         />
