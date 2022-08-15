@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import SearchBar from '../SearchBar';
 import { TimelineTitle } from './style';
 
-export default function PageTitle({ title, isLoading }){
+export default function PageTitle({ title, isLoading, isUserPosts, clickedUserPicture }){
 
     return(
         <SubHeaderContainer>
@@ -16,7 +16,13 @@ export default function PageTitle({ title, isLoading }){
             {
                 isLoading
                 ? <p><Skeleton  count={1} baseColor="#333333" highlightColor="#272727" width="100%" height="64px" borderRadius="15px" duration={2}/></p>
-                : <TimelineTitle>{title}</TimelineTitle>
+                : isUserPosts ?
+                <UserTitle>
+                    <img src={clickedUserPicture} alt=""/>
+                    <h1>{title}</h1>
+                </UserTitle>
+                :
+                <TimelineTitle>{title}</TimelineTitle>
             }    
             </TitleContainer>
         </SubHeaderContainer>
@@ -45,6 +51,30 @@ const SubHeaderContainer = styled.section`
             margin-top: 19px;
         }
     }
+}
 `
 
+const UserTitle = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-left: 10px;
+   
+    margin-bottom: 20px;
 
+    img{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+
+    h1{
+        font-family: 'Oswald';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 43px;
+        line-height: 64px;
+        color: #FFFFFF;
+    }
+`
