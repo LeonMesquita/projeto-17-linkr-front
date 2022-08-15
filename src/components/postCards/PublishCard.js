@@ -171,7 +171,7 @@ const Form = styled.form`
             -webkit-box-shadow: 0 0 0 50px #e0e0e0 inset !important;
         }   
     }
-    @media screen and (max-width: 431px){
+    @media screen and (max-width: 611px){
         input, textarea{
             font-size: 13px;
             line-height: 16px;
