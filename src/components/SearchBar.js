@@ -1,51 +1,53 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import UserContext from '../contexts/UserContext';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 export default function SearchBar(){
 
-    const [search, setSearch] = useState("");
-    const [users, setUsers] = useState([]);
-
-    //salvar profilePic com a imagem do usuario que aparece no botao do logout
-    const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
-
-    function searchUser(value) {
-        const promise = axios.get(`http://localhost:4000/search/${value}`, localstorage.token);
+    const { url } = useContext(UserContext);
+    const token = useLocalStorage("linkrUser", "")[0].token
+    const [ searchUser, setSearchUser ] = useState({ searchUsername: ""});
+    const [ usersFinded, setUserFinded ] = useState([]);
+    
+    const handleSearchUsers = async () => {
+        const promise = axios.get(`${url}/search`, searchUser, token);
         promise.then((res) => {
-            setUsers(res.data);
-        });
+            setUserFinded(res.data);
+        })
         promise.catch((e) => {
-            console.log(e);
-        });
+            setUserFinded("User not found! Try a new username");
+        })
     }
-    const handleChange = (event) => {
-        setSearch(event.target.value);
-        let myTimeout;
-        if (event.target.value.length > 2) {
-            myTimeout = setTimeout(searchUser(event.target.value), 200);
-            //searchUser();
-        }
-        if (event.target.value.length <= 2) {
-            setUsers([]);
-            if (myTimeout) {
-                clearTimeout(myTimeout);
-            }
-        }
-    };
+    const handleSearchChange = (e) => {
+        setSearchUser({...searchUser, [e.target.name]: e.target.value});
+        handleSearchVerify();
+    }
+
+    const handleSearchVerify = () => {
+        let searchTimeout;
+        const THREE_MILLISECONDS = 300;
+        if(searchUser.length > 2) searchTimeout = setTimeout(handleSearchUsers,THREE_MILLISECONDS);
+        if(searchUser.length <= 2 && searchTimeout) clearTimeout(searchTimeout);
+    }
+
 
     return(
         <>
         <SearchBarContainer>
-            <SearchInput  value={search} onChange={handleChange}
+            <SearchInput
+                name="searchUsername"
+                value={searchUser.searchUsername} 
+                onChange={handleSearchChange}
                 placeholder="Search for people"
                 
             />
             <ion-icon name="search" ion-icon />
             <ResultsContainer>
-                {users.map(user => {
+                {usersFinded?.map(user => {
                     return (
                         <Link  key={user.id} to={`/user/${user.id}`}>
                             <Result>
@@ -57,7 +59,6 @@ export default function SearchBar(){
                 })}
             </ResultsContainer>
         </SearchBarContainer>
-        
      </>
     )
 }
