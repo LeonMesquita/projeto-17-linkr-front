@@ -12,7 +12,7 @@ import 'tippy.js/dist/tippy.css';
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 
-import { CardContainer, PostContentSide, PostSide } from "../style.js";
+import { CardContainer, CommentsContainer, PostContentSide, PostSide } from "../style.js";
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
 import TokenContext from "../../contexts/TokenContext.js";
 import UserContext from "../../contexts/UserContext.js";
@@ -29,11 +29,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [isFavorite, setIsFavorite] = useState(false);
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
-    //João, Maria e outras 11 pessoas
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
    // const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
+    const [userComment, setUserComment] = useState('');
+
 
 
     const [data, setData] = useState();
@@ -197,14 +198,63 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                 </LinkPreview>
                             </PostInfos>
                         </PostSide>
+                       
                     </CardContainer>
                 )
+               
                 
             }
+             <CommentsContainer >
+                <Comments>
+
+                </Comments>
+                <CommentInput>
+                    <img src={linkirUser.profilePic} alt=""/>
+                    <input placeholder="write a comment..." value={userComment} onChange={e => setUserComment(e.target.value)}/>
+                </CommentInput>
+
+             </CommentsContainer>
 
         </>
     )
 };
+
+const CommentInput = styled.div`
+    display: flex;
+    img{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    input{
+        width: 100%;
+        height: 39px;
+        background: #252525;
+        border-radius: 8px;
+        margin-left: 15px;
+        text-indent:15px;
+        color: white;
+
+
+        &::placeholder{
+            font-family: 'Lato';
+            font-style: italic;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            letter-spacing: 0.05em;
+
+            color: #575757;
+        }
+    }
+`
+
+const Comments = styled.div`
+    height: 50px;
+`
+
+
 
 const TextArea = styled.textarea`
     border-radius: 5px;
@@ -240,6 +290,7 @@ const TextArea = styled.textarea`
         line-height: 16px;
         min-height: 47px;
     }
+    
 `
 
 const LikeContainer = styled.div`
@@ -392,3 +443,5 @@ const LinkPreview = styled.a`
         }
     }
 `
+
+

@@ -93,5 +93,18 @@ const HeaderContainer = styled.div`
 `;
 
 
+const CommentsContainer = styled.div`
+    max-height: 375px;
+    background-color: #1E1E1E;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 
-export { CardContainer, PostContentSide, PostSide, HeaderContainer };
+`
+
+
+
+export { CardContainer, PostContentSide, PostSide, HeaderContainer, CommentsContainer };
