@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import TokenContext from "./contexts/TokenContext.js";
 import UserContext from "./contexts/UserContext.js";
+import ClickedUserContext from "./contexts/ClickedUserContext.js";
 
 import SignUp from "./pages/SignUp.js";
 import Timeline from "./pages/Timeline.js";
@@ -16,27 +17,38 @@ export default function App() {
         username: "",
         profilePic: ""
     })
-    const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
-    //const [url, setUrl] = useState('http://localhost:4000');
+    //const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
+    const [url, setUrl] = useState('http://localhost:4000');
 
     const authorization = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
+
+    const [clickedUserPicture, setClickedUserPicture] = useState('');
+    const [clickedUseName, setClickedUseName] = useState('');
+    const [clickedUserId, setClickedUserId] = useState(null);
+    const [followersList, setFollowersList] = useState([]);
+    const [isUserPosts, setIsUserPosts] = useState(false);
+    const [isFollowed, setIsFollowed] = useState(false);
+
     return (
-        <TokenContext.Provider value={{setToken, token, authorization}}>
-            <UserContext.Provider value={{ url, user, setUser }}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<SignIn />} />
-                        <Route path="/sign-up" element={<SignUp />} />
-                        <Route path="/timeline" element={<Timeline />} />
-                        <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
-                        <Route path="/user/:id" element={<UserTimeline />} />
-                    </Routes>
-                </BrowserRouter>
-            </UserContext.Provider>
-        </TokenContext.Provider>
+        <ClickedUserContext.Provider value={{clickedUserPicture, setClickedUserPicture, clickedUseName,
+        setClickedUseName, clickedUserId, setClickedUserId, followersList, setFollowersList, isUserPosts, setIsUserPosts, isFollowed, setIsFollowed}}>
+            <TokenContext.Provider value={{setToken, token, authorization}}>
+                <UserContext.Provider value={{ url, user, setUser }}>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<SignIn />} />
+                            <Route path="/sign-up" element={<SignUp />} />
+                            <Route path="/timeline" element={<Timeline />} />
+                            <Route path="/hashtag/:hashtag" element={<HashtagTimeline />} />
+                            <Route path="/user/:id" element={<UserTimeline />} />
+                        </Routes>
+                    </BrowserRouter>
+                </UserContext.Provider>
+            </TokenContext.Provider>
+        </ClickedUserContext.Provider>
     )
 };

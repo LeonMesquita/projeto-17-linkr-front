@@ -4,24 +4,48 @@ import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import axios from 'axios';
 import UserContext from "../../contexts/UserContext";
+import ClickedUserContext from "../../contexts/ClickedUserContext";
 import Swal from "sweetalert2";
 import { useContext } from "react";
 
 
 
-export default function RenderPosts({ posts, isLoading, statusCode, setClickedUseName, setClickedUserPicture, setPosts, setIsUserPosts, isRefreshing}) {
+export default function RenderPosts({ posts, isLoading, statusCode, setPosts, isRefreshing}) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
+    const {clickedUserPicture, setClickedUserPicture, clickedUseName, setClickedUseName,
+        clickedUserId, setClickedUserId, followersList, setFollowersList, setIsUserPosts, isFollowed, setIsFollowed} = useContext(ClickedUserContext);
+
+
+    async function getUserFollowers(followedId){
+       try{
+        const resp = await axios.get(`${url}/follow/${followedId}`);
+        setFollowersList(resp.data);
+        if(resp.data.find(follower => follower.follower_id === linkirUser.userId)){
+            setIsFollowed(true);
+        }
+        else setIsFollowed(false);
+       }catch(err){
+        console.log(err);
+       }
+    }
 
 
     async function onClickUser(userId){
+
         try{
             const promise = await axios.get(`${url}/user/${userId}`, linkirUser.token);
             setClickedUseName(promise.data[0].username);
             setClickedUserPicture(promise.data[0].picture_url);
+            setClickedUserId(promise.data[0].user_id);
             setPosts(promise.data);
             setIsUserPosts(true);
+            getUserFollowers(promise.data[0].user_id);
+            
+
+
+           
         }catch(e){
             Swal.fire({
                 icon: 'error',
@@ -51,7 +75,7 @@ export default function RenderPosts({ posts, isLoading, statusCode, setClickedUs
                         ?    <StatusCodeScreen statusCode={statusCode} />
                         :
                             posts?.map(post => {
-                                console.log(post)
+                               
                                 return (
                                     <PostCard
                                         key={post.post_id}

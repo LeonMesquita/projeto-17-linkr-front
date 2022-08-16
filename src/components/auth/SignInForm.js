@@ -81,7 +81,7 @@ export default function SignInForm() {
                 "Oops...",
                 "Email ou senha incorretos!"
             )).then(AlertError);
-        })
+        });
     }
 
     return (
