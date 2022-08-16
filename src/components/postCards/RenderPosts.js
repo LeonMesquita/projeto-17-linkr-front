@@ -6,10 +6,7 @@ import UserContext from "../../contexts/UserContext";
 import { useContext, useEffect } from "react";
 import ClickedUserContext from "../../contexts/ClickedUserContext";
 import Swal from "sweetalert2";
-import { useContext } from "react";
-
-
-
+import axios from "axios";
 export default function RenderPosts({ posts, isLoading, statusCode, setPosts, isRefreshing}) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
