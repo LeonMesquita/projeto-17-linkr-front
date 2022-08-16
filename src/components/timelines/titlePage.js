@@ -57,6 +57,7 @@ export default function PageTitle({ title, isLoading, }){
 const SearchContainer = styled.section`
     display:none;
     width: 100%;
+    height: 100%;
     margin-top: 10px;
 `
 const TitleContainer = styled.section`
