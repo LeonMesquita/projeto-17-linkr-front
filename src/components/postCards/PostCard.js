@@ -8,6 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
+
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 
@@ -19,22 +20,20 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview}){
+export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
     if(!userId){
         userId = -1;
     }
     const navigate = useNavigate();
-    const { authorization } = useContext(TokenContext);
-    const { url, user } = useContext(UserContext);
+    const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
-    const [numberOfFavorites, setNumberOfFavorites] = useState(0);
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
     //João, Maria e outras 11 pessoas
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-    const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
-    const linkrUserToken = linkrUser.token;
-    const linkrUserId = linkrUser.userId;
+   // const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
+    const linkrUserToken = linkirUser.token;
+    const linkrUserId = linkirUser.userId;
 
 
     const [data, setData] = useState();
@@ -51,7 +50,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             const quantity = promise.data.length;
             const likersList = promise.data;
             setLikers(likersList);
-            setNumberOfFavorites(quantity);
             if(likersList.find(liker => liker.liker_id == userId)){
                 const otherLikers = likersList.filter(like => like.liker_id !== userId);
                 
@@ -155,7 +153,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    <p>{username}</p>
+                                    <p onClick={onclick}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
