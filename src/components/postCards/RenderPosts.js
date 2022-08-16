@@ -2,18 +2,16 @@ import PostCard from "../postCards/PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import axios from 'axios';
 import UserContext from "../../contexts/UserContext";
-import Swal from "sweetalert2";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+
+import InfiniteScroll from "react-infinite-scroll-component";
+import handleGetPostsRefresh from "../../handlers/handleGetPostsRefresh";
 
 
-
-export default function RenderPosts({ posts, isLoading, statusCode, isRefreshing }) {
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-    const { url, user } = useContext(UserContext);
-
-
+export default function RenderPosts({ posts, isLoading, statusCode, isRefreshing  }) {
+    const linkirUser = useLocalStorage("linkrUser", "");
+    const { url } = useContext(UserContext);
     // async function onClickUser(userId){
     //     try{
     //         const promise = await axios.get(`${url}/user/${userId}`, linkirUser.token);
@@ -35,35 +33,31 @@ export default function RenderPosts({ posts, isLoading, statusCode, isRefreshing
     //             timerProgressBar: `#ffffff`
     //         })
     //     }
-       
+
     // }
 
-
-
+    console.log(posts)
 
     return (
         <>
             {
-                isLoading || isRefreshing
+                isLoading 
                     ? <PostSkeleton />
-                    :   statusCode
-                        ?    <StatusCodeScreen statusCode={statusCode} />
-                        :
-                            posts?.map(post => {
-                                console.log(post)
-                                return (
-                                    <PostCard
-                                        key={post.post_id}
-                                        postId={post.post_id}
-                                        userId={linkirUser.userId}
-                                        username={post.username}
-                                        pictureUrl={post.picture_url}
-                                        description={post.description}
-                                        likes={post.likes}
-                                        preview={post.preview}
-                                     />
-                                )
+                    : statusCode
+                        ?   <StatusCodeScreen statusCode={statusCode} />
+                        :    posts?.map(post => {
+                            return (<PostCard
+                                key={post.post_id}
+                                postId={post.post_id}
+                                userId={linkirUser.userId}
+                                username={post.username}
+                                pictureUrl={post.picture_url}
+                                description={post.description}
+                                likes={post.likes}
+                                preview={post.preview}
+                            />)
                             })
+
             }
 
         </>

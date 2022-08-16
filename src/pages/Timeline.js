@@ -46,12 +46,11 @@ export default function Timeline() {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
     }
 
-    const handleGetPost =  (token) => { //Recebe os Posts
-        const promise = axios.get(`${url}/posts`, token);
+    const handleGetPost =  (token) => {
+        const promise = axios.get(`${url}/following`, token, {page: 0});
         promise.then( (res) => {
-            console.log(res.data);
             setPosts(res.data)
-            handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promise.catch( (e) => {
             console.log(e)

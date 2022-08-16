@@ -1,10 +1,9 @@
 import axios from "axios";
 
-export default function handleGetPostsRefresh( url, route, token, setPosts, setStatusCode, setIsRefreshing ){
-    console.log(url)
+export default function handleGetPostsRefresh( url, route, token, posts, setPosts, setStatusCode, setIsRefreshing ){
     const promisse = axios.get(`${url}/${route}`, token);
     promisse.then( (res) => {
-        setPosts(res.data);
+        setPosts({...posts, ...res.data});
         setIsRefreshing(false);
     })
     promisse.catch( (e) => {
