@@ -46,15 +46,19 @@ export default function Timeline() {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
     }
 
-    const handleGetPost =  (token) => { //Recebe os Posts
-        const promise = axios.get(`${url}/posts`, token);
-        promise.then( (res) => {
-            setPosts(res.data)
-            handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
+    const handleGetPost =  (token) => {
+        const promise = axios.get(`${url}/following`, token, {page: 0});
+        promise.then( (res) => {            
+            if(res.data.length !== 0){
+                setPosts(res.data)
+            } else {
+                setStatusCode({ page:"timeline", status: 204})
+            }
+            handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promise.catch( (e) => {
-            console.log(e)
-            setStatusCode(e.response.status)
+            const status = e.response.status;
+            setStatusCode({ page:"timeline", status: status})
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }

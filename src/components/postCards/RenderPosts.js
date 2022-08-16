@@ -2,14 +2,11 @@ import PostCard from "../postCards/PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import axios from 'axios';
 import UserContext from "../../contexts/UserContext";
+import { useContext, useEffect } from "react";
 import ClickedUserContext from "../../contexts/ClickedUserContext";
 import Swal from "sweetalert2";
-import { useContext } from "react";
-
-
-
+import axios from "axios";
 export default function RenderPosts({ posts, isLoading, statusCode, setPosts, isRefreshing}) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
@@ -64,12 +61,10 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
     }
 
 
-
-
     return (
         <>
             {
-                isLoading || isRefreshing
+                isLoading 
                     ? <PostSkeleton />
                     :   statusCode
                         ?    <StatusCodeScreen statusCode={statusCode} />
@@ -90,6 +85,7 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
                                      />
                                 )
                             })
+
             }
 
         </>
