@@ -53,6 +53,6 @@ const AlertType = {
     }
 }
 
-export default function handleAlertNotification(type, message, typeObject){
-    return Swal.fire({...MessageObject(message),...AlertType[type](typeObject)})
+export default function handleAlertNotification(messageObject, type, typeObject){
+    return Swal.fire({...MessageObject(messageObject),...AlertType[type](typeObject)})
 }

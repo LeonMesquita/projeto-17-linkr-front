@@ -36,7 +36,6 @@ export default function RenderPosts({ posts, isLoading, statusCode, isRefreshing
 
     // }
 
-    console.log(posts)
 
     return (
         <>

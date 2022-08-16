@@ -49,12 +49,17 @@ export default function Timeline() {
     const handleGetPost =  (token) => {
         const promise = axios.get(`${url}/following`, token, {page: 0});
         promise.then( (res) => {
-            setPosts(res.data)
+            
+            if(res.data.length !== 0){
+                setPosts(res.data)
+            } else {
+                setStatusCode({ page:"timeline", status: 204})
+            }
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promise.catch( (e) => {
-            console.log(e)
-            setStatusCode(e.response.status)
+            const status = e.response.status;
+            setStatusCode({ page:"timeline", status: status})
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }
