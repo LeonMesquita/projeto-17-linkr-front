@@ -1,96 +1,143 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import UserContext from '../contexts/UserContext';
+import useLocalStorage from '../hooks/useLocalStorage';
 
-export default function SearchBar(){
 
-    const [search, setSearch] = useState("");
-    const [users, setUsers] = useState([]);
+export default function SearchBar() {
 
-    //salvar profilePic com a imagem do usuario que aparece no botao do logout
-    const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
+    const { url } = useContext(UserContext);
+    const linkrUser = useLocalStorage("linkrUser", "")[0]
+    const [searchUser, setSearchUser] = useState({ searchUsername: "" });
+    const [usersFinded, setUserFinded] = useState([]);
+    const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
+    console.log(linkrUser)
+    const handleSearchUsers = async (typeWord) => {
+        console.log(searchUser)
+        const promise = axios.get(`${url}/search/${typeWord}`, linkrUser.token);
 
-    function searchUser(value) {
-        const promise = axios.get(`http://localhost:4000/search/${value}`, localstorage.token);
         promise.then((res) => {
-            setUsers(res.data);
-        });
+            setUserFinded(res.data);
+        })
         promise.catch((e) => {
-            console.log(e);
-        });
+            setUserFinded([]);
+        })
     }
-    const handleChange = (event) => {
-        setSearch(event.target.value);
-        let myTimeout;
-        if (event.target.value.length > 2) {
-            myTimeout = setTimeout(searchUser(event.target.value), 200);
-            //searchUser();
-        }
-        if (event.target.value.length <= 2) {
-            setUsers([]);
-            if (myTimeout) {
-                clearTimeout(myTimeout);
-            }
-        }
-    };
+    const handleSearchChange = (e) => {
+        setSearchUser({ ...searchUser, [e.target.name]: e.target.value });
+        handleSearchVerify(e.target.value);
+    }
 
-    return(
-        <>
-        <SearchBarContainer>
-            <SearchInput  value={search} onChange={handleChange}
-                placeholder="Search for people"
-                
-            />
-            <ion-icon name="search" ion-icon />
-            <ResultsContainer>
-                {users.map(user => {
-                    return (
-                        <Link  key={user.id} to={`/user/${user.id}`}>
-                            <Result>
-                                <img src={user.picture_url} alt="user" />
-                                <h1>{user.username}</h1>
+    const handleSearchVerify = (typeWord) => {
+        let searchTimeout;
+        const THREE_MILLISECONDS = 300;
+        if (typeWord.length > 2) searchTimeout = setTimeout(handleSearchUsers(typeWord), THREE_MILLISECONDS);
+        if (typeWord.length <= 2 || searchTimeout) {
+            setUserFinded([]);
+            clearTimeout(searchTimeout);
+        }
+    }
+
+    console.log(usersFinded)
+
+    const handleToggleSearchBox = (e) => {
+        const { key } = e;
+        if (key === "Escape") setSearchBoxIsOpen(false);
+    }
+    console.log(typeof usersFinded === 'object')
+    return (
+        <SearchBarContainer >
+            <SearchBarBox >
+                <SearchInput
+                    autoComplete='off'
+                    name="searchUsername"
+                    value={searchUser.searchUsername}
+                    onChange={handleSearchChange}
+                    placeholder="Search for people"
+                />
+                <ion-icon name="search" ion-icon />
+            </SearchBarBox>
+
+            <ResultsContainer className={usersFinded.length > 0 ? "open" : ""}>
+                {
+                    usersFinded?.map(user => {
+                        return (
+                            <Result key={user.id}>
+                                <Link to={`/user/${user.id}`}>
+                                    <img src={user.picture_url} alt="user" />
+                                    <span>{user.username} </span>
+                                    {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ?<span className='following'>• you</span> : <></>}
+                                </Link>
                             </Result>
-                        </Link>
-                    )
-                })}
+
+                        )
+                    })
+                }
+
             </ResultsContainer>
-        </SearchBarContainer>
-        
-     </>
+        </SearchBarContainer >
     )
 }
 
+const Result = styled.div`
+
+    img{
+        margin-right: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+    }
+    a {
+        display: flex;
+        align-items:center;
+        text-decoration: none;
+        color: inherit;
+        cursor: auto;
+        & > span{
+            font-weight: 400;
+            font-size: 19px;
+            line-height: 23px;
+            color: #515151;
+        }
+        & > span.following{
+            color: #C5C5C5;
+            margin-left: 7px;
+        }
+    }
+`
+
 const ResultsContainer = styled.div`
-    position: absolute;
-    left:0px;
-    top:45px;
-    box-sizing: border-box;
     display: flex;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    height: auto;
+    z-index: 1;
+    box-sizing: border-box;
     flex-direction: column;
     border-radius: 8px;
-    width: 100%;
     background: #E7E7E7;
-`
-const Result = styled.div`
-    display: flex;  
-    flex-direction:row;
-    img{
-        margin-left: 15px;
-        width: 39px;
-        height: 39px;
-        border-radius: 30px;
+    padding: 0 17px;
+    height: 20px;
+    ${Result} {margin-top: 7.5px;}
+    ${Result}:first-of-type {margin-top: 0px;}
+    ${Result}:first-of-type {margin-bottom: 0px;}
+    &.open{
+        width:100%;
+        padding-top: 60px;
+        padding-bottom: 15px;
+        height: 210px;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
-    h1{
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 19px;
-        line-height: 23px;
-        color: #515151;
-    }
+
 `
+
 const SearchInput = styled.input`
     width: 100%;
     background-color: #FFFFFF;
@@ -101,10 +148,13 @@ const SearchInput = styled.input`
         color: #949494;
     }
 `
-const SearchBarContainer = styled.section`
-    position: relative;
+
+const SearchBarBox = styled.div`
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 45px;
+    z-index: 2;
     background: #FFFFFF;
     border-radius: 8px;
     padding: 0 15px;
@@ -120,10 +170,24 @@ const SearchBarContainer = styled.section`
         width: 100%;
         height: 100%;
     }
+
+`
+
+const SearchBarContainer = styled.section`
+    display:flex;
+    position: relative;
+    height: 45px;
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 8px;
+
     @media screen and (max-width: 836px){
         margin: 0 17px;
     }
-    @media screen and (max-width: 611px){
-       display:none;
-    }
 `
+
+
+
+
+
+
