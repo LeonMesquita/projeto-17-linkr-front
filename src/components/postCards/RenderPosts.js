@@ -36,7 +36,8 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
             setClickedUseName(promise.data[0].username);
             setClickedUserPicture(promise.data[0].picture_url);
             setClickedUserId(promise.data[0].user_id);
-            setPosts(promise.data);
+           setPosts(promise.data);
+           
             setIsUserPosts(true);
             getUserFollowers(promise.data[0].user_id);
             
@@ -82,6 +83,7 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
                                         likes={post.likes}
                                         preview={post.preview}
                                         onclick={() => onClickUser(post.user_id)}
+                                        setPosts={setPosts}
                                      />
                                 )
                             })

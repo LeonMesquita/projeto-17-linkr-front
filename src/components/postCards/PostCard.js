@@ -12,6 +12,7 @@ import { MainContainer } from "../comments/styled.js";
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 import { getComments } from "../../handlers/handlerComments.js";
+import handleAlertNotifications from '../../handlers/handleAlertNotifications';
 
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
@@ -22,8 +23,15 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
+import useInterval from 'react-useinterval';
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
+
+
+import ScrollToTop from './ScrollTop.js';
+
+
+export default function PostCard({postId, userId,username, pictureUrl, description,
+    likes, preview, onclick, setPosts}){
     if(!userId){
         userId = -1;
     }
@@ -33,12 +41,53 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
     const [linkirUser] = useLocalStorage("linkrUser", "");
+    const [lastPostId, setLastPostId] = useLocalStorage("lastPostId", "");
+
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
 
+    const [showTopBtn, setShowTopBtn] = useState(false);
 
+    
+
+    const handleGetPost =  (token) => {
+        const promise = axios.get(`${url}/following`, linkirUser.token, {page: 0});
+        promise.then( (res) => {  
+            const postsList = res.data;          
+            if(res.data.length !== 0){
+                let numberOfNewPosts = 0;
+                const lastId = res.data[0].post_id;
+                if(lastPostId !== lastId){
+                    for(let count = 0; count < res.data.length ; count++){
+                        if(res.data[count].post_id === lastPostId) break;
+                        numberOfNewPosts++;
+                    }
+                    handleAlertNotifications('error', 'Erro!', `Você tem ${numberOfNewPosts} novos posts`, 4000);
+                    setLastPostId(lastId);
+                    setPosts(res.data);
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                    });
+                }
+                else{
+                    handleAlertNotifications('error', 'Erro!', `nn tem nada`, 4000);
+                    
+
+                }
+               
+                
+            }
+        })
+        promise.catch( (e) => {
+
+        });
+    }
+
+
+    // useInterval(handleGetPost, 10000, 1);
 
 
 
@@ -156,6 +205,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             {
                 (
                     <CardContainer className="post" openComments={openComments}>
+                      
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
