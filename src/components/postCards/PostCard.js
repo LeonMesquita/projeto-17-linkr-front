@@ -8,17 +8,19 @@ import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
-
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
+import { getComments } from "../../handlers/handlerComments.js";
 
-import { CardContainer, CommentsContainer, PostContentSide, PostSide } from "../style.js";
-import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
-import TokenContext from "../../contexts/TokenContext.js";
+import { CardContainer, PostContentSide, PostSide } from "../style.js";
+import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
+import { AiOutlineComment } from "react-icons/ai";
+
 import UserContext from "../../contexts/UserContext.js";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
+import RenderComments from "../comments/RenderComments.js";
 
 export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
     if(!userId){
@@ -29,11 +31,14 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [isFavorite, setIsFavorite] = useState(false);
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-   // const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
+    const [linkirUser] = useLocalStorage("linkrUser", "");
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
-    const [userComment, setUserComment] = useState('');
+    const [openComments, setOpenComments] = useState(false);
+    const [listOfComments, setListOfComments] = useState([]);
+
+
+
 
 
 
@@ -88,9 +93,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         }
     }
 
-    useEffect(() => {
-        getFavorites(postId);
-    }, []);
+
 
     async function onClickFavorite() {
         try {
@@ -120,6 +123,16 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
         }
     }
+    
+   async function callGetComments(){
+        const comments = await getComments(url, postId);
+        setListOfComments(comments);
+    }
+
+    useEffect(() => {
+       getFavorites(postId);
+       callGetComments()
+    }, []);
 
     const deletePost = () => handleDeletePost(url, linkrUserToken); //Model para deletar o post!
     const textareaRef = useRef(null);
@@ -147,7 +160,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
-                                <h6>{likers.length} Likes</h6>
+                                <h6>{likers.length} likes</h6>
+                            </LikeContainer >
+
+                            <LikeContainer iconColor="FFFFFF">
+                                    <AiOutlineComment onClick={() => setOpenComments(!openComments)}/>
+                                    <h6>{listOfComments.length} comments</h6>
                             </LikeContainer>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
@@ -204,55 +222,13 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                
                 
             }
-             <CommentsContainer >
-                <Comments>
-
-                </Comments>
-                <CommentInput>
-                    <img src={linkirUser.profilePic} alt=""/>
-                    <input placeholder="write a comment..." value={userComment} onChange={e => setUserComment(e.target.value)}/>
-                </CommentInput>
-
-             </CommentsContainer>
+           {openComments ? 
+           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
+          : null}
 
         </>
     )
 };
-
-const CommentInput = styled.div`
-    display: flex;
-    img{
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
-
-    input{
-        width: 100%;
-        height: 39px;
-        background: #252525;
-        border-radius: 8px;
-        margin-left: 15px;
-        text-indent:15px;
-        color: white;
-
-
-        &::placeholder{
-            font-family: 'Lato';
-            font-style: italic;
-            font-weight: 400;
-            font-size: 14px;
-            line-height: 17px;
-            letter-spacing: 0.05em;
-
-            color: #575757;
-        }
-    }
-`
-
-const Comments = styled.div`
-    height: 50px;
-`
 
 
 
@@ -297,18 +273,22 @@ const LikeContainer = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
+    width: 100%;
     svg{
         width: 25px;
         height: 25px;
         color: #${props => props.iconColor};
         margin-bottom: 10px;
+        cursor: pointer;
     }
     h6{
         font-family: 'Lato';
         font-weight: 400;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 13px;
         color: #FFFFFF;
+        margin-bottom: 15px;
+        text-align: center;
     }
 `
 

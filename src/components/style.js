@@ -87,24 +87,13 @@ const HeaderContainer = styled.div`
         font-size: 49px;
         line-height: 54px;
         color: #ffffff;
-        /* identical to box height */
         letter-spacing: 0.05em;
     }
 `;
 
 
-const CommentsContainer = styled.div`
-    max-height: 375px;
-    background-color: #1E1E1E;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-
-`
 
 
 
-export { CardContainer, PostContentSide, PostSide, HeaderContainer, CommentsContainer };
+
+export { CardContainer, PostContentSide, PostSide, HeaderContainer };
