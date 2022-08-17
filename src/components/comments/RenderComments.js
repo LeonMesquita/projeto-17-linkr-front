@@ -1,11 +1,11 @@
-import { CommentsContainer, CommentInput, Comments } from "./styled";
-import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
-import { AiOutlineComment } from "react-icons/ai";
+import { CommentsContainer, CommentInput, Comments, MainContainer } from "./styled";
+import {IoIosSend } from "react-icons/io";
 import { useState, useEffect, useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import axios from 'axios';
 import { getComments } from "../../handlers/handlerComments";
+import handleAlertNotifications from "../../handlers/handleAlertNotifications";
 
 
 export default function RenderComments({postId, listOfComments, setListOfComments}){
@@ -41,7 +41,8 @@ export default function RenderComments({postId, listOfComments, setListOfComment
             callGetComments();
             setUserComment('');
         }catch(e){
-            console.log(e);
+            handleAlertNotifications('error', 'Erro!', 'Não foi possível postar seu comentário', 4000);
+
 
         }
         setIsInputDisabled(false);

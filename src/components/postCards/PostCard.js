@@ -7,6 +7,7 @@ import { TiPencil } from 'react-icons/ti'
 import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import { MainContainer } from "../comments/styled.js";
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
@@ -154,7 +155,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         <>
             {
                 (
-                    <CardContainer className="post">
+                    <CardContainer className="post" openComments={openComments}>
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
@@ -273,12 +274,12 @@ const LikeContainer = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
-    width: 100%;
+    min-width: 80px;
     svg{
         width: 25px;
         height: 25px;
         color: #${props => props.iconColor};
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         cursor: pointer;
     }
     h6{

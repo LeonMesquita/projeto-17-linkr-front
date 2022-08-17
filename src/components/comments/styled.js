@@ -1,6 +1,17 @@
 import styled from 'styled-components';
 
+
+const MainContainer = styled.div`
+background-color: #1E1E1E;
+background-color: red;
+display: flex;
+flex-direction: column;
+align-items: baseline;
+min-width: 100%;
+`
+
 const CommentsContainer = styled.div`
+
     max-height: 300px;
     max-width: 611px;
     background-color: #1E1E1E;
@@ -12,12 +23,17 @@ const CommentsContainer = styled.div`
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
     overflow-y: scroll;
+    &:last-of-type{margin-bottom: 50px;}
+
+    
 
     img{
         width: 40px;
         height: 40px;
         border-radius: 50%;
     }
+
+
 
 `
 
@@ -70,6 +86,8 @@ const Comments = styled.div`
     align-items: center;
     overflow-y: scroll;
     margin-bottom: 20px;
+   
+   
    
     
 
@@ -125,4 +143,4 @@ const Comments = styled.div`
 
 
 
-export {CommentsContainer, CommentInput, Comments};
+export {CommentsContainer, CommentInput, Comments, MainContainer};
