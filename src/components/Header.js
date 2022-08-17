@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import { HeaderContainer } from "./style.js";
 import SearchBar from './SearchBar';
 import HeaderSkeleton from "./skeletonComponents/HeaderSkeleton.js";
 
@@ -141,5 +140,33 @@ const LogoutBoxOpen = styled.div`
             height: 41px;
             border-radius: 26.5px;
         }
+    }
+`
+
+const HeaderContainer = styled.div`
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    width:100%;
+    height: 72px;
+    background: #151515;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    h1{
+        margin: 10px;
+        margin-left: 20px;
+        font-family: 'Passion One';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 49px;
+        line-height: 54px;
+        color: #ffffff;
+        /* identical to box height */
+        letter-spacing: 0.05em;
+    }
+    @media screen and (max-width: 611px){
+        ${SearchContainer}{display:none;}
     }
 `

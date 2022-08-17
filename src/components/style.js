@@ -66,33 +66,8 @@ const PostSide = styled.div`
     }
 
 `;
-const HeaderContainer = styled.div`
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    width:100%;
-    height: 72px;
-    background: #151515;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1;
-    h1{
-        margin: 10px;
-        margin-left: 20px;
-        font-family: 'Passion One';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 49px;
-        line-height: 54px;
-        color: #ffffff;
-        letter-spacing: 0.05em;
-    }
-`;
 
 
 
 
-
-
-export { CardContainer, PostContentSide, PostSide, HeaderContainer };
+export { CardContainer, PostContentSide, PostSide };
