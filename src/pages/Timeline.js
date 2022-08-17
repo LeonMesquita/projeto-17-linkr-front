@@ -28,6 +28,7 @@ export default function Timeline() {
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
 
+    
 
 
     // //           // ADICIONAR TRENDINGS NA SIDEBAR 
@@ -47,7 +48,7 @@ export default function Timeline() {
     }
 
     const handleGetPost =  (token) => {
-        const promise = axios.get(`${url}/following`, token, {page: 0});
+        const promise = axios.get(`${url}/timeline/posts`, token, {page: 0});
         promise.then( (res) => {            
             if(res.data.length !== 0){
                 setPosts(res.data)
@@ -57,8 +58,9 @@ export default function Timeline() {
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promise.catch( (e) => {
+            const where = e.response.data
             const status = e.response.status;
-            setStatusCode({ page:"timeline", status: status})
+            setStatusCode({ page:"timeline", status: status, where: where})
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }

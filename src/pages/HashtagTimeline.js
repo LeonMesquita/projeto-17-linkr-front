@@ -33,7 +33,9 @@ export default function HashtagTimeline() {
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         })
         promisse.catch((e) => {
-            setStatusCode(e.response.status)
+            const where = e.response.data;
+            const status = e.response.status;
+            setStatusCode({ page:"hashtag", status: status, where: where})
             handleGetTrendings(url, token, setTrendings, setIsLoading)
         });
     }
