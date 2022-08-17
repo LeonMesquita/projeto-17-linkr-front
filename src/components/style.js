@@ -4,7 +4,6 @@ const PostContentSide = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
-    margin-right: 18px;
     img{
         width: 50px;
         height: 50px;
@@ -19,7 +18,7 @@ const CardContainer = styled.section`
     background: #171717;
     position: relative;
     border-radius: 16px;
-    padding: 18px;
+    padding: 18px 18px 18px 0;
 
     transition: ease all .5s;
     
@@ -30,7 +29,7 @@ const CardContainer = styled.section`
     
     &.post{margin-top: 16px;}
     &.post:first-of-type{margin-top: 0px;}
-    &:last-of-type{margin-bottom: 50px;}
+    &:last-of-type{margin-bottom: ${props => (props.openComments ? `0px` : `50px`)};}
 
     @media screen and (max-width: 611px){
         div.publish:first-of-type{

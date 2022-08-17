@@ -7,18 +7,21 @@ import { TiPencil } from 'react-icons/ti'
 import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-
+import { MainContainer } from "../comments/styled.js";
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
+import { getComments } from "../../handlers/handlerComments.js";
 
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
-import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
-import TokenContext from "../../contexts/TokenContext.js";
+import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
+import { AiOutlineComment } from "react-icons/ai";
+
 import UserContext from "../../contexts/UserContext.js";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
+import RenderComments from "../comments/RenderComments.js";
 
 export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
     if(!userId){
@@ -29,11 +32,15 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [isFavorite, setIsFavorite] = useState(false);
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
-    //João, Maria e outras 11 pessoas
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-   // const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
+    const [linkirUser] = useLocalStorage("linkrUser", "");
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
+    const [openComments, setOpenComments] = useState(false);
+    const [listOfComments, setListOfComments] = useState([]);
+
+
+
+
 
 
     const [data, setData] = useState();
@@ -87,9 +94,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         }
     }
 
-    useEffect(() => {
-        getFavorites(postId);
-    }, []);
+
 
     async function onClickFavorite() {
         try {
@@ -119,6 +124,16 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
         }
     }
+    
+   async function callGetComments(){
+        const comments = await getComments(url, postId);
+        setListOfComments(comments);
+    }
+
+    useEffect(() => {
+       getFavorites(postId);
+       callGetComments()
+    }, []);
 
     const deletePost = () => handleDeletePost(url, linkrUserToken); //Model para deletar o post!
     const textareaRef = useRef(null);
@@ -140,13 +155,18 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         <>
             {
                 (
-                    <CardContainer className="post">
+                    <CardContainer className="post" openComments={openComments}>
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
-                                <h6>{likers.length} Likes</h6>
+                                <h6>{likers.length} likes</h6>
+                            </LikeContainer >
+
+                            <LikeContainer iconColor="FFFFFF">
+                                    <AiOutlineComment onClick={() => setOpenComments(!openComments)}/>
+                                    <h6>{listOfComments.length} comments</h6>
                             </LikeContainer>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
@@ -197,14 +217,21 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                 </LinkPreview>
                             </PostInfos>
                         </PostSide>
+                       
                     </CardContainer>
                 )
+               
                 
             }
+           {openComments ? 
+           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
+          : null}
 
         </>
     )
 };
+
+
 
 const TextArea = styled.textarea`
     border-radius: 5px;
@@ -240,24 +267,29 @@ const TextArea = styled.textarea`
         line-height: 16px;
         min-height: 47px;
     }
+    
 `
 
 const LikeContainer = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
+    min-width: 80px;
     svg{
         width: 25px;
         height: 25px;
         color: #${props => props.iconColor};
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
     }
     h6{
         font-family: 'Lato';
         font-weight: 400;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 13px;
         color: #FFFFFF;
+        margin-bottom: 15px;
+        text-align: center;
     }
 `
 
@@ -392,3 +424,5 @@ const LinkPreview = styled.a`
         }
     }
 `
+
+

@@ -19,7 +19,7 @@ import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/s
 
 export default function Timeline() {
     const { url } = useContext(UserContext);
-    const {clickedUserPicture, setClickedUserPicture, clickedUseName, setClickedUseName, clickedUserId, setClickedUserId, isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
+    const {clickedUseName,  isUserPosts} = useContext(ClickedUserContext);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false)
