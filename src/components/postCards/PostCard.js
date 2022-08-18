@@ -12,6 +12,7 @@ import { MainContainer } from "../comments/styled.js";
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 import { getComments } from "../../handlers/handlerComments.js";
+import handleAlertNotifications from '../../handlers/handleAlertNotifications';
 
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
@@ -22,8 +23,14 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
+// import useInterval from 'react-useinterval';
+import WarningPopup from '../WarningPopup';
+import ScrollToTop from './ScrollTop.js';
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick, }){
+
+export default function PostCard({postId, userId,username, pictureUrl, description,
+    likes, preview, onclick, isUserPosts}){
+
     if(!userId){
         userId = -1;
     }
@@ -37,10 +44,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
-
-
-
-
 
 
     const [data, setData] = useState();
@@ -156,9 +159,11 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     return (
         <>
+
             {
                 (
-                    <CardContainer className="post" openComments={openComments}>
+                    <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
+                      
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
 

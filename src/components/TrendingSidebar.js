@@ -42,6 +42,11 @@ export default function TrendingSideBar({ setIsHashtagLoaded, isPageLoaded, para
 const Container = styled.aside`
     display:flex;
     flex-direction: column;
+    position: fixed;
+    top: 200px;
+    left: 65%;
+    
+
 
     width: 301px;
     max-height: 80vh;

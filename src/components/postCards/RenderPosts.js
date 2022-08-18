@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext, useRef, useCallback } from "react";//useContext,
-
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import PostCard from "../postCards/PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
@@ -17,11 +16,57 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
+    // const {clickedUserPicture, setClickedUserPicture, clickedUseName, setClickedUseName,
+    //     clickedUserId, setClickedUserId, followersList, setFollowersList, setIsUserPosts, isFollowed, setIsFollowed, isUserPosts} = useContext(ClickedUserContext);
 
-    const observer = useRef();
+
+    // async function getUserFollowers(followedId){
+    //    try{
+    //     const resp = await axios.get(`${url}/follow/${followedId}`);
+    //     setFollowersList(resp.data);
+    //     if(resp.data.find(follower => follower.follower_id === linkirUser.userId)){
+    //         setIsFollowed(true);
+    //     }
+    //     else setIsFollowed(false);
+    //    }catch(err){
+    //     console.log(err);
+    //    }
+    // }
+
+    // async function onClickUser(userId){
+
+    //     try{
+    //         const promise = await axios.get(`${url}/user/${userId}`, linkirUser.token);
+    //         setClickedUseName(promise.data[0].username);
+    //         setClickedUserPicture(promise.data[0].picture_url);
+    //         setClickedUserId(promise.data[0].user_id);
+    //        setPosts(promise.data);
+           
+    //         setIsUserPosts(true);
+    //         getUserFollowers(promise.data[0].user_id);
+            
+
+
+           
+    //     }catch(e){
+    //         Swal.fire({
+    //             icon: 'error',
+    //             titleText: `Falha de autenticação`,
+    //             text: `Você precisa estar logado!`,
+    //             color: `#FFFFFF`,
+    //             background: `#333333`,
+    //             confirmButtonColor:`#1877F2`,
+    //             padding: `10px`,
+    //             timer: 4000,
+    //             timerProgressBar: true,
+    //             timerProgressBar: `#ffffff`
+    //         })
+    //     }
+       
+    // }
 
     const  {refresh, error, posts, hasMore, statusCode} = usePostSearch(endPoint, page , setIsPostLoaded, params);
-
+    const observer = useRef();
 
     const lastPostElementRef = useCallback( node => {
         if (refresh) return 
@@ -82,7 +127,6 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                                     lkr
                                 </LinkrLogo>
                             </LoadingContainer>
-
                             Loading more posts...
                          </RefreshContainer>
                         :
