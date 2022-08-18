@@ -10,7 +10,7 @@ import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
 
-export default function PageTitle({ title, isLoading, }){
+export default function PageTitle({ title, isPageLoaded, }){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
     const {isFollowed, setIsFollowed, clickedUserPicture, clickedUserId, isUserPosts } = useContext(ClickedUserContext);
@@ -32,7 +32,7 @@ export default function PageTitle({ title, isLoading, }){
             </SearchContainer>
             <TitleContainer>
             {
-                isLoading
+                !isPageLoaded
                 ? <p><Skeleton  count={1} baseColor="#333333" highlightColor="#272727" width="100%" height="64px" borderRadius="15px" duration={2}/></p>
                 : isUserPosts ?
                 <UserTitle isDisabled={isDisabled}>

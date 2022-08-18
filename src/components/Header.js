@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SearchBar from './SearchBar';
 import HeaderSkeleton from "./skeletonComponents/HeaderSkeleton.js";
 
-export default function Header({ isLoading }) {
+export default function Header({ isPageLoaded }) {
 
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ export default function Header({ isLoading }) {
     return (
         <>
             {
-                isLoading
+                !isPageLoaded
                     ? <HeaderSkeleton />
                     :
                     <HeaderContainer>

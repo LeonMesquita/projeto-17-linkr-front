@@ -23,7 +23,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
+export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick, }){
     if(!userId){
         userId = -1;
     }
@@ -158,6 +158,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                     <CardContainer className="post" openComments={openComments}>
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
+
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
@@ -217,7 +218,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                 </LinkPreview>
                             </PostInfos>
                         </PostSide>
-                       
                     </CardContainer>
                 )
                

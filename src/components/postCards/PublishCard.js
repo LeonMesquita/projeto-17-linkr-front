@@ -12,7 +12,7 @@ import PublishSkeleton from "../skeletonComponents/PublishSkeleton";
 
 
 
-export default function PublishCard({ isLoading, setPosts, setStatusCode, setIsRefreshing }) {
+export default function PublishCard({ isPageLoaded, setPosts, setStatusCode, setIsRefreshing }) {
     const { url } = useContext(UserContext);
 
     const [newPostInfos, setNewPostInfos] = useState({
@@ -88,7 +88,7 @@ export default function PublishCard({ isLoading, setPosts, setStatusCode, setIsR
     return (
         <>
             {
-                isLoading
+                !isPageLoaded
                     ?
                     <PublishSkeleton />
                     :
