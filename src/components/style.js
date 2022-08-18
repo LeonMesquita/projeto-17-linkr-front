@@ -19,6 +19,7 @@ const CardContainer = styled.section`
     position: relative;
     border-radius: 16px;
     padding: 18px 18px 18px 0;
+    z-index: 1;
 
     transition: ease all .5s;
     
@@ -28,9 +29,8 @@ const CardContainer = styled.section`
       
     }
     
-    &.post{margin-top: 16px;}
-    &.post:first-of-type{margin-top: ${props => (props.isUserPosts ? `40px` : `280px`)};}
-    &:last-of-type{margin-bottom: ${props => (props.openComments ? `0px` : `50px`)};}
+    &.post{}
+
 
     @media screen and (max-width: 611px){
         div.publish:first-of-type{
@@ -51,8 +51,6 @@ const CardContainer = styled.section`
                 margin-bottom: 15px;
             }
         }
-
-        &.post:first-of-type{margin-top: ${props => (props.isUserPosts ? `165px` : `380px`)};}
     }
     &.publish{
         margin-bottom: 20px;

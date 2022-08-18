@@ -8,9 +8,12 @@ display: flex;
 flex-direction: column;
 align-items: baseline;
 min-width: 100%;
+width: 100px;
 `
 
 const CommentsContainer = styled.div`
+    background-color: red;
+
 
     max-height: 300px;
     max-width: 611px;
@@ -23,7 +26,6 @@ const CommentsContainer = styled.div`
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
     overflow-y: scroll;
-    &:last-of-type{margin-bottom: 50px;}
 
     
 
@@ -39,7 +41,7 @@ const CommentsContainer = styled.div`
 
 const CommentInput = styled.div`
     display: flex;
-    position: relative;
+ position: relative;
     
    
     input{

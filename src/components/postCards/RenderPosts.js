@@ -7,6 +7,7 @@ import { useContext, useEffect } from "react";
 import ClickedUserContext from "../../contexts/ClickedUserContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import styled from "styled-components";
 export default function RenderPosts({ posts, isLoading, statusCode, setPosts, isRefreshing}) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
@@ -63,7 +64,7 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
 
 
     return (
-        <>
+        <MarginContainer isUserPosts={isUserPosts}>
             {
                 isLoading 
                     ? <PostSkeleton />
@@ -91,7 +92,16 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
 
             }
 
-        </>
+        </MarginContainer>
 
     )
 };
+
+
+const MarginContainer = styled.div`
+    margin-top: ${props => (props.isUserPosts ? `30px` : `250px`)};
+
+@media (max-width: 611px){
+    margin-top: ${props => (props.isUserPosts ? `150px` : `360px`)};
+}
+`

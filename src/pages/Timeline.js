@@ -159,8 +159,9 @@ const FixedPublishContainer = styled.div`
     z-index: 1;
     top: 0;
     background-color: #333333;
-    padding-top: 100px;
+    padding-top: 80px;
     max-width: 611px;
+
 
     @media screen and (max-width: 611px){
         width: 100%;

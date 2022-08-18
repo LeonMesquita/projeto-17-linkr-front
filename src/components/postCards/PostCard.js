@@ -50,6 +50,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [openComments, setOpenComments] = useState(false);
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
+    const [isReposted, setIsReposted] = useState(true);
 
 
     const [data, setData] = useState();
@@ -183,8 +184,18 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
             {
                 (
+                    <FatherContainer isReposted={isReposted}>
+                        {isReposted ? 
+                            <span>
+                            <BiRepost />
+                            <h3>Re-posted by you</h3>
+                            </span>
+                        : null}
+
+                        
+             
                     <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
-                      
+              
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
                             <InteractionIcon iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
@@ -252,13 +263,15 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         </PostSide>
                        
                     </CardContainer>
+                    {openComments ? 
+           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
+          : null}
+                    </FatherContainer>
                 )
                
                 
             }
-           {openComments ? 
-           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
-          : null}
+
 
           {openConfirmationDialog ? <ConfirmationDialog message='Do you want to re-post this link?' onclickNo={() => setOpenConfirmationDialog(false)} onclickYes={sharePost}/> : null}
 
@@ -266,6 +279,45 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     )
 };
 
+
+
+
+const FatherContainer = styled.div`
+    position: relative;
+    background-color: #1E1E1E;
+    z-index: 0;
+    margin-bottom: 38px;
+    padding-tooopp: ${props => (props.isReposted ? `30px` : `0px`)};
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;    
+    max-width: 611px;
+    color: white;
+
+    span{
+        display: flex;
+        align-items: center;
+        padding: 8px;
+    }
+    svg{
+        font-size: 22px;
+    }
+    h3{
+        font-size: 11px;
+        font-family: 'Lato';
+        margin-left: 5px;
+
+    }
+`
+
+
+const RepostArea = styled.div`
+    height: 200px;
+    width: 100%;
+    background: #1E1E1E;
+
+
+`
 
 
 const TextArea = styled.textarea`
