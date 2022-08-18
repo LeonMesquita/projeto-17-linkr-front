@@ -24,14 +24,14 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
 import useInterval from 'react-useinterval';
-
+import WarningPopup from '../WarningPopup';
 
 
 import ScrollToTop from './ScrollTop.js';
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, onclick, setPosts}){
+    likes, preview, onclick, isUserPosts}){
     if(!userId){
         userId = -1;
     }
@@ -41,55 +41,10 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
     const [linkirUser] = useLocalStorage("linkrUser", "");
-    const [lastPostId, setLastPostId] = useLocalStorage("lastPostId", "");
-
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
-
-    const [showTopBtn, setShowTopBtn] = useState(false);
-
-    
-
-    const handleGetPost =  (token) => {
-        const promise = axios.get(`${url}/following`, linkirUser.token, {page: 0});
-        promise.then( (res) => {  
-            const postsList = res.data;          
-            if(res.data.length !== 0){
-                let numberOfNewPosts = 0;
-                const lastId = res.data[0].post_id;
-                if(lastPostId !== lastId){
-                    for(let count = 0; count < res.data.length ; count++){
-                        if(res.data[count].post_id === lastPostId) break;
-                        numberOfNewPosts++;
-                    }
-                    handleAlertNotifications('error', 'Erro!', `Você tem ${numberOfNewPosts} novos posts`, 4000);
-                    setLastPostId(lastId);
-                    setPosts(res.data);
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth',
-                    });
-                }
-                else{
-                    handleAlertNotifications('error', 'Erro!', `nn tem nada`, 4000);
-                    
-
-                }
-               
-                
-            }
-        })
-        promise.catch( (e) => {
-
-        });
-    }
-
-
-    // useInterval(handleGetPost, 10000, 1);
-
-
 
 
     const [data, setData] = useState();
@@ -202,9 +157,10 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
     return (
         <>
+
             {
                 (
-                    <CardContainer className="post" openComments={openComments}>
+                    <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
                       
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />

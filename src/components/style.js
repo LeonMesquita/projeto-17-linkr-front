@@ -25,10 +25,11 @@ const CardContainer = styled.section`
     &.publish{
         background-color: #FFFFFF;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      
     }
     
     &.post{margin-top: 16px;}
-    &.post:first-of-type{margin-top: 0px;}
+    &.post:first-of-type{margin-top: ${props => (props.isUserPosts ? `40px` : `280px`)};}
     &:last-of-type{margin-bottom: ${props => (props.openComments ? `0px` : `50px`)};}
 
     @media screen and (max-width: 611px){
@@ -50,6 +51,11 @@ const CardContainer = styled.section`
                 margin-bottom: 15px;
             }
         }
+
+        &.post:first-of-type{margin-top: ${props => (props.isUserPosts ? `165px` : `380px`)};}
+    }
+    &.publish{
+        margin-bottom: 20px;
     }
 `;
 

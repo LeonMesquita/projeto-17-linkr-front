@@ -61,6 +61,11 @@ const SearchContainer = styled.section`
     margin-top: 10px;
 `
 const TitleContainer = styled.section`
+min-width: 611px;
+
+@media screen and (max-width: 611px){
+    min-width: 100%;
+}
 `
 const SubHeaderContainer = styled.section`
 
