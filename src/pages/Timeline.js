@@ -90,6 +90,7 @@ export default function Timeline() {
                     setPopupMessage(`${numberOfNewPosts} new posts, load more!`);
                     setLastPostId(lastId);
                 }
+           
             }
     }
 

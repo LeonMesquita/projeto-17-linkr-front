@@ -141,6 +141,19 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
 
     async function sharePost(){
+        setOpenConfirmationDialog(false);
+       const repostBody = {
+            reposterId: linkirUser.userId,
+            postId
+        }
+        try{
+            await axios.post(`${url}/repost`, repostBody, linkirUser.token);
+            alert('repostou');
+
+
+        }catch(err){
+
+        }
 
     }
 
