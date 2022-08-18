@@ -1,44 +1,27 @@
 import { useState, useEffect, useContext, useRef} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { ReactTagify } from "react-tagify";
 import { IoMdTrash } from 'react-icons/io'
 import { TiPencil } from 'react-icons/ti'
 import ReactTooltip from 'react-tooltip';
 import { BiRepost } from "react-icons/bi";
-
-
-import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { MainContainer } from "../comments/styled.js";
-
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 import { getComments } from "../../handlers/handlerComments.js";
-import handleAlertNotifications from '../../handlers/handleAlertNotifications';
-
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
-import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
+import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
 import { AiOutlineComment } from "react-icons/ai";
-
 import UserContext from "../../contexts/UserContext.js";
 import useLocalStorage from "../../hooks/useLocalStorage";
-
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
-import useInterval from 'react-useinterval';
-import WarningPopup from '../WarningPopup';
-
-
-import ScrollToTop from './ScrollTop.js';
 import ConfirmationDialog from "../ConfirmationDialog.js";
 
+export default function PostCard({postId, username, pictureUrl, description,
+    likes, preview, isUserPosts, poster_id}){
 
-export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, onclick, isUserPosts}){
-    if(!userId){
-        userId = -1;
-    }
     const navigate = useNavigate();
     const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -63,12 +46,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         let str;
 
         try {
-            const promise = await axios.get(`${url}/posts/favorite/${postId}/${userId}`);
+            const promise = await axios.get(`${url}/posts/favorite/${postId}/${linkrUserId}`);
             const quantity = promise.data.length;
             const likersList = promise.data;
             setLikers(likersList);
-            if(likersList.find(liker => liker.liker_id == userId)){
-                const otherLikers = likersList.filter(like => like.liker_id !== userId);
+            if(likersList.find(liker => liker.liker_id == linkrUserId)){
+                const otherLikers = likersList.filter(like => like.liker_id !== linkrUserId);
                 
                 setIsFavorite(true);
                 
@@ -109,7 +92,8 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     async function onClickFavorite() {
         try {
             await axios.post(`${url}/posts/favorite`,
-            {postId, userId},
+            {postId,
+            userId: linkrUserId},
             linkirUser.token);
 
             setIsFavorite(!isFavorite);
@@ -124,7 +108,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     async function removeFavorite() {
         try {
-            await axios.delete(`${url}/posts/favorite/${postId}/${userId}`,linkirUser.token);
+            await axios.delete(`${url}/posts/favorite/${postId}/${linkrUserId}`,linkirUser.token);
 
             setIsFavorite(false);
             getFavorites(postId);
@@ -144,7 +128,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     async function sharePost(){
         setOpenConfirmationDialog(false);
        const repostBody = {
-            reposterId: linkirUser.userId,
+            reposterId: linkrUserId,
             postId
         }
         try{
@@ -186,14 +170,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                 (
                     <FatherContainer isReposted={isReposted}>
                         {isReposted ? 
-                            <span>
+                            <span className="repost">
                             <BiRepost />
                             <h3>Re-posted by you</h3>
                             </span>
                         : null}
-
-                        
-             
+  
                     <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
               
                         <PostContentSide>
@@ -217,8 +199,11 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    <p onClick={onclick}>{username}</p>
-                                    <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
+                                    <Link to={`/user/${ poster_id}`}>
+                                        <p>{username}</p>
+                                    </Link>
+                                    
+                                    <InteractionContainer className={linkrUserId === linkrUserId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
                                     </InteractionContainer>
@@ -287,14 +272,13 @@ const FatherContainer = styled.div`
     background-color: #1E1E1E;
     z-index: 0;
     margin-bottom: 38px;
-    padding-tooopp: ${props => (props.isReposted ? `30px` : `0px`)};
     display: flex;
     flex-direction: column;
     border-radius: 16px;    
     max-width: 611px;
     color: white;
 
-    span{
+    .repost{
         display: flex;
         align-items: center;
         padding: 8px;
@@ -311,13 +295,6 @@ const FatherContainer = styled.div`
 `
 
 
-const RepostArea = styled.div`
-    height: 200px;
-    width: 100%;
-    background: #1E1E1E;
-
-
-`
 
 
 const TextArea = styled.textarea`

@@ -9,7 +9,6 @@ export default function ConfirmationDialog({message, onclickYes, onclickNo}){
             <span>
                 <button onClick={onclickNo} >Não</button>
                 <button onClick={onclickYes} className='yesbutton'>Sim</button>
-
             </span>
 
             </div>

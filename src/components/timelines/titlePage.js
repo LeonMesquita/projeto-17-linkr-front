@@ -6,14 +6,13 @@ import ClickedUserContext from '../../contexts/ClickedUserContext';
 import styled from 'styled-components';
 import SearchBar from '../SearchBar';
 import { TimelineTitle } from './style';
-import { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useContext } from 'react';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
 
-export default function PageTitle({ title, isLoading, }){
+export default function PageTitle({ title, isLoading, userPicture, clickedUserId }){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
-    const {isFollowed, setIsFollowed, clickedUserPicture, clickedUserId, isUserPosts } = useContext(ClickedUserContext);
+    const {isFollowed, setIsFollowed, isUserPosts } = useContext(ClickedUserContext);
     const [isDisabled, setIsDisabled] = useState(false);
 
     function callFollowUser(){
@@ -36,7 +35,7 @@ export default function PageTitle({ title, isLoading, }){
                 ? <p><Skeleton  count={1} baseColor="#333333" highlightColor="#272727" width="100%" height="64px" borderRadius="15px" duration={2}/></p>
                 : isUserPosts ?
                 <UserTitle isDisabled={isDisabled}>
-                    <img src={clickedUserPicture} alt=""/>
+                    <img src={userPicture} alt=""/>
                     <h1>{title}</h1>
                     {clickedUserId !== linkrUser.userId ?
                      <button onClick={isFollowed ? callUnfollowUser : callFollowUser} disabled={isDisabled}>{isFollowed ? 'Unfollow' : 'Follow'}</button>

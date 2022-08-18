@@ -24,13 +24,13 @@ import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/s
 import styled from "styled-components";
 
 export default function Timeline() {
-    const { url } = useContext(UserContext);
-    const {clickedUseName,  isUserPosts, setClickedUseName, setClickedUserPicture, setIsUserPosts} = useContext(ClickedUserContext);
+    const { url, posts, setPosts } = useContext(UserContext);
+    const {isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const [posts, setPosts] = useState([]);
+   // const [posts, setPosts] = useState([]);
     const [trendings, setTrendings] = useState([])
     const [statusCode, setStatusCode] = useState(false);
     const [lastPostId, setLastPostId] = useLocalStorage("lastPostId", "");
@@ -114,8 +114,9 @@ export default function Timeline() {
             `Aparentemente você não esta logado(a) :(`,
             `Retornando para a página de login`, 
             4000
-            ).then(returnToLogin)
-    createPostsList();
+            ).then(returnToLogin);
+        setIsUserPosts(false)
+        createPostsList();
     }, []);
     useInterval(getIntervalPosts, 15000, 1);
 
@@ -129,7 +130,7 @@ export default function Timeline() {
                 <Feed>
                     <LeftSide>
                         <FixedPublishContainer isUserPosts={isUserPosts}>
-                        <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading}/>
+                        <PageTitle title={"timeline"} isLoading={isLoading}/>
                             {isUserPosts ? null :
                             <>
                             <PublishCard isLoading={isLoading}/>
@@ -138,8 +139,7 @@ export default function Timeline() {
                             </>
                             }
                         </FixedPublishContainer>
-                        <RenderPosts posts={posts} isLoading={isLoading} isRefreshing={isRefreshing} statusCode={statusCode}
-                        setPosts={setPosts}
+                        <RenderPosts isLoading={isLoading} isRefreshing={isRefreshing} statusCode={statusCode}
                         />
 
                     </LeftSide>
