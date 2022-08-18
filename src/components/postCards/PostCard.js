@@ -5,6 +5,9 @@ import { ReactTagify } from "react-tagify";
 import { IoMdTrash } from 'react-icons/io'
 import { TiPencil } from 'react-icons/ti'
 import ReactTooltip from 'react-tooltip';
+import { BiRepost } from "react-icons/bi";
+
+
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { MainContainer } from "../comments/styled.js";
@@ -28,6 +31,7 @@ import WarningPopup from '../WarningPopup';
 
 
 import ScrollToTop from './ScrollTop.js';
+import ConfirmationDialog from "../ConfirmationDialog.js";
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
@@ -44,6 +48,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const linkrUserToken = linkirUser.token;
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
+    const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
 
 
@@ -134,6 +139,11 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         setListOfComments(comments);
     }
 
+
+    async function sharePost(){
+
+    }
+
     useEffect(() => {
        getFavorites(postId);
        callGetComments()
@@ -164,16 +174,20 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                       
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
-                            <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
+                            <InteractionIcon iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
                                 <h6>{likers.length} likes</h6>
-                            </LikeContainer >
+                            </InteractionIcon >
 
-                            <LikeContainer iconColor="FFFFFF">
+                            <InteractionIcon iconColor="FFFFFF">
                                     <AiOutlineComment onClick={() => setOpenComments(!openComments)}/>
                                     <h6>{listOfComments.length} comments</h6>
-                            </LikeContainer>
+                            </InteractionIcon>
+                            <InteractionIcon iconColor="FFFFFF">
+                                    <BiRepost onClick={() => setOpenConfirmationDialog(true)}/>
+                                    <h6>{listOfComments.length} re-posts</h6>
+                            </InteractionIcon>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
                         <PostSide>
@@ -233,6 +247,8 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
            <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
           : null}
 
+          {openConfirmationDialog ? <ConfirmationDialog message='Do you want to re-post this link?' onclickNo={() => setOpenConfirmationDialog(false)} onclickYes={sharePost}/> : null}
+
         </>
     )
 };
@@ -276,7 +292,7 @@ const TextArea = styled.textarea`
     
 `
 
-const LikeContainer = styled.div`
+const InteractionIcon = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
@@ -412,7 +428,7 @@ const LinkPreview = styled.a`
             }
             h2{color: #CECECE;}
         }
-        ${LikeContainer}{
+        ${InteractionIcon}{
             svg{
                 width: 17px;
                 height: 17px;
