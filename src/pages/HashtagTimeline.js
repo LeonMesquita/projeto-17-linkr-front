@@ -1,10 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import useAlert from "../hooks/useAlert";
 
 import UserContext from "../contexts/UserContext";
-import handleAlertNotifications from "../handlers/handleAlertNotifications";
-import handleGetTrendings from "../handlers/handleGetTrendings";
 import handleTokenVerify from "../handlers/handleGetToken";
 
 import Header from "../components/Header";
@@ -15,59 +13,62 @@ import TrendingSideBar from "../components/TrendingSidebar";
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function HashtagTimeline() {
-    const { url } = useContext(UserContext);
     const { hashtag } = useParams();
     const navigate = useNavigate()
-    const [posts, setPosts] = useState([]);
-    const [trendings, setTrendings] = useState([])
-    const [statusCode, setStatusCode] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
-    const handleGetPosts = (token) => {
-        console.log(token)
-        setIsLoading(true);
-        const promisse = axios.get(`${url}/hashtag/${hashtag}`, token)
-        const ONE_SECOND = 1000;
-        promisse.then((res) => {
-            setPosts(res.data);
-            handleGetTrendings(url, token, setTrendings, setIsLoading)
-        })
-        promisse.catch((e) => {
-            const where = e.response.data;
-            const status = e.response.status;
-            setStatusCode({ page:"hashtag", status: status, where: where})
-            handleGetTrendings(url, token, setTrendings, setIsLoading)
-        });
-    }
+    const [ isHashtagLoaded, setIsHashtagLoaded] = useState(false);
+    const [ isPostLoaded, setIsPostLoaded ] = useState(false);
+    const [ isPageLoaded, setIsPageLoaded ] = useState(false)
+    const [ page, setPage ] = useState(0)
 
-    const returnToLogin = (result) => {
+    const InvalidTokenAlert = () => useAlert({
+        icon:"error", 
+        titleText:"Aparentemente você não esta logado(a) :(",
+        text:"Retornando para a página de login"
+    }, "timer", {
+        timer: 4000
+    }).then( result => {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
-    }
+    })
+
     useEffect(() => {
-        const token = handleTokenVerify()
-        if (!token) return handleAlertNotifications(
-            'error', 
-            `Aparentemente você não esta logado(a) :(`,
-            `Retornando para a página de login`, 
-            4000
-            ).then(returnToLogin)
-        handleGetPosts(token)
+        const token = handleTokenVerify();
+        if (!token) return InvalidTokenAlert();
+        setIsPageLoaded(false);
+        setIsHashtagLoaded(false);
+        setIsPostLoaded(false);
+        setPage(0);
+    }, [hashtag])
 
-    }, [hashtag]);
-
-
+    useEffect( () => {
+        const HALF_SECOND = 500;
+        if(isPostLoaded && isHashtagLoaded){
+            setTimeout( () => setIsPageLoaded(true), HALF_SECOND);
+        }
+    }, [isPostLoaded, isHashtagLoaded])
 
     return (
         <Body>
-            <Header isLoading={isLoading}/>
+            <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={`# ${hashtag}`} isLoading={isLoading}/>
+                <PageTitle title={`# ${hashtag}`} isPageLoaded={isPageLoaded}/>
                 <Feed>
                     <LeftSide>
-                        <RenderPosts isLoading={isLoading} posts={posts} statusCode={statusCode}/>
+                        <RenderPosts 
+                            setIsPostLoaded={setIsPostLoaded}
+                            isPageLoaded={isPageLoaded} 
+                            endPoint={`hashtag/${hashtag}`} 
+                            params={hashtag} 
+                            page={page} 
+                            setPage={setPage} 
+                        />
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
+                        <TrendingSideBar 
+                            setIsHashtagLoaded={setIsHashtagLoaded} 
+                            isPageLoaded={isPageLoaded} 
+                            params={hashtag} 
+                        />
                     </RightSide>
                 </Feed>
             </Main>

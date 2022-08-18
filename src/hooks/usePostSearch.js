@@ -4,7 +4,7 @@ import UserContext from '../contexts/UserContext'
 
 import useLocalStorage from './useLocalStorage';
 
-export default function usePostSearch( urlQuery , page, setIsPostLoaded) {
+export default function usePostSearch( urlQuery , page, setIsPostLoaded, params ) {
     const { url } = useContext(UserContext);
     const token = useLocalStorage("linkrUser", "")[0].token;
 
@@ -12,41 +12,48 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded) {
     const [error, setError] = useState(false);
     const [posts, setPosts] = useState([]);
     const [hasMore, setHasMore] = useState(false);
-    const [statusCode, setStatusCode] = useState({});
-    const [postLoading, setPostLoading ]= useState(true);
+    const [statusCode, setStatusCode] = useState(false);
     const [message, setMessage] = useState("")
+    const [lastPost, setLastPost ] = useState(undefined);
 
     useEffect(() => {
         setPosts([]);
-    }, [])
+        setLastPost(undefined);
+        setStatusCode(false);
+    }, [params])
 
     useEffect(() => {
         setRefresh(true);
         setError(false);
-        const URL_CONFIGURED = `${url}/${urlQuery}/${page}`
+        const URL_CONFIGURED = `${url}/${urlQuery}?page=${page}&created=${lastPost}`
         const promisse = axios.get(
             URL_CONFIGURED,
             token
         ).then( res => {
             const newPosts = res.data;
             setPosts( (prevPosts) => [...prevPosts, ...newPosts]);
-            if(newPosts.length < 10){setError(true);}
+            if(newPosts.length < 10){
+                setError(true);
+            }
             setHasMore(res.data.length === 10);
             setRefresh(false)
-            if(page === 0) setIsPostLoaded(true);
+            if(page === 0) {
+                setLastPost(res.data[0].created_at)
+                setIsPostLoaded(true);
+            }
         }).catch( e => {
             if(page === 0){
-            const where = e.response.data
+            const { page } = e.response.data
+            const { where } = e.response.data
             const status = e.response.status;
-            setStatusCode({ page:"timeline", status: status, where: where})
+            setStatusCode({ page:page, status: status, where: where})
             setIsPostLoaded(true)
             } else {
                 setError(true);
             }
         })
 
-    }, [page])
+    }, [page, params])
 
-
-    return { refresh, error, posts, hasMore, statusCode , postLoading};
+    return { refresh, error, posts, hasMore, statusCode };
 }

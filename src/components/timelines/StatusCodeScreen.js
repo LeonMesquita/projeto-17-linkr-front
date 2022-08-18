@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import robot204 from "../../assets/204/8.png"
+import robot404 from "../../assets/204/8.png"
 import pirate204 from "../../assets/204/31.svg"
 import crying404 from "../../assets/404/20.svg"
+import astro404 from "../../assets/404/24.svg"
+import astroDog404 from "../../assets/404/5.svg"
 
 export default function StatusCodeScreen({ statusCode }){
     const { page, status, where } = statusCode
@@ -9,7 +11,7 @@ export default function StatusCodeScreen({ statusCode }){
         timeline: {
             404: {
                 follows:{
-                    picture: crying404,
+                    picture: astroDog404,
                     message: "You don't follow anyone yet",
                 },
                 posts: {
@@ -20,25 +22,25 @@ export default function StatusCodeScreen({ statusCode }){
         },
         hashtag : {
             404: {
-                follows:{
-                    picture: crying404,
-                    message: "You don't follow anyone yet",
+                hashtag:{
+                    picture: astro404,
+                    message: "This hashtag has never been used",
                 },
                 posts: {
-                    picture: pirate204,
-                    message: "No posts found from that timeline",
+                    picture: robot404,
+                    message: "No posts found from that hashtag",
                 }
             }
         },
         user : {
             404: {
-                follows:{
+                user:{
                     picture: crying404,
-                    message: "You don't follow anyone yet",
+                    message: "That user don't exist",
                 },
                 posts: {
                     picture: pirate204,
-                    message: "No posts found from your friends",
+                    message: "No posts found from that user",
                 }
             }
         }

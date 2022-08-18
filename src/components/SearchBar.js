@@ -14,9 +14,8 @@ export default function SearchBar() {
     const [searchUser, setSearchUser] = useState({ searchUsername: "" });
     const [usersFinded, setUserFinded] = useState([]);
     const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
-    console.log(linkrUser)
     const handleSearchUsers = async (typeWord) => {
-        console.log(searchUser)
+
         const promise = axios.get(`${url}/search/${typeWord}`, linkrUser.token);
 
         promise.then((res) => {
@@ -41,13 +40,11 @@ export default function SearchBar() {
         }
     }
 
-    console.log(usersFinded)
 
     const handleToggleSearchBox = (e) => {
         const { key } = e;
         if (key === "Escape") setSearchBoxIsOpen(false);
     }
-    console.log(typeof usersFinded === 'object')
     return (
         <SearchBarContainer >
             <SearchBarBox >

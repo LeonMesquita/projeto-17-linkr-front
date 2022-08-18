@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef, useCallback } from "react";//useContext,
 
-import PostCard from "../postCards/PostCard";
+import PostCard from "./PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
@@ -13,22 +13,23 @@ import styled from "styled-components";
 import usePostSearch from "../../hooks/usePostSearch";
 import { TailSpin} from "react-loader-spinner";
 
-export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, params, page, setPage }) {
+export default function RenderPostsTeste({setIsPostLoaded, isPageLoaded, endPoint }) {
 
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [ lastPost, setLastPost ] = useState(undefined);
 
     const observer = useRef();
 
-    const  {refresh, error, posts, hasMore, statusCode} = usePostSearch(endPoint, page , setIsPostLoaded, params);
-
+    const  {refresh, error, posts, hasMore} = usePostSearch(endPoint, pageNumber,lastPost, setLastPost, setIsPostLoaded);
 
     const lastPostElementRef = useCallback( node => {
         if (refresh) return 
         if(observer.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(entries => {
             if(entries[0].isIntersecting && hasMore){
-                setPage(prevPageNumber => prevPageNumber + 1)
+                setPageNumber(prevPageNumber => prevPageNumber + 1)
             };
         })
         if(node) observer.current.observe(node);
@@ -47,9 +48,6 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
             {
                 !isPageLoaded
                 ? <PostSkeleton />
-                :
-                statusCode
-                ? <StatusCodeScreen statusCode={statusCode} />
                 :
                 <>
                     {posts?.map( (post) => {

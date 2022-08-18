@@ -4,7 +4,7 @@ import useLocalStorage from "./useLocalStorage";
 
 import UserContext from "../contexts/UserContext";
 
-export default function useTrendingSearch( setIsHashtagLoaded ){
+export default function useTrendingSearch( setIsHashtagLoaded, params ){
     const { url } = useContext(UserContext);
     const token = useLocalStorage("linkrUser", "")[0].token;
 
@@ -21,7 +21,7 @@ export default function useTrendingSearch( setIsHashtagLoaded ){
             console.log(e);
             setIsHashtagLoaded(true);
         })
-    }, []);
+    }, [params]);
 
     return { trendings };
 }

@@ -6,10 +6,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styled from "styled-components";
 
-export default function TrendingSideBar({ setIsHashtagLoaded, isPageLoaded }){
+export default function TrendingSideBar({ setIsHashtagLoaded, isPageLoaded, params }){
 
-    const { trendings } = useTrendingSearch(setIsHashtagLoaded);
-    console.log(trendings)
+    const { trendings } = useTrendingSearch(setIsHashtagLoaded, params);
     
     return(
         <Container>

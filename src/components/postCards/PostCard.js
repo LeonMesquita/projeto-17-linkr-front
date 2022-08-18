@@ -151,6 +151,9 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
+
+    const toUserPage = () => navigate(`/user/${userId}`)
+
     return (
         <>
             {
@@ -174,7 +177,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    <p onClick={onclick}>{username}</p>
+                                    <p onClick={toUserPage}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
