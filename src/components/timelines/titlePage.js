@@ -10,7 +10,7 @@ import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
 
-export default function PageTitle({ title, isPageLoaded, }){
+export default function PageTitle({ title, isPageLoaded, params}){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
     const {isFollowed, setIsFollowed, clickedUserPicture, clickedUserId, isUserPosts } = useContext(ClickedUserContext);
@@ -28,7 +28,7 @@ export default function PageTitle({ title, isPageLoaded, }){
     return(
         <SubHeaderContainer>
             <SearchContainer>
-                <SearchBar />
+                <SearchBar params={params}/>
             </SearchContainer>
             <TitleContainer>
             {

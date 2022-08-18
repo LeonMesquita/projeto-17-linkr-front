@@ -1,83 +1,110 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-import styled from "styled-components";
 import { useContext, useState } from "react";
+import useLocalStorage from '../hooks/useLocalStorage';
+import useSearchUsers from '../hooks/useSearchUsers';
 import axios from "axios";
 import { Link } from "react-router-dom";
+
 import UserContext from '../contexts/UserContext';
-import useLocalStorage from '../hooks/useLocalStorage';
+
+import 'react-loading-skeleton/dist/skeleton.css';
+import styled from "styled-components";
+
+export default function SearchBar({ params }) {
+    const linkrUser = useLocalStorage("linkrUser", "")[0];
+    // const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
+    // const handleSearchUsers = async (typeWord) => {
+
+    //     const promise = axios.get(`${url}/search/${typeWord}`, linkrUser.token);
+
+    //     promise.then((res) => {
+    //         setUserFinded(res.data);
+    //     })
+    //     promise.catch((e) => {
+    //         setUserFinded([]);
+    //     })
+    // }
 
 
-export default function SearchBar() {
+    // const handleSearchVerify = (typeWord) => {
+    //     let searchTimeout;
+    //     const THREE_MILLISECONDS = 300;
+    //     if (typeWord.length > 2) searchTimeout = setTimeout(handleSearchUsers(typeWord), THREE_MILLISECONDS);
+    //     if (typeWord.length <= 2 || searchTimeout) {
+    //         setUserFinded([]);
+    //         clearTimeout(searchTimeout);
+    //     }
+    // }
 
-    const { url } = useContext(UserContext);
-    const linkrUser = useLocalStorage("linkrUser", "")[0]
-    const [searchUser, setSearchUser] = useState({ searchUsername: "" });
-    const [usersFinded, setUserFinded] = useState([]);
-    const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
-    const handleSearchUsers = async (typeWord) => {
+    const { setSearchValue, searchValue, users, openSearch, setOpenSearch, error } = useSearchUsers("search", params, linkrUser.token)
 
-        const promise = axios.get(`${url}/search/${typeWord}`, linkrUser.token);
-
-        promise.then((res) => {
-            setUserFinded(res.data);
-        })
-        promise.catch((e) => {
-            setUserFinded([]);
-        })
-    }
     const handleSearchChange = (e) => {
-        setSearchUser({ ...searchUser, [e.target.name]: e.target.value });
-        handleSearchVerify(e.target.value);
-    }
-
-    const handleSearchVerify = (typeWord) => {
-        let searchTimeout;
-        const THREE_MILLISECONDS = 300;
-        if (typeWord.length > 2) searchTimeout = setTimeout(handleSearchUsers(typeWord), THREE_MILLISECONDS);
-        if (typeWord.length <= 2 || searchTimeout) {
-            setUserFinded([]);
-            clearTimeout(searchTimeout);
-        }
+        setSearchValue({ ...searchValue, [e.target.name]: e.target.value });
     }
 
 
     const handleToggleSearchBox = (e) => {
         const { key } = e;
-        if (key === "Escape") setSearchBoxIsOpen(false);
+        if (key === "Escape") setOpenSearch(false);
     }
     return (
         <SearchBarContainer >
             <SearchBarBox >
                 <SearchInput
                     autoComplete='off'
-                    name="searchUsername"
-                    value={searchUser.searchUsername}
+                    name="searchValue"
+                    value={searchValue.searchValue}
                     onChange={handleSearchChange}
                     placeholder="Search for people"
                 />
                 <ion-icon name="search" ion-icon />
             </SearchBarBox>
-
-            <ResultsContainer className={usersFinded.length > 0 ? "open" : ""}>
+            <ResultsContainer>
                 {
-                    usersFinded?.map(user => {
-                        return (
-                            <Result key={user.id}>
-                                <Link to={`/user/${user.id}`}>
-                                    <img src={user.picture_url} alt="user" />
-                                    <span>{user.username} </span>
-                                    {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ?<span className='following'>• you</span> : <></>}
-                                </Link>
-                            </Result>
+                    error
+                    ?   
+                    <ResultBox>
+                        <h3>No users founded</h3>
+                    </ResultBox>
 
-                        )
-                    })
+                    :   openSearch
+                        ? 
+                        <ResultBox>
+                            {users?.map(user => {
+                                return (
+
+                                    <Result key={user.id}>
+                                        <Link to={`/user/${user.id}`}>
+                                        <img src={user.picture_url} alt="user" />
+                                        <span>{user.username} </span>
+                                        {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ? <span className='following'>• you</span> : <></>}
+                                        </Link>
+                                    </Result>
+
+                                )
+                            })}
+                        </ResultBox>                     
+                        : <></>
                 }
-
             </ResultsContainer>
         </SearchBarContainer >
     )
 }
+const ResultBox = styled.div`
+
+    transition: ease all .5s;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width:100%;
+    padding: 13px;
+    max-height: 130px;
+    h3{
+        text-align:center;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 24px;
+        color: #707070;
+    }
+`
 
 const Result = styled.div`
 
@@ -112,26 +139,16 @@ const ResultsContainer = styled.div`
     top: 0px;
     left: 0px;
     width: 100%;
-    height: 100%;
-    height: auto;
     z-index: 1;
     box-sizing: border-box;
     flex-direction: column;
     border-radius: 8px;
     background: #E7E7E7;
-    padding: 0 17px;
-    height: 20px;
+    padding-top: 45px;
+    transition: ease all .5s;
     ${Result} {margin-top: 7.5px;}
     ${Result}:first-of-type {margin-top: 0px;}
     ${Result}:first-of-type {margin-bottom: 0px;}
-    &.open{
-        width:100%;
-        padding-top: 60px;
-        padding-bottom: 15px;
-        height: 210px;
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
 
 `
 
@@ -182,9 +199,3 @@ const SearchBarContainer = styled.section`
         margin: 0 17px;
     }
 `
-
-
-
-
-
-

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@headlessui/react": "^1.6.6",
     "@mdnm/react-hashtag": "^3.0.2",
     "@sweetalert2/theme-dark": "^5.0.11",
     "@tippyjs/react": "^4.2.6",
