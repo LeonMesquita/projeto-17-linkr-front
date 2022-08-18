@@ -1,39 +1,55 @@
 import styled from "styled-components";
-import robot204 from "../../assets/204/8.png"
+import robot404 from "../../assets/204/8.png"
 import pirate204 from "../../assets/204/31.svg"
 import crying404 from "../../assets/404/20.svg"
+import astro404 from "../../assets/404/24.svg"
+import astroDog404 from "../../assets/404/5.svg"
 
 export default function StatusCodeScreen({ statusCode }){
-    const { page, status } = statusCode
-
+    const { page, status, where } = statusCode
     const erroInfos = {
         timeline: {
             404: {
-                picture: crying404,
-                message: "You don't follow anyone yet",
-            },
-            204: {
-                picture: pirate204,
-                message: "No posts found from your friends",
+                follows:{
+                    picture: astroDog404,
+                    message: "You don't follow anyone yet",
+                },
+                posts: {
+                    picture: pirate204,
+                    message: "No posts found from your friends",
+                }
             }
         },
         hashtag : {
             404: {
-                picture: "",
-                message: "",
-            },
-            204: {
-                picture: "",
-                message: "",
+                hashtag:{
+                    picture: astro404,
+                    message: "This hashtag has never been used",
+                },
+                posts: {
+                    picture: robot404,
+                    message: "No posts found from that hashtag",
+                }
+            }
+        },
+        user : {
+            404: {
+                user:{
+                    picture: crying404,
+                    message: "That user don't exist",
+                },
+                posts: {
+                    picture: pirate204,
+                    message: "No posts found from that user",
+                }
             }
         }
     }
-    console.log(erroInfos[page][status].message)
 
     return(
         <CodeContainer>
-            <h1>{erroInfos[page][status].message}</h1>
-            <img src={erroInfos[page][status].picture} alt="" />
+            <h1>{erroInfos[page][status][where].message}</h1>
+            <img src={erroInfos[page][status][where].picture} alt="" />
         </CodeContainer>
     )
 };

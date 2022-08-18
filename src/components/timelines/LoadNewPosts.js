@@ -1,17 +1,15 @@
+import React from 'react'
+import { BiRefresh } from 'react-icons/bi';
+
 import styled from 'styled-components';
-import { BiRefresh } from "react-icons/bi";
 
+export default function LoadNewPosts({ refreshClick, number }) {
 
-
-export default function WarningPopup({warningText, onClickRefresh}){
-    function scrollToTop(){
-
-    }
     return(
-        <PopupDiv>
+        <PopupDiv onClick={refreshClick}>
             <Popup>
-                <h1>{warningText}</h1>
-                <BiRefresh onClick={onClickRefresh}/>
+                <h1>{number} new post(s), load more!</h1>
+                <BiRefresh />
 
             </Popup>
         </PopupDiv>
@@ -19,10 +17,15 @@ export default function WarningPopup({warningText, onClickRefresh}){
 
 }
 
-const PopupDiv = styled.div`
+const PopupDiv = styled.button`
     top: 150px;
     width: 100%;
     display: flex;
+    margin-bottom: 15px;
+    @media screen and (max-width: 611px){
+        width: calc(100% - 34px)
+        margin: 0px auto 15px auto;
+    }
 
 `
 
@@ -50,7 +53,5 @@ const Popup = styled.div`
         line-height: 19px;
         margin-right: 14px;
     }
-
-
 
 `

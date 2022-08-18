@@ -23,15 +23,13 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
-import useInterval from 'react-useinterval';
-import WarningPopup from '../WarningPopup';
-
-
+// import useInterval from 'react-useinterval';
 import ScrollToTop from './ScrollTop.js';
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
     likes, preview, onclick, isUserPosts}){
+
     if(!userId){
         userId = -1;
     }
@@ -155,6 +153,9 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
+
+    const toUserPage = () => navigate(`/user/${userId}`)
+
     return (
         <>
 
@@ -164,6 +165,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                       
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
+
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
@@ -179,7 +181,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                             <PostInfos>
                                 <PostOwnerContainer>
-                                    <p onClick={onclick}>{username}</p>
+                                    <p onClick={toUserPage}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
@@ -223,7 +225,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                 </LinkPreview>
                             </PostInfos>
                         </PostSide>
-                       
                     </CardContainer>
                 )
                
