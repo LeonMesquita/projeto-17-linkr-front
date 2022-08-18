@@ -24,7 +24,6 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
 // import useInterval from 'react-useinterval';
-import WarningPopup from '../WarningPopup';
 import ScrollToTop from './ScrollTop.js';
 
 

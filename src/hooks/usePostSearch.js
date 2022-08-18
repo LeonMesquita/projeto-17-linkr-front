@@ -4,7 +4,7 @@ import UserContext from '../contexts/UserContext'
 
 import useLocalStorage from './useLocalStorage';
 
-export default function usePostSearch( urlQuery , page, setIsPostLoaded, params ) {
+export default function usePostSearch( urlQuery , page, setIsPostLoaded, params,setRefreshLastPost ) {
     const { url } = useContext(UserContext);
     const token = useLocalStorage("linkrUser", "")[0].token;
 
@@ -25,12 +25,14 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded, params 
     useEffect(() => {
         setRefresh(true);
         setError(false);
+        console.log(page);
         const URL_CONFIGURED = `${url}/${urlQuery}?page=${page}&created=${lastPost}`
         const promisse = axios.get(
             URL_CONFIGURED,
             token
         ).then( res => {
             const newPosts = res.data;
+            console.log(res.data)
             setPosts( (prevPosts) => [...prevPosts, ...newPosts]);
             if(newPosts.length < 10){
                 setError(true);
@@ -39,6 +41,7 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded, params 
             setRefresh(false)
             if(page === 0) {
                 setLastPost(res.data[0].created_at)
+                setRefreshLastPost(res.data[0].created_at);
                 setIsPostLoaded(true);
             }
         }).catch( e => {
@@ -55,5 +58,5 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded, params 
 
     }, [page, params])
 
-    return { refresh, error, posts, hasMore, statusCode };
+    return { refresh, error, posts, hasMore, statusCode, setPosts };
 }

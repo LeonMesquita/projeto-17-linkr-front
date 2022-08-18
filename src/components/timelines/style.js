@@ -17,7 +17,6 @@ const TimelineTitle = styled.section`
     font-size: 43px;
     line-height: 64px;
     color: #FFFFFF;
-    padding-bottom: 40px;
 
 `
 

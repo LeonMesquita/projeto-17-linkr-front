@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef, useCallback } from "react";
+import { useState, useEffect, useContext, useRef, useCallback, useLayoutEffect } from "react";
 import PostCard from "../postCards/PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
@@ -11,63 +11,35 @@ import axios from "axios";
 import styled from "styled-components";
 import usePostSearch from "../../hooks/usePostSearch";
 import { TailSpin} from "react-loader-spinner";
+import LoadNewPosts from "../timelines/LoadNewPosts";
+import useInterval from "react-useinterval";
+import useNewPostsSearch from "../../hooks/useNewPostsSearch";
 
 export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, params, page, setPage }) {
+    const { url } = useContext(UserContext);
+    const linkrUser = useLocalStorage("linkrUser", "")[0]
+    const token = linkrUser.token;
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        })
+    }
 
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-    const { url, user } = useContext(UserContext);
-    // const {clickedUserPicture, setClickedUserPicture, clickedUseName, setClickedUseName,
-    //     clickedUserId, setClickedUserId, followersList, setFollowersList, setIsUserPosts, isFollowed, setIsFollowed, isUserPosts} = useContext(ClickedUserContext);
+    //Refresh Hook
+    const { newPosts, haveNewPosts, setRefreshLastPost, setToggleRefresh, toggleRefresh, setPostsRefreshed } = useNewPostsSearch( url, endPoint, token, params );
 
+    const FIFTEEN_SECONDS = 15000;
+    useInterval(() => setToggleRefresh(!toggleRefresh), FIFTEEN_SECONDS);
 
-    // async function getUserFollowers(followedId){
-    //    try{
-    //     const resp = await axios.get(`${url}/follow/${followedId}`);
-    //     setFollowersList(resp.data);
-    //     if(resp.data.find(follower => follower.follower_id === linkirUser.userId)){
-    //         setIsFollowed(true);
-    //     }
-    //     else setIsFollowed(false);
-    //    }catch(err){
-    //     console.log(err);
-    //    }
-    // }
+    //Infinite Hook
+    const {
+        refresh, error, posts, hasMore, statusCode, setPosts
+    } = usePostSearch(
+        endPoint, page , setIsPostLoaded, params, setRefreshLastPost
+    );
 
-    // async function onClickUser(userId){
-
-    //     try{
-    //         const promise = await axios.get(`${url}/user/${userId}`, linkirUser.token);
-    //         setClickedUseName(promise.data[0].username);
-    //         setClickedUserPicture(promise.data[0].picture_url);
-    //         setClickedUserId(promise.data[0].user_id);
-    //        setPosts(promise.data);
-           
-    //         setIsUserPosts(true);
-    //         getUserFollowers(promise.data[0].user_id);
-            
-
-
-           
-    //     }catch(e){
-    //         Swal.fire({
-    //             icon: 'error',
-    //             titleText: `Falha de autenticação`,
-    //             text: `Você precisa estar logado!`,
-    //             color: `#FFFFFF`,
-    //             background: `#333333`,
-    //             confirmButtonColor:`#1877F2`,
-    //             padding: `10px`,
-    //             timer: 4000,
-    //             timerProgressBar: true,
-    //             timerProgressBar: `#ffffff`
-    //         })
-    //     }
-       
-    // }
-
-    const  {refresh, error, posts, hasMore, statusCode} = usePostSearch(endPoint, page , setIsPostLoaded, params);
     const observer = useRef();
-
     const lastPostElementRef = useCallback( node => {
         if (refresh) return 
         if(observer.current) observer.current.disconnect();
@@ -77,14 +49,13 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
             };
         })
         if(node) observer.current.observe(node);
-
     }, [refresh, hasMore]);
 
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-        behavior: "smooth"
-        });
+    // Refresh Function
+    const refreshPosts = () => {
+        setPosts( ( loadedPosts ) => ([...loadedPosts, ...loadedPosts]) )
+        scrollToTop();
+        setPostsRefreshed( (toggle) => !toggle);
     }
 
     return (
@@ -96,13 +67,18 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                 statusCode
                 ? <StatusCodeScreen statusCode={statusCode} />
                 :
-                <>
+                <>  
+                    {
+                        haveNewPosts
+                        ?   <LoadNewPosts refreshClick={refreshPosts} number={newPosts.length}/>
+                        :   <></>
+                    }
                     {posts?.map( (post) => {
                         return(
                             <PostCard
                                 key={post.post_id}
                                 postId={post.post_id}
-                                userId={linkirUser.userId}
+                                userId={linkrUser.userId}
                                 username={post.username}
                                 pictureUrl={post.picture_url}
                                 description={post.description}
@@ -112,7 +88,6 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                             />
                         )
                     })}
-                    {/* <StatusCodeScreen statusCode={statusCode}/> */}
                     {
                         !error
                         ?

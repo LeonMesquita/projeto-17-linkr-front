@@ -42,9 +42,7 @@ export default function TrendingSideBar({ setIsHashtagLoaded, isPageLoaded, para
 const Container = styled.aside`
     display:flex;
     flex-direction: column;
-    position: fixed;
-    top: 200px;
-    left: 65%;
+
     
 
 
@@ -59,6 +57,9 @@ const Container = styled.aside`
         }
     }
 `;
+// position: fixed;
+// top: 200px;
+// left: 65%;
 
 const Title = styled.header`
     padding: 10px 16px;
