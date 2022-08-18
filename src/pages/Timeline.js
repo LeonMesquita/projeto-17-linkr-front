@@ -158,7 +158,7 @@ const FixedPublishContainer = styled.div`
     z-index: 1;
     top: 0;
     background-color: #333333;
-    padding-top: ${props => (props.isUserPosts ? `120px` : `110px`)};
+    padding-top: 100px;
     max-width: 611px;
 
     @media screen and (max-width: 611px){

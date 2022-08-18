@@ -103,8 +103,9 @@ const UserTitle = styled.div`
         font-family: 'Oswald';
         font-style: normal;
         font-weight: 700;
-        font-size: 43px;
+        font-size: 40px;
         color: #FFFFFF;
+        max-width: 55%;
     }
 
     button{
