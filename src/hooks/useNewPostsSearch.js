@@ -34,6 +34,7 @@ export default function useNewPostsSearch( url, urlQuery, token, params ) {
             setRefreshLastPost(posts[0].created_at);
             setHaveNewPosts(true);
         }).catch( e => {
+            if(e.response.status === 401) return;
             if(newPosts.length === 0) setHaveNewPosts(false);
         })
     }, [toggleRefresh])

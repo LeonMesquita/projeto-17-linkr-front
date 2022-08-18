@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlert from "../hooks/useAlert";
 
@@ -11,6 +11,7 @@ import PageTitle from "../components/timelines/titlePage";
 import PublishCard from "../components/postCards/PublishCard"
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
+
 
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 import styled from "styled-components";

@@ -45,6 +45,7 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded, params,
                 setIsPostLoaded(true);
             }
         }).catch( e => {
+            if(e.response.status === 401) return;
             if(page === 0){
             const { page } = e.response.data
             const { where } = e.response.data
