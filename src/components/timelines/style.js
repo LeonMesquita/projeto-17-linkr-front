@@ -17,6 +17,8 @@ const TimelineTitle = styled.section`
     font-size: 43px;
     line-height: 64px;
     color: #FFFFFF;
+    padding-bottom: 40px;
+
 `
 
 const Feed = styled.div`
@@ -42,6 +44,7 @@ const Body = styled.div`
     height: 100vh;
     margin: 0 auto;
     margin-top: 125px;
+    
     div.leftSide{
         margin-right: 25px;
     }

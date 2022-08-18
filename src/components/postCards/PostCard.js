@@ -12,6 +12,7 @@ import { MainContainer } from "../comments/styled.js";
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
 import { getComments } from "../../handlers/handlerComments.js";
+import handleAlertNotifications from '../../handlers/handleAlertNotifications';
 
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
@@ -22,8 +23,15 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
+import useInterval from 'react-useinterval';
+import WarningPopup from '../WarningPopup';
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
+
+import ScrollToTop from './ScrollTop.js';
+
+
+export default function PostCard({postId, userId,username, pictureUrl, description,
+    likes, preview, onclick, isUserPosts}){
     if(!userId){
         userId = -1;
     }
@@ -37,10 +45,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
-
-
-
-
 
 
     const [data, setData] = useState();
@@ -153,9 +157,11 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
     return (
         <>
+
             {
                 (
-                    <CardContainer className="post" openComments={openComments}>
+                    <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
+                      
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
                             <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>

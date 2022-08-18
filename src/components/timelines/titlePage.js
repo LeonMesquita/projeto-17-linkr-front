@@ -61,6 +61,11 @@ const SearchContainer = styled.section`
     margin-top: 10px;
 `
 const TitleContainer = styled.section`
+min-width: 611px;
+
+@media screen and (max-width: 611px){
+    min-width: 100%;
+}
 `
 const SubHeaderContainer = styled.section`
 
@@ -98,8 +103,9 @@ const UserTitle = styled.div`
         font-family: 'Oswald';
         font-style: normal;
         font-weight: 700;
-        font-size: 43px;
+        font-size: 40px;
         color: #FFFFFF;
+        max-width: 55%;
     }
 
     button{

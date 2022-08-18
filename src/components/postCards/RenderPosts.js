@@ -12,7 +12,7 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
     const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
     const { url, user } = useContext(UserContext);
     const {clickedUserPicture, setClickedUserPicture, clickedUseName, setClickedUseName,
-        clickedUserId, setClickedUserId, followersList, setFollowersList, setIsUserPosts, isFollowed, setIsFollowed} = useContext(ClickedUserContext);
+        clickedUserId, setClickedUserId, followersList, setFollowersList, setIsUserPosts, isFollowed, setIsFollowed, isUserPosts} = useContext(ClickedUserContext);
 
 
     async function getUserFollowers(followedId){
@@ -36,7 +36,8 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
             setClickedUseName(promise.data[0].username);
             setClickedUserPicture(promise.data[0].picture_url);
             setClickedUserId(promise.data[0].user_id);
-            setPosts(promise.data);
+           setPosts(promise.data);
+           
             setIsUserPosts(true);
             getUserFollowers(promise.data[0].user_id);
             
@@ -82,6 +83,8 @@ export default function RenderPosts({ posts, isLoading, statusCode, setPosts, is
                                         likes={post.likes}
                                         preview={post.preview}
                                         onclick={() => onClickUser(post.user_id)}
+                                        setPosts={setPosts}
+                                        isUserPosts={isUserPosts}
                                      />
                                 )
                             })
