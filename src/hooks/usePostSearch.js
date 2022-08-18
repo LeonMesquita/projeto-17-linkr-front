@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import UserContext from '../contexts/UserContext'
 
 import useLocalStorage from './useLocalStorage';
-import useTrendingSearch from './useTrendingSearch';
 
 export default function usePostSearch( urlQuery , page, setIsPostLoaded) {
     const { url } = useContext(UserContext);

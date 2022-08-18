@@ -80,6 +80,13 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint }) 
 
     }, [refresh, hasMore]);
 
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+        behavior: "smooth"
+        });
+    }
+
     return (
         <>
             {
@@ -106,14 +113,14 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint }) 
                     {
                         !error
                         ?
-                        <RefreshContainer ref={lastPostElementRef}>
+                        <RefreshContainer >
                             <LoadingContainer>
                                 <TailSpin
                                     height="110"
                                     width="110"
                                     color="#6D6D6D"
                                 />
-                                <LinkrLogo>
+                                <LinkrLogo ref={lastPostElementRef}>
                                     lkr
                                 </LinkrLogo>
                             </LoadingContainer>
@@ -123,6 +130,9 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint }) 
                         :
                         <RefreshContainer>
                             That's all the posts from your friends
+                            <ScrollToTopButton onClick={scrollToTop}>
+                                Back to top
+                            </ScrollToTopButton>
                         </RefreshContainer>
                     }
                 </>
@@ -131,6 +141,21 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint }) 
 
     )
 };
+
+const ScrollToTopButton = styled.button`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin: 10px 0px;
+    height: 40px;
+    width: 150px;
+    background-color: #1877F2;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+`
 
 const LoadingContainer = styled.div`
     display:flex;
