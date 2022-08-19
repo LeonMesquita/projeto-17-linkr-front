@@ -8,6 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { MainContainer } from "../comments/styled.js";
+import { BiRepost } from "react-icons/bi";
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
@@ -25,6 +26,8 @@ import styled from "styled-components";
 import RenderComments from "../comments/RenderComments.js";
 // import useInterval from 'react-useinterval';
 import ScrollToTop from './ScrollTop.js';
+import ConfirmationDialog from "../ConfirmationDialog.js";
+
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
@@ -43,6 +46,9 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const linkrUserId = linkirUser.userId;
     const [openComments, setOpenComments] = useState(false);
     const [listOfComments, setListOfComments] = useState([]);
+    const [isReposted, setIsReposted] = useState(true);
+    const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
 
 
     const [data, setData] = useState();
@@ -132,6 +138,24 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         setListOfComments(comments);
     }
 
+
+    async function sharePost(){
+        setOpenConfirmationDialog(false);
+    //    const repostBody = {
+    //         reposterId: linkrUserId,
+    //         postId
+    //     }
+    //     try{
+    //         await axios.post(`${url}/repost`, repostBody, linkirUser.token);
+    //         alert('repostou');
+
+
+    //     }catch(err){
+
+    //     }
+
+    }
+
     useEffect(() => {
        getFavorites(postId);
        callGetComments()
@@ -161,21 +185,32 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
             {
                 (
+                    <FatherContainer isReposted={isReposted}>
+                    {isReposted ? 
+                        <span className="repost">
+                        <BiRepost />
+                        <h3>Re-posted by you</h3>
+                        </span>
+                    : null}
                     <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
                       
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
 
-                            <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
+                            <InteractionIcon iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
                                 <h6>{likers.length} likes</h6>
-                            </LikeContainer >
+                            </InteractionIcon >
 
-                            <LikeContainer iconColor="FFFFFF">
+                            <InteractionIcon iconColor="FFFFFF">
                                     <AiOutlineComment onClick={() => setOpenComments(!openComments)}/>
                                     <h6>{listOfComments.length} comments</h6>
-                            </LikeContainer>
+                            </InteractionIcon>
+                            <InteractionIcon iconColor="FFFFFF">
+                                    <BiRepost onClick={() => setOpenConfirmationDialog(true)}/>
+                                    <h6>{listOfComments.length} re-posts</h6>
+                            </InteractionIcon>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
                         <PostSide>
@@ -226,17 +261,52 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                             </PostInfos>
                         </PostSide>
                     </CardContainer>
+                    {openComments ? 
+           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
+          : null}
+
+                    </FatherContainer>
                 )
+
+                
                
                 
             }
-           {openComments ? 
-           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
-          : null}
+
+{openConfirmationDialog ? <ConfirmationDialog message='Do you want to re-post this link?' onclickNo={() => setOpenConfirmationDialog(false)} onclickYes={sharePost}/> : null}
 
         </>
     )
 };
+
+
+const FatherContainer = styled.div`
+    position: relative;
+    background-color: #1E1E1E;
+    z-index: 0;
+    margin-bottom: 38px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;    
+    max-width: 611px;
+    color: white;
+
+    .repost{
+        display: flex;
+        align-items: center;
+        padding: 8px;
+    }
+    svg{
+        font-size: 22px;
+    }
+    h3{
+        font-size: 11px;
+        font-family: 'Lato';
+        margin-left: 5px;
+
+    }
+`
+
 
 
 
@@ -277,7 +347,7 @@ const TextArea = styled.textarea`
     
 `
 
-const LikeContainer = styled.div`
+const InteractionIcon = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
@@ -413,7 +483,7 @@ const LinkPreview = styled.a`
             }
             h2{color: #CECECE;}
         }
-        ${LikeContainer}{
+        ${InteractionIcon}{
             svg{
                 width: 17px;
                 height: 17px;

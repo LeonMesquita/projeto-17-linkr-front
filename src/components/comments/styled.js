@@ -11,7 +11,7 @@ min-width: 100%;
 `
 
 const CommentsContainer = styled.div`
-
+    background-color: green;
     max-height: 300px;
     max-width: 611px;
     background-color: #1E1E1E;
@@ -23,7 +23,7 @@ const CommentsContainer = styled.div`
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
     overflow-y: scroll;
-    &:last-of-type{margin-bottom: 50px;}
+   
 
     
 
