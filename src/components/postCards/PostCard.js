@@ -140,21 +140,20 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         setListOfComments(comments);
     }
 
-
     async function sharePost(){
+        console.log(linkrUserToken)
         setOpenConfirmationDialog(false);
-    //    const repostBody = {
-    //         reposterId: linkrUserId,
-    //         postId
-    //     }
-    //     try{
-    //         await axios.post(`${url}/repost`, repostBody, linkirUser.token);
-    //         alert('repostou');
+       const repostBody = {
+            postId
+        }
+        try{
+            await axios.post(`${url}/reposts`, repostBody, linkrUserToken);
+            alert('repostou');
 
 
-    //     }catch(err){
-
-    //     }
+        }catch(err){
+            console.log(err)
+        }
 
     }
 
