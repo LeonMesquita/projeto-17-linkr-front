@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAlert from "../hooks/useAlert";
 
 import UserContext from "../contexts/UserContext";
+import ClickedUserContext from "../contexts/ClickedUserContext";
 import handleTokenVerify from "../handlers/handleGetToken";
 
 import Header from "../components/Header";
@@ -16,13 +17,13 @@ import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/s
 export default function UserTimeline(){
     const { id } = useParams();
     const navigate = useNavigate()
+    console.log(id)
 
     const [ isHashtagLoaded, setIsHashtagLoaded] = useState(false);
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
     const [ page, setPage ] = useState(0);
-    const [clickedUser, setClickedUser] = useLocalStorage("clickedUser", "");
-    console.log(clickedUser)
+    const {clickedUser, setClickedUser, isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
 
 
     const InvalidTokenAlert = () => useAlert({
@@ -33,7 +34,10 @@ export default function UserTimeline(){
         timer: 4000
     }).then( result => {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
-    })
+    });
+    const isInvalidClickedUser = () => {
+        if(!clickedUser.id) return navigate('/timeline');
+    }
 
     useEffect(() => {
         const token = handleTokenVerify();
@@ -42,9 +46,13 @@ export default function UserTimeline(){
         setIsHashtagLoaded(false);
         setIsPostLoaded(false);
         setPage(0);
+        isInvalidClickedUser();
     }, [id]);
 
     useEffect( () => {
+        
+        setIsUserPosts(true);
+
         const HALF_SECOND = 500;
         if(isPostLoaded && isHashtagLoaded){
             setTimeout( () => setIsPageLoaded(true), HALF_SECOND);
@@ -55,7 +63,7 @@ export default function UserTimeline(){
         <Body>
             <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={clickedUser.username} isPageLoaded={isPageLoaded}/>
+                <PageTitle title={`${clickedUser.username}'s posts`} isPageLoaded={isPageLoaded} userPicture={clickedUser.pictureUrl}/>
                 <Feed>
                     <LeftSide>
                         <RenderPosts 

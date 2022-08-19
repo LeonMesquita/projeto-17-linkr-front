@@ -9,6 +9,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { MainContainer } from "../comments/styled.js";
 import { BiRepost } from "react-icons/bi";
+import ClickedUserContext from "../../contexts/ClickedUserContext.js";
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
@@ -31,7 +32,7 @@ import ConfirmationDialog from "../ConfirmationDialog.js";
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, onclick, isUserPosts, post}){
+    likes, preview, onclick, post}){
 
     if(!userId){
         userId = -1;
@@ -48,7 +49,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [listOfComments, setListOfComments] = useState([]);
     const [isReposted, setIsReposted] = useState(true);
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
-    const [clickedUser, setClickedUser] = useLocalStorage("clickedUser", "");
+    const {clickedUser, setClickedUser, isUserPosts} = useContext(ClickedUserContext);
 
 
 
@@ -181,13 +182,11 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     const toUserPage = () => {
         //console.log(post)
-        const body = {
+        setClickedUser({
             id: post.user_id,
-            username: post.user_name,
-            picture_url: post.picture_url
-        }
-        console.log(body)
-        setClickedUser(body);
+            username: post.username,
+            pictureUrl: post.picture_url
+        });
         navigate(`/user/${post.user_id}`)
     }
 
@@ -315,6 +314,10 @@ const FatherContainer = styled.div`
         font-family: 'Lato';
         margin-left: 5px;
 
+    }
+
+    @media(max-width: 611px){
+        border-radius: 0;
     }
 `
 

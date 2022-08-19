@@ -25,17 +25,15 @@ export default function App() {
             Authorization: `Bearer ${token}`
         }
     }
-
-    const [clickedUserPicture, setClickedUserPicture] = useState('');
-    const [clickedUseName, setClickedUseName] = useState('');
-    const [clickedUserId, setClickedUserId] = useState(null);
+      
     const [followersList, setFollowersList] = useState([]);
     const [isUserPosts, setIsUserPosts] = useState(false);
     const [isFollowed, setIsFollowed] = useState(false);
+    const [clickedUser, setClickedUser] = useState({});
 
     return (
-        <ClickedUserContext.Provider value={{clickedUserPicture, setClickedUserPicture, clickedUseName,
-        setClickedUseName, clickedUserId, setClickedUserId, followersList, setFollowersList, isUserPosts, setIsUserPosts, isFollowed, setIsFollowed}}>
+        <ClickedUserContext.Provider value={{followersList, setFollowersList,
+        isUserPosts, setIsUserPosts, isFollowed, setIsFollowed, clickedUser, setClickedUser}}>
             <TokenContext.Provider value={{setToken, token, authorization}}>
                 <UserContext.Provider value={{ url, user, setUser }}>
                     <BrowserRouter>

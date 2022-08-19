@@ -2,8 +2,8 @@ import { useContext, useState } from "react";
 import useLocalStorage from '../hooks/useLocalStorage';
 import useSearchUsers from '../hooks/useSearchUsers';
 import axios from "axios";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import ClickedUserContext from "../contexts/ClickedUserContext";
 import UserContext from '../contexts/UserContext';
 
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -11,6 +11,8 @@ import styled from "styled-components";
 
 export default function SearchBar({ params }) {
     const linkrUser = useLocalStorage("linkrUser", "")[0];
+    const {clickedUser, setClickedUser, isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
+    const navigate = useNavigate();
     // const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
     // const handleSearchUsers = async (typeWord) => {
 
@@ -34,6 +36,13 @@ export default function SearchBar({ params }) {
     //         clearTimeout(searchTimeout);
     //     }
     // }
+    function setUserData(user){
+        setClickedUser({
+            id: user.id,
+            username: user.username,
+            pictureUrl: user.picture_url
+        });
+    }
 
     const { setSearchValue, searchValue, users, openSearch, setOpenSearch, error } = useSearchUsers("search", params, linkrUser.token)
 
@@ -73,7 +82,7 @@ export default function SearchBar({ params }) {
                                 return (
 
                                     <Result key={user.id}>
-                                        <Link to={`/user/${user.id}`}>
+                                        <Link to={`/user/${user.id}`} onClick={() => setUserData(user)}>
                                         <img src={user.picture_url} alt="user" />
                                         <span>{user.username} </span>
                                         {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ? <span className='following'>• you</span> : <></>}

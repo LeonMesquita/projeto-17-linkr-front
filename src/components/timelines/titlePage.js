@@ -10,18 +10,18 @@ import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
 
-export default function PageTitle({ title, isPageLoaded, params}){
+export default function PageTitle({ title, isPageLoaded, params, userPicture}){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
-    const {isFollowed, setIsFollowed, clickedUserPicture, clickedUserId, isUserPosts } = useContext(ClickedUserContext);
+    const {isFollowed, setIsFollowed, isUserPosts, clickedUser } = useContext(ClickedUserContext);
     const [isDisabled, setIsDisabled] = useState(false);
 
     function callFollowUser(){
-        followUser(linkrUser.userId, clickedUserId, setIsFollowed, linkrUser, setIsDisabled, url);
+        followUser(linkrUser.userId, clickedUser.id, setIsFollowed, linkrUser, setIsDisabled, url);
     }
 
     function callUnfollowUser(){
-        unfollowUser(linkrUser.userId, clickedUserId, setIsFollowed, linkrUser, setIsDisabled, url);
+        unfollowUser(linkrUser.userId, clickedUser.id, setIsFollowed, linkrUser, setIsDisabled, url);
     }
 
  
@@ -36,9 +36,9 @@ export default function PageTitle({ title, isPageLoaded, params}){
                 ? <p><Skeleton  count={1} baseColor="#333333" highlightColor="#272727" width="100%" height="64px" borderRadius="15px" duration={2}/></p>
                 : isUserPosts ?
                 <UserTitle isDisabled={isDisabled}>
-                    <img src={clickedUserPicture} alt=""/>
+                    <img src={userPicture} alt=""/>
                     <h1>{title}</h1>
-                    {clickedUserId !== linkrUser.userId ?
+                    { clickedUser.id !== linkrUser.userId ?
                      <button onClick={isFollowed ? callUnfollowUser : callFollowUser} disabled={isDisabled}>{isFollowed ? 'Unfollow' : 'Follow'}</button>
                      : null
                     }

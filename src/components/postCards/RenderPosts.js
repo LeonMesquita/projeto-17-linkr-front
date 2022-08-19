@@ -4,10 +4,6 @@ import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import UserContext from "../../contexts/UserContext";
-import ClickedUserContext from "../../contexts/ClickedUserContext";
-import Swal from "sweetalert2";
-import axios from "axios";
-
 import styled from "styled-components";
 import usePostSearch from "../../hooks/usePostSearch";
 import { TailSpin} from "react-loader-spinner";
