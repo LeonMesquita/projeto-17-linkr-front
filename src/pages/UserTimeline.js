@@ -17,13 +17,12 @@ import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/s
 export default function UserTimeline(){
     const { id } = useParams();
     const navigate = useNavigate()
-    console.log(id)
 
     const [ isHashtagLoaded, setIsHashtagLoaded] = useState(false);
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
     const [ page, setPage ] = useState(0);
-    const {clickedUser, setClickedUser, isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
+    const {clickedUser, setIsUserPosts} = useContext(ClickedUserContext);
 
 
     const InvalidTokenAlert = () => useAlert({

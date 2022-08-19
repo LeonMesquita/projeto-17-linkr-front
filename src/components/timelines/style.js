@@ -40,7 +40,7 @@ const RightSide = styled.div`
 
 const Body = styled.div`
     width: 971px;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0 auto;
     margin-top: 125px;
     

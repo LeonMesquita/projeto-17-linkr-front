@@ -25,7 +25,7 @@ export default function App() {
             Authorization: `Bearer ${token}`
         }
     }
-      
+
     const [followersList, setFollowersList] = useState([]);
     const [isUserPosts, setIsUserPosts] = useState(false);
     const [isFollowed, setIsFollowed] = useState(false);
