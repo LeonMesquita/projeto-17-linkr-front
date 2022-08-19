@@ -1,4 +1,4 @@
-import Swal from "sweetalert2"
+ import Swal from "sweetalert2"
 
 /*
 Para usar esse handle, é bem simples!

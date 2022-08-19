@@ -28,11 +28,13 @@ import RenderComments from "../comments/RenderComments.js";
 // import useInterval from 'react-useinterval';
 import ScrollToTop from './ScrollTop.js';
 import ConfirmationDialog from "../ConfirmationDialog.js";
+import useAlert from "../../hooks/useAlert"
+import Swal from "sweetalert2";
 
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, onclick, post}){
+    likes, preview, post, repost, repostCount}){
 
     if(!userId){
         userId = -1;
@@ -140,22 +142,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         setListOfComments(comments);
     }
 
-    async function sharePost(){
-        console.log(linkrUserToken)
-        setOpenConfirmationDialog(false);
-       const repostBody = {
-            postId
-        }
-        try{
-            await axios.post(`${url}/reposts`, repostBody, linkrUserToken);
-            alert('repostou');
 
-
-        }catch(err){
-            console.log(err)
-        }
-
-    }
 
     useEffect(() => {
        getFavorites(postId);
@@ -189,16 +176,57 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         navigate(`/user/${post.user_id}`)
     }
 
+
+    async function sharePost(){
+        const repostBody = {
+             postId
+         }
+         try{
+             await axios.post(`${url}/reposts`, repostBody, linkrUserToken);
+             alert('repostou');
+ 
+         }catch(err){
+             console.log(err)
+         }
+ 
+     }
+     
+    const handleRepost = () => {
+        if(linkrUserId === userId || repost.repostUserId === linkrUserId){
+            return handleAlertNotifications("error", "You can re-post your own post or your on re-post", "Re-post other post", 5000)
+        } else {
+            Swal.fire({
+                icon: "warning",
+                titleText: "Do you want to re-post this link??",
+                text: "You can delete it later",
+                color: `#FFFFFF`,
+                background: `#333333`,
+                confirmButtonColor: `#1877F2`,
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Yes, share!",
+                cancelButtonText: "No, cancel"
+            }).then( result =>{
+                if(result.isConfirmed === true || result.isDismissed === true){
+                    return sharePost();
+                }
+            })
+        }
+    }
+
+
+
+
     return (
         <>
 
             {
                 (
-                    <FatherContainer isReposted={isReposted}>
-                    {isReposted ? 
+                    <FatherContainer isReposted={repost}>
+                    {repost ? 
                         <span className="repost">
                         <BiRepost />
-                        <h3>Re-posted by you</h3>
+                        <h3>Re-posted by {repost.repostUsername}</h3>
                         </span>
                     : null}
                     <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
@@ -217,8 +245,8 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                     <h6>{listOfComments.length} comments</h6>
                             </InteractionIcon>
                             <InteractionIcon iconColor="FFFFFF">
-                                    <BiRepost onClick={() => setOpenConfirmationDialog(true)}/>
-                                    <h6>{listOfComments.length} re-posts</h6>
+                                    <BiRepost onClick={handleRepost}/>
+                                    <h6>{repostCount} re-posts</h6>
                             </InteractionIcon>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
