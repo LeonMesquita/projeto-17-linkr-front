@@ -2,7 +2,6 @@ import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlert from "../hooks/useAlert";
 
-import ClickedUserContext from "../contexts/ClickedUserContext";
 
 import handleTokenVerify from "../handlers/handleGetToken";
 
@@ -11,6 +10,7 @@ import PageTitle from "../components/timelines/titlePage";
 import PublishCard from "../components/postCards/PublishCard"
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
+import ClickedUserContext from "../contexts/ClickedUserContext";
 
 
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
@@ -24,8 +24,7 @@ export default function Timeline() {
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
     const [ page, setPage ] = useState(0);
-
-    const {clickedUseName,  isUserPosts, setClickedUseName, setClickedUserPicture, setIsUserPosts} = useContext(ClickedUserContext);
+    const {setIsUserPosts} = useContext(ClickedUserContext);
     const navigate = useNavigate();
 
     const InvalidTokenAlert = () => useAlert({
@@ -45,6 +44,7 @@ export default function Timeline() {
         setIsHashtagLoaded(false);
         setIsPostLoaded(false);
         setPage(0);
+        setIsUserPosts(false);
     }, [])
 
     useEffect( () => {
