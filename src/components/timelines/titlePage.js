@@ -9,12 +9,31 @@ import { TimelineTitle } from './style';
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
-
+//
 export default function PageTitle({ title, isPageLoaded, params, userPicture}){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
     const {isFollowed, setIsFollowed, isUserPosts, clickedUser } = useContext(ClickedUserContext);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    async function getUserFollowers(){
+        setIsLoading(true);
+        try{
+            const promise = await axios.get(`${url}/follow/${clickedUser.id}`);
+            console.log(promise.data);
+            if(promise.data.find(follower => follower.follower_id === linkrUser.userId)){
+                setIsFollowed(true);
+            }
+            else{
+                setIsFollowed(false)
+            }
+
+        }catch(err){
+
+        }
+        setIsLoading(false);
+    }
 
     function callFollowUser(){
         followUser(linkrUser.userId, clickedUser.id, setIsFollowed, linkrUser, setIsDisabled, url);
@@ -24,6 +43,9 @@ export default function PageTitle({ title, isPageLoaded, params, userPicture}){
         unfollowUser(linkrUser.userId, clickedUser.id, setIsFollowed, linkrUser, setIsDisabled, url);
     }
 
+    useEffect(() => {
+        getUserFollowers();
+    },[]);
  
     return(
         <SubHeaderContainer>
@@ -38,7 +60,7 @@ export default function PageTitle({ title, isPageLoaded, params, userPicture}){
                 <UserTitle isDisabled={isDisabled}>
                     <img src={userPicture} alt=""/>
                     <h1>{title}</h1>
-                    { clickedUser.id !== linkrUser.userId ?
+                    { clickedUser.id !== linkrUser.userId && !isLoading?
                      <button onClick={isFollowed ? callUnfollowUser : callFollowUser} disabled={isDisabled}>{isFollowed ? 'Unfollow' : 'Follow'}</button>
                      : null
                     }
