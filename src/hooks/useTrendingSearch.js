@@ -18,6 +18,7 @@ export default function useTrendingSearch( setIsHashtagLoaded, params ){
             setTrendings(res.data);
             setIsHashtagLoaded(true);
         }).catch( e => {
+            console.log(`Oi`)
             console.log(e);
             setIsHashtagLoaded(true);
         })
