@@ -70,11 +70,12 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                         :   <></>
                     }
                     {posts?.map( (post) => {
+                        console.log(post);
                         return(
                             <PostCard
                                 key={post.id}
                                 postId={post.post_id}
-                                userId={linkrUser.userId}
+                                userId={post.user_id}
                                 username={post.username}
                                 pictureUrl={post.picture_url}
                                 description={post.description}

@@ -190,7 +190,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
          }
  
      }
-     
+
     const handleRepost = () => {
         if(linkrUserId === userId || repost.repostUserId === linkrUserId){
             return handleAlertNotifications("error", "You can re-post your own post or your on re-post", "Re-post other post", 5000)
@@ -213,10 +213,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             })
         }
     }
-
-
-
-
     return (
         <>
 
@@ -253,7 +249,12 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                         <PostSide>
                                 <PostOwnerContainer>
                                     <p onClick={toUserPage}>{username}</p>
-                                    <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
+                                    <InteractionContainer className={
+                                        linkrUserId === userId 
+                                        ? repost
+                                                ? "notAuthorPost"
+                                                : ""
+                                        : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
                                     </InteractionContainer>
