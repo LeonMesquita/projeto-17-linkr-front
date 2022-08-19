@@ -32,16 +32,20 @@ const AlertObject = (icon,titleText, text, timer) => {
     }
 }
 
-export default function handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription){
+export default function handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription, postId){
+    console.log(postDescription);
     const { key } = e;
     if(key === "Escape") {
         setCanEdit(false);
         setPostDescription({description:description})
     }
     if(key === "Enter"){
-        //Botar um confirm???
+        const body = {
+            description: postDescription.description,
+            postId
+        }
         setEditIsEnabled("disabled");
-        const promisse = axios.put(`${url}/posts`, postDescription, linkrUserToken)
+        const promisse = axios.put(`${url}/description`, body, linkrUserToken)
         promisse.then(() => {
             Swal.fire(ModalObject(
                 "warning",

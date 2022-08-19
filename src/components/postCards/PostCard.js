@@ -155,13 +155,16 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [canEdit, setCanEdit] = useState(false);
     const [editIsEnabled, setEditIsEnabled] = useState("enabled");
     const handleDescriptionChanges = (e) => setPostDescription({...postDescription, [e.target.name]: e.target.value })
-    const EditPost = () => setCanEdit(!canEdit)
+    const EditPost = () => {
+        setPostDescription({ description: description })
+        setCanEdit(!canEdit)
+    }
     useEffect(() => {
         if(canEdit) {
             textareaRef.current.focus();
         }
     }, [canEdit])
-    const handleKeyDown = (e) => handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription);
+    const handleKeyDown = (e) => handleEditPost(e, setCanEdit, setPostDescription, setEditIsEnabled, description, url, linkrUserToken, postDescription, postId);
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };

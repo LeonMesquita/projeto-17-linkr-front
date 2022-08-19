@@ -49,8 +49,9 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
 
     // Refresh Function
     const refreshPosts = () => {
-        setPosts( ( loadedPosts ) => ([...loadedPosts, ...loadedPosts]) )
+        setPosts( ( loadedPosts ) => ([...newPosts, ...loadedPosts]) )
         scrollToTop();
+        setRefreshLastPost(newPosts[0].id)
         setPostsRefreshed( (toggle) => !toggle);
     }
 
