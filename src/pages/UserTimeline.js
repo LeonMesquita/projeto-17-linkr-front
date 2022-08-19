@@ -10,7 +10,7 @@ import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
 import RenderPostsTeste from "../components/postCards/RenderPostTeste";
 import TrendingSideBar from "../components/TrendingSidebar";
-
+import useLocalStorage from "../hooks/useLocalStorage";
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
 
 export default function UserTimeline(){
@@ -20,7 +20,10 @@ export default function UserTimeline(){
     const [ isHashtagLoaded, setIsHashtagLoaded] = useState(false);
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
-    const [ page, setPage ] = useState(0)
+    const [ page, setPage ] = useState(0);
+    const [clickedUser, setClickedUser] = useLocalStorage("clickedUser", "");
+    console.log(clickedUser)
+
 
     const InvalidTokenAlert = () => useAlert({
         icon:"error", 
@@ -52,7 +55,7 @@ export default function UserTimeline(){
         <Body>
             <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={id} isPageLoaded={isPageLoaded}/>
+                <PageTitle title={clickedUser.username} isPageLoaded={isPageLoaded}/>
                 <Feed>
                     <LeftSide>
                         <RenderPosts 

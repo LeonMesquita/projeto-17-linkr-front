@@ -84,6 +84,7 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                                 description={post.description}
                                 likes={post.likes}
                                 preview={post.preview}
+                                post={post}
                                 // onclick={() => onClickUser(post.user_id)}
                             />
                         )

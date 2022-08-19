@@ -31,7 +31,7 @@ import ConfirmationDialog from "../ConfirmationDialog.js";
 
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, onclick, isUserPosts}){
+    likes, preview, onclick, isUserPosts, post}){
 
     if(!userId){
         userId = -1;
@@ -48,6 +48,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const [listOfComments, setListOfComments] = useState([]);
     const [isReposted, setIsReposted] = useState(true);
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+    const [clickedUser, setClickedUser] = useLocalStorage("clickedUser", "");
 
 
 
@@ -178,7 +179,17 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
 
-    const toUserPage = () => navigate(`/user/${userId}`)
+    const toUserPage = () => {
+        //console.log(post)
+        const body = {
+            id: post.user_id,
+            username: post.user_name,
+            picture_url: post.picture_url
+        }
+        console.log(body)
+        setClickedUser(body);
+        navigate(`/user/${post.user_id}`)
+    }
 
     return (
         <>

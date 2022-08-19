@@ -24,8 +24,6 @@ export default function Timeline() {
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
     const [ page, setPage ] = useState(0);
-
-    const {clickedUseName,  isUserPosts, setClickedUseName, setClickedUserPicture, setIsUserPosts} = useContext(ClickedUserContext);
     const navigate = useNavigate();
 
     const InvalidTokenAlert = () => useAlert({
