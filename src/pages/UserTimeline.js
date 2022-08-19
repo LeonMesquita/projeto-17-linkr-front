@@ -5,7 +5,7 @@ import useAlert from "../hooks/useAlert";
 import UserContext from "../contexts/UserContext";
 import ClickedUserContext from "../contexts/ClickedUserContext";
 import handleTokenVerify from "../handlers/handleGetToken";
-
+import axios from 'axios';
 import Header from "../components/Header";
 import PageTitle from "../components/timelines/titlePage";
 import RenderPosts from "../components/postCards/RenderPosts";
@@ -22,8 +22,10 @@ export default function UserTimeline(){
     const [ isPostLoaded, setIsPostLoaded ] = useState(false);
     const [ isPageLoaded, setIsPageLoaded ] = useState(false)
     const [ page, setPage ] = useState(0);
-    const {clickedUser, setIsUserPosts} = useContext(ClickedUserContext);
-
+    const {clickedUser,setClickedUser, setIsUserPosts} = useContext(ClickedUserContext);
+    const {url} = useContext(UserContext);
+    const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     const InvalidTokenAlert = () => useAlert({
         icon:"error", 
@@ -34,9 +36,21 @@ export default function UserTimeline(){
     }).then( result => {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
     });
-    const isInvalidClickedUser = () => {
-        if(!clickedUser.id) return navigate('/timeline');
+
+
+     function getUserData(){
+        setIsLoading(true);
+            const promise = axios.get(`${url}/user/data/${id}`);
+            promise.then((res) => {
+                setClickedUser({
+                    id: res.data.id,
+                    username: res.data.username,
+                    pictureUrl: res.data.picture_url
+                });
+                setIsLoading(false);
+            })
     }
+   
 
     useEffect(() => {
         const token = handleTokenVerify();
@@ -45,7 +59,7 @@ export default function UserTimeline(){
         setIsHashtagLoaded(false);
         setIsPostLoaded(false);
         setPage(0);
-        isInvalidClickedUser();
+        getUserData();
     }, [id]);
 
     useEffect( () => {
@@ -56,13 +70,19 @@ export default function UserTimeline(){
         if(isPostLoaded && isHashtagLoaded){
             setTimeout( () => setIsPageLoaded(true), HALF_SECOND);
         }
-    }, [isPostLoaded, isHashtagLoaded])
+    }, [isPostLoaded, isHashtagLoaded]);
+
+
+
 
     return (
         <Body>
             <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={`${clickedUser.username}'s posts`} isPageLoaded={isPageLoaded} userPicture={clickedUser.pictureUrl}/>
+               {
+                isLoading ? null :  
+                <PageTitle title={`${clickedUser.username}'s posts`} isPageLoaded={isPageLoaded} userPicture={user.pictureUrl}/>
+               }        
                 <Feed>
                     <LeftSide>
                         <RenderPosts 

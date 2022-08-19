@@ -33,12 +33,7 @@ import Swal from "sweetalert2";
 
 
 
-export default function PostCard({postId, userId,username, pictureUrl, description,
-    likes, preview, post, repost, repostCount}){
-
-    if(!userId){
-        userId = -1;
-    }
+export default function PostCard({postId, userId,username, pictureUrl, description,likes, preview, post, repost, repostCount}){
     const navigate = useNavigate();
     const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -218,7 +213,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     }
     return (
         <>
-
             {
                 (
                     <FatherContainer isReposted={repost}>
