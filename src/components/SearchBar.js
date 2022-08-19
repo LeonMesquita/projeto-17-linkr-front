@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import useLocalStorage from '../hooks/useLocalStorage';
 import useSearchUsers from '../hooks/useSearchUsers';
+import useComponentVisible from "../hooks/useComponentVisible";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import ClickedUserContext from "../contexts/ClickedUserContext";
@@ -10,91 +11,67 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import styled from "styled-components";
 
 export default function SearchBar({ params }) {
-    const linkrUser = useLocalStorage("linkrUser", "")[0];
-    const {clickedUser, setClickedUser, isUserPosts, setIsUserPosts} = useContext(ClickedUserContext);
-    const navigate = useNavigate();
-    // const [searchBoxIsOpened, setSearchBoxIsOpen] = useState(true)
-    // const handleSearchUsers = async (typeWord) => {
-
-    //     const promise = axios.get(`${url}/search/${typeWord}`, linkrUser.token);
-
-    //     promise.then((res) => {
-    //         setUserFinded(res.data);
-    //     })
-    //     promise.catch((e) => {
-    //         setUserFinded([]);
-    //     })
-    // }
-
-
-    // const handleSearchVerify = (typeWord) => {
-    //     let searchTimeout;
-    //     const THREE_MILLISECONDS = 300;
-    //     if (typeWord.length > 2) searchTimeout = setTimeout(handleSearchUsers(typeWord), THREE_MILLISECONDS);
-    //     if (typeWord.length <= 2 || searchTimeout) {
-    //         setUserFinded([]);
-    //         clearTimeout(searchTimeout);
-    //     }
-    // }
-    function setUserData(user){
-        setClickedUser({
-            id: user.id,
-            username: user.username,
-            pictureUrl: user.picture_url
-        });
-    }
-
-    const { setSearchValue, searchValue, users, openSearch, setOpenSearch, error } = useSearchUsers("search", params, linkrUser.token)
-
+    const linkrUser = useLocalStorage("linkrUser", "")[0]
+    const { setSearchValue, searchValue, users, openSearch, setOpenSearch, error, setCleanSearch } = useSearchUsers("search", params, linkrUser.token)
+    const { ref, isComponentVisible, setIsComponentVisible} = useComponentVisible(true, setCleanSearch);
+    const handleKey = (e) => console.log(e.key)
     const handleSearchChange = (e) => {
         setSearchValue({ ...searchValue, [e.target.name]: e.target.value });
     }
 
-
-    const handleToggleSearchBox = (e) => {
+    const handleKeyPress = (e) => {
+        console.log(e.key)
         const { key } = e;
         if (key === "Escape") setOpenSearch(false);
     }
+
     return (
-        <SearchBarContainer >
-            <SearchBarBox >
-                <SearchInput
-                    autoComplete='off'
-                    name="searchValue"
-                    value={searchValue.searchValue}
-                    onChange={handleSearchChange}
-                    placeholder="Search for people"
-                />
-                <ion-icon name="search" ion-icon />
-            </SearchBarBox>
-            <ResultsContainer>
-                {
-                    error
-                    ?   
-                    <ResultBox>
-                        <h3>No users founded</h3>
-                    </ResultBox>
+        <SearchBarContainer ref={ref}>
 
-                    :   openSearch
-                        ? 
-                        <ResultBox>
-                            {users?.map(user => {
-                                return (
+                    <SearchBarBox >
+                    <SearchInput
+                        autoComplete='off'
+                        name="searchValue"
+                        value={searchValue.searchValue}
+                        onClick={() => setIsComponentVisible(true)}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Search for people"
+                    />
+                    <ion-icon name="search" ion-icon />
+                </SearchBarBox>
+                
+            {isComponentVisible && (
+                <ResultsContainer>
+                    {
 
-                                    <Result key={user.id}>
-                                        <Link to={`/user/${user.id}`} onClick={() => setUserData(user)}>
-                                        <img src={user.picture_url} alt="user" />
-                                        <span>{user.username} </span>
-                                        {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ? <span className='following'>• you</span> : <></>}
-                                        </Link>
-                                    </Result>
+                        error
+                            ?
+                            <ResultBox>
+                                <h3>No users founded</h3>
+                            </ResultBox>
 
-                                )
-                            })}
-                        </ResultBox>                     
-                        : <></>
-                }
-            </ResultsContainer>
+                            : openSearch
+                                ?
+                                <ResultBox>
+                                    {users?.map(user => {
+                                        return (
+
+                                            <Result key={user.id}>
+                                                <Link to={`/user/${user.id}`}>
+                                                    <img src={user.picture_url} alt="user" />
+                                                    <span>{user.username} </span>
+                                                    {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ? <span className='following'>• you</span> : <></>}
+                                                </Link>
+                                            </Result>
+
+                                        )
+                                    })}
+                                </ResultBox>
+                                : <></>
+                    }
+                </ResultsContainer>
+            )}
         </SearchBarContainer >
     )
 }
