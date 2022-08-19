@@ -1,34 +1,79 @@
 import styled from "styled-components";
+import robot404 from "../../assets/204/8.png"
+import pirate204 from "../../assets/204/31.svg"
+import crying404 from "../../assets/404/20.svg"
+import astro404 from "../../assets/404/24.svg"
+import astroDog404 from "../../assets/404/5.svg"
 
 export default function StatusCodeScreen({ statusCode }){
-
-    const status = {
-        404 : {
-            picture: "https://cdn.dribbble.com/userupload/2905354/file/original-92212c04a044acd88c69bedc56b3dda2.png?compress=1&resize=1024x768",
-            message: "Hashtag timeline not found"
+    const { page, status, where } = statusCode
+    const erroInfos = {
+        timeline: {
+            404: {
+                follows:{
+                    picture: astroDog404,
+                    message: "You don't follow anyone yet",
+                },
+                posts: {
+                    picture: pirate204,
+                    message: "No posts found from your friends",
+                }
+            }
         },
-        204 : {
-            picture: "https://cdn.dribbble.com/users/458522/screenshots/7157588/media/737705cec64886f7cc13a6d768b9b36a.jpg?compress=1&resize=800x600&vertical=top",
-            message: "This hashtag timeline don't have any post! Make ourself one!"
+        hashtag : {
+            404: {
+                hashtag:{
+                    picture: astro404,
+                    message: "This hashtag has never been used",
+                },
+                posts: {
+                    picture: robot404,
+                    message: "No posts found from that hashtag",
+                }
+            }
+        },
+        user : {
+            404: {
+                user:{
+                    picture: crying404,
+                    message: "That user don't exist",
+                },
+                posts: {
+                    picture: pirate204,
+                    message: "No posts found from that user",
+                }
+            }
         }
     }
 
     return(
         <CodeContainer>
-            <img src={status[statusCode].picture} alt="" />
-            <h1>{status[statusCode].message}</h1>
+            <h1>{erroInfos[page][status][where].message}</h1>
+            <img src={erroInfos[page][status][where].picture} alt="" />
         </CodeContainer>
     )
 };
 
 
 const CodeContainer = styled.section`
+    margin-top: 40px;
     width: 611px;
     display:flex;
     flex-direction: column;
     align-items:center;
     & > img {
         width: 100%;
+    }
+    & > h1{
+        text-align: center;
+        margin: 0 17px;
+        font-family: 'Oswald';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 64px;
+        color: #FFFFFF;
+        word-break: break-word;
     }
     @media screen and (max-width: 655px){
         width: 100%;

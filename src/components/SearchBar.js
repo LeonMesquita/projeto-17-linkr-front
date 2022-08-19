@@ -1,96 +1,143 @@
+import { useContext, useState } from "react";
+import useLocalStorage from '../hooks/useLocalStorage';
+import useSearchUsers from '../hooks/useSearchUsers';
+import useComponentVisible from "../hooks/useComponentVisible";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import ClickedUserContext from "../contexts/ClickedUserContext";
+import UserContext from '../contexts/UserContext';
+
 import 'react-loading-skeleton/dist/skeleton.css';
 import styled from "styled-components";
-import { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
 
-export default function SearchBar(){
-
-    const [search, setSearch] = useState("");
-    const [users, setUsers] = useState([]);
-
-    //salvar profilePic com a imagem do usuario que aparece no botao do logout
-    const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
-
-    function searchUser(value) {
-        const promise = axios.get(`http://localhost:4000/search/${value}`, localstorage.token);
-        promise.then((res) => {
-            setUsers(res.data);
-        });
-        promise.catch((e) => {
-            console.log(e);
-        });
+export default function SearchBar({ params }) {
+    const linkrUser = useLocalStorage("linkrUser", "")[0]
+    const { setSearchValue, searchValue, users, openSearch, setOpenSearch, error, setCleanSearch } = useSearchUsers("search", params, linkrUser.token)
+    const { ref, isComponentVisible, setIsComponentVisible} = useComponentVisible(true, setCleanSearch);
+    const handleKey = (e) => console.log(e.key)
+    const handleSearchChange = (e) => {
+        setSearchValue({ ...searchValue, [e.target.name]: e.target.value });
     }
-    const handleChange = (event) => {
-        setSearch(event.target.value);
-        let myTimeout;
-        if (event.target.value.length > 2) {
-            myTimeout = setTimeout(searchUser(event.target.value), 200);
-            //searchUser();
-        }
-        if (event.target.value.length <= 2) {
-            setUsers([]);
-            if (myTimeout) {
-                clearTimeout(myTimeout);
-            }
-        }
-    };
 
-    return(
-        <>
-        <SearchBarContainer>
-            <SearchInput  value={search} onChange={handleChange}
-                placeholder="Search for people"
+    const handleKeyPress = (e) => {
+        console.log(e.key)
+        const { key } = e;
+        if (key === "Escape") setOpenSearch(false);
+    }
+
+    return (
+        <SearchBarContainer ref={ref}>
+
+                    <SearchBarBox >
+                    <SearchInput
+                        autoComplete='off'
+                        name="searchValue"
+                        value={searchValue.searchValue}
+                        onClick={() => setIsComponentVisible(true)}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Search for people"
+                    />
+                    <ion-icon name="search" ion-icon />
+                </SearchBarBox>
                 
-            />
-            <ion-icon name="search" ion-icon />
-            <ResultsContainer>
-                {users.map(user => {
-                    return (
-                        <Link  key={user.id} to={`/user/${user.id}`}>
-                            <Result>
-                                <img src={user.picture_url} alt="user" />
-                                <h1>{user.username}</h1>
-                            </Result>
-                        </Link>
-                    )
-                })}
-            </ResultsContainer>
-        </SearchBarContainer>
-        
-     </>
+            {isComponentVisible && (
+                <ResultsContainer>
+                    {
+
+                        error
+                            ?
+                            <ResultBox>
+                                <h3>No users founded</h3>
+                            </ResultBox>
+
+                            : openSearch
+                                ?
+                                <ResultBox>
+                                    {users?.map(user => {
+                                        return (
+
+                                            <Result key={user.id}>
+                                                <Link to={`/user/${user.id}`}>
+                                                    <img src={user.picture_url} alt="user" />
+                                                    <span>{user.username} </span>
+                                                    {user.following ? <span className='following'>• following</span> : user.id === linkrUser.userId ? <span className='following'>• you</span> : <></>}
+                                                </Link>
+                                            </Result>
+
+                                        )
+                                    })}
+                                </ResultBox>
+                                : <></>
+                    }
+                </ResultsContainer>
+            )}
+        </SearchBarContainer >
     )
 }
+const ResultBox = styled.div`
+
+    transition: ease all .5s;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width:100%;
+    padding: 13px;
+    max-height: 130px;
+    h3{
+        text-align:center;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 24px;
+        color: #707070;
+    }
+`
+
+const Result = styled.div`
+
+    img{
+        margin-right: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+    }
+    a {
+        display: flex;
+        align-items:center;
+        text-decoration: none;
+        color: inherit;
+        cursor: auto;
+        & > span{
+            font-weight: 400;
+            font-size: 19px;
+            line-height: 23px;
+            color: #515151;
+        }
+        & > span.following{
+            color: #C5C5C5;
+            margin-left: 7px;
+        }
+    }
+`
 
 const ResultsContainer = styled.div`
-    position: absolute;
-    left:0px;
-    top:45px;
-    box-sizing: border-box;
     display: flex;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 1;
+    box-sizing: border-box;
     flex-direction: column;
     border-radius: 8px;
-    width: 100%;
     background: #E7E7E7;
+    padding-top: 45px;
+    transition: ease all .5s;
+    ${Result} {margin-top: 7.5px;}
+    ${Result}:first-of-type {margin-top: 0px;}
+    ${Result}:first-of-type {margin-bottom: 0px;}
+
 `
-const Result = styled.div`
-    display: flex;  
-    flex-direction:row;
-    img{
-        margin-left: 15px;
-        width: 39px;
-        height: 39px;
-        border-radius: 30px;
-    }
-    h1{
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 19px;
-        line-height: 23px;
-        color: #515151;
-    }
-`
+
 const SearchInput = styled.input`
     width: 100%;
     background-color: #FFFFFF;
@@ -101,10 +148,13 @@ const SearchInput = styled.input`
         color: #949494;
     }
 `
-const SearchBarContainer = styled.section`
-    position: relative;
+
+const SearchBarBox = styled.div`
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 45px;
+    z-index: 2;
     background: #FFFFFF;
     border-radius: 8px;
     padding: 0 15px;
@@ -120,10 +170,18 @@ const SearchBarContainer = styled.section`
         width: 100%;
         height: 100%;
     }
+
+`
+
+const SearchBarContainer = styled.section`
+    display:flex;
+    position: relative;
+    height: 45px;
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 8px;
+
     @media screen and (max-width: 836px){
         margin: 0 17px;
-    }
-    @media screen and (max-width: 611px){
-       display:none;
     }
 `

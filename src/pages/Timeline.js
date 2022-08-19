@@ -1,92 +1,86 @@
-import { useState, useEffect, useContext } from "react";//useContext,
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useAlert from "../hooks/useAlert";
 
-import UserContext from "../contexts/UserContext";
 
-import handleGetTrendings from "../handlers/handleGetTrendings";
 import handleTokenVerify from "../handlers/handleGetToken";
-import handleAlertNotifications from "../handlers/handleAlertNotifications";
 
 import Header from "../components/Header"
 import PageTitle from "../components/timelines/titlePage";
 import PublishCard from "../components/postCards/PublishCard"
 import RenderPosts from "../components/postCards/RenderPosts";
 import TrendingSideBar from "../components/TrendingSidebar";
+import ClickedUserContext from "../contexts/ClickedUserContext";
+
 
 import { Body, Main, Feed, LeftSide, RightSide } from "../components/timelines/style";
+import styled from "styled-components";
+
+
 
 export default function Timeline() {
-    const { url } = useContext(UserContext);
+
+    const [ isHashtagLoaded, setIsHashtagLoaded] = useState(false);
+    const [ isPostLoaded, setIsPostLoaded ] = useState(false);
+    const [ isPageLoaded, setIsPageLoaded ] = useState(false)
+    const [ page, setPage ] = useState(0);
+    const {setIsUserPosts} = useContext(ClickedUserContext);
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const [posts, setPosts] = useState([]);
-    const [trendings, setTrendings] = useState([])
-    const [statusCode, setStatusCode] = useState(false);
-
-    const [isUserPosts, setIsUserPosts] = useState(false);
-    const [clickedUserPicture, setClickedUserPicture] = useState('');
-    const [clickedUseName, setClickedUseName] = useState('');
-
-    // //           // ADICIONAR TRENDINGS NA SIDEBAR 
-    // //
-    // async function onClickUser(userId) {
-    //     try {
-    //         const promise = await axios.get(`${url}/user/${userId}`, authorization);
-    //         setClickedUseName(promise.data[0].username);
-    //         setClickedUserPicture(promise.data[0].picture_url);
-    //         setPosts(promise.data);
-    //         setIsUserPosts(true);
-    //     } catch (e) {
-    // }
-
-    const returnToLogin = (result) => {
+    const InvalidTokenAlert = () => useAlert({
+        icon:"error", 
+        titleText:"Aparentemente você não esta logado(a) :(",
+        text:"Retornando para a página de login"
+    }, "timer", {
+        timer: 4000
+    }).then( result => {
         if((result.isConfirmed === true || result.isDismissed === true)) return navigate("/");
-    }
-
-    const handleGetPost =  (token) => { //Recebe os Posts
-        const promise = axios.get(`${url}/posts`, token);
-        promise.then( (res) => {
-            console.log(res.data);
-            setPosts(res.data)
-            handleGetTrendings(url, token, setTrendings, setIsLoading) //Recebe os Trendigs, e tbm o loading, por ser o último a carregar, ele receber o setIsLoading, para a página inteira carregar junto!
-        })
-        promise.catch( (e) => {
-            console.log(e)
-            setStatusCode(e.response.status)
-            handleGetTrendings(url, token, setTrendings, setIsLoading)
-        });
-    }
+    })
 
     useEffect(() => {
-        const token = handleTokenVerify()
-        if (!token) return handleAlertNotifications(
-            'error', 
-            `Aparentemente você não esta logado(a) :(`,
-            `Retornando para a página de login`, 
-            4000
-            ).then(returnToLogin)
-        handleGetPost(token)
-    }, []);
+        const token = handleTokenVerify();
+        if (!token) return InvalidTokenAlert();
+        setIsPageLoaded(false);
+        setIsHashtagLoaded(false);
+        setIsPostLoaded(false);
+        setPage(0);
+        setIsUserPosts(false);
+    }, [])
+
+    useEffect( () => {
+        const HALF_SECOND = 500;
+        if(isPostLoaded && isHashtagLoaded){
+            setTimeout( () => setIsPageLoaded(true), HALF_SECOND);
+        }
+    }, [isPostLoaded, isHashtagLoaded])
+
 
     return (
         <Body>
-            <Header isLoading={isLoading}/>
+            <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={isUserPosts ? `${clickedUseName}'s posts` : "timeline"} isLoading={isLoading} isUserPosts={isUserPosts} clickedUserPicture={clickedUserPicture}/>
+                <PageTitle 
+                    title="timeline" 
+                    isPageLoaded={isPageLoaded}
+                />
                 <Feed>
                     <LeftSide>
-                        {isUserPosts ? null : <PublishCard isLoading={isLoading}/>}
-                        <RenderPosts posts={posts} isLoading={isLoading} isRefreshing={isRefreshing} statusCode={statusCode}
-                        setClickedUseName={setClickedUseName} setClickedUserPicture={setClickedUserPicture}
-                        setPosts={setPosts} setIsUserPosts={setIsUserPosts}
+                            <PublishCard 
+                                isPageLoaded={isPageLoaded}
+                            />
+                        <RenderPosts 
+                            setIsPostLoaded={setIsPostLoaded} 
+                            isPageLoaded={isPageLoaded} 
+                            endPoint={`timeline/posts`} 
+                            page={page} 
+                            setPage={setPage}
                         />
-
                     </LeftSide>
                     <RightSide>
-                        <TrendingSideBar trendings={trendings} isLoading={isLoading} />
+                        <TrendingSideBar 
+                            setIsHashtagLoaded={setIsHashtagLoaded} 
+                            isPageLoaded={isPageLoaded} 
+                        />
                     </RightSide>
                 </Feed>
             </Main>
@@ -94,3 +88,19 @@ export default function Timeline() {
     )
 };
 
+
+
+const FixedPublishContainer = styled.div`
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    background-color: #333333;
+    padding-top: 100px;
+    max-width: 611px;
+
+    @media screen and (max-width: 611px){
+        width: 100%;
+  
+    }
+    
+`

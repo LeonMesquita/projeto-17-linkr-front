@@ -1,12 +1,15 @@
 import { useState } from "react";
+import useTrendingSearch from "../hooks/useTrendingSearch";
 import { Link } from "react-router-dom";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-
 import 'react-loading-skeleton/dist/skeleton.css';
+
 import styled from "styled-components";
 
-export default function TrendingSideBar({ trendings, isLoading }){
+export default function TrendingSideBar({ setIsHashtagLoaded, isPageLoaded, params }){
 
+    const { trendings } = useTrendingSearch(setIsHashtagLoaded, params);
+    
     return(
         <Container>
             <Title>
@@ -15,7 +18,7 @@ export default function TrendingSideBar({ trendings, isLoading }){
             <Divisor />
             <Content>
                 {
-                    isLoading
+                    !isPageLoaded
                     ?   <SkeletonTheme baseColor="#171717" highlightColor="#272727" width="100%" height="23px" >
                             <Skeleton className="margin" count={10} />
                         </SkeletonTheme>
@@ -40,6 +43,9 @@ const Container = styled.aside`
     display:flex;
     flex-direction: column;
 
+    
+
+
     width: 301px;
     max-height: 80vh;
     border-radius: 16px;
@@ -51,6 +57,9 @@ const Container = styled.aside`
         }
     }
 `;
+// position: fixed;
+// top: 200px;
+// left: 65%;
 
 const Title = styled.header`
     padding: 10px 16px;

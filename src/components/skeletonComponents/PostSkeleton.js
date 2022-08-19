@@ -5,10 +5,10 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "../style"
 
 
-export default function PostSkeleton() {
+export default function PostSkeleton({ lastPostElementRef }) {
 
     return (
-        <CardContainer className="post">
+        <CardContainer className="post" ref={lastPostElementRef}>
             <PostContentSide className="post">
                 <SkeletonTheme baseColor="#171717" highlightColor="#272727" width="100%" height="23px" >
                     <ProfilePicLoading>

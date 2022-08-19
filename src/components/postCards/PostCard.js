@@ -7,34 +7,46 @@ import { TiPencil } from 'react-icons/ti'
 import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import { MainContainer } from "../comments/styled.js";
+import { BiRepost } from "react-icons/bi";
+import ClickedUserContext from "../../contexts/ClickedUserContext.js";
 
 import handleDeletePost from "../../handlers/handleDeletePost.js";
 import handleEditPost from "../../handlers/handleEditPost.js";
+import { getComments } from "../../handlers/handlerComments.js";
+import handleAlertNotifications from '../../handlers/handleAlertNotifications';
 
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
-import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
-import TokenContext from "../../contexts/TokenContext.js";
+import { IoIosHeartEmpty, IoIosHeart, IoIosSend } from "react-icons/io";
+import { AiOutlineComment } from "react-icons/ai";
+
 import UserContext from "../../contexts/UserContext.js";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import styled from "styled-components";
+import RenderComments from "../comments/RenderComments.js";
+// import useInterval from 'react-useinterval';
+import ScrollToTop from './ScrollTop.js';
+import ConfirmationDialog from "../ConfirmationDialog.js";
 
-export default function PostCard({postId, userId,username, pictureUrl, description, likes, preview, onclick}){
-    if(!userId){
-        userId = -1;
-    }
+
+
+export default function PostCard({postId, userId,username, pictureUrl, description,
+    likes, preview, onclick, post}){
     const navigate = useNavigate();
-    const { authorization } = useContext(TokenContext);
-    const { url, user } = useContext(UserContext);
+    const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
-    const [numberOfFavorites, setNumberOfFavorites] = useState(0);
     const [likers, setLikers] = useState([]);
     const [likedBy, setLikedBy] = useState('');
-    //João, Maria e outras 11 pessoas
-    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
-    const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
-    const linkrUserToken = linkrUser.token;
-    const linkrUserId = linkrUser.userId;
+    const [linkirUser] = useLocalStorage("linkrUser", "");
+    const linkrUserToken = linkirUser.token;
+    const linkrUserId = linkirUser.userId;
+    const [openComments, setOpenComments] = useState(false);
+    const [listOfComments, setListOfComments] = useState([]);
+    const [isReposted, setIsReposted] = useState(true);
+    const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+    const {clickedUser, setClickedUser, isUserPosts} = useContext(ClickedUserContext);
+
 
 
     const [data, setData] = useState();
@@ -51,7 +63,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
             const quantity = promise.data.length;
             const likersList = promise.data;
             setLikers(likersList);
-            setNumberOfFavorites(quantity);
             if(likersList.find(liker => liker.liker_id == userId)){
                 const otherLikers = likersList.filter(like => like.liker_id !== userId);
                 
@@ -89,9 +100,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         }
     }
 
-    useEffect(() => {
-        getFavorites(postId);
-    }, []);
+
 
     async function onClickFavorite() {
         try {
@@ -121,6 +130,33 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
         }
     }
+    
+   async function callGetComments(){
+        const comments = await getComments(url, postId);
+        setListOfComments(comments);
+    }
+
+    async function sharePost(){
+        console.log(linkrUserToken)
+        setOpenConfirmationDialog(false);
+       const repostBody = {
+            postId
+        }
+        try{
+            await axios.post(`${url}/reposts`, repostBody, linkrUserToken);
+            alert('repostou');
+
+
+        }catch(err){
+            console.log(err)
+        }
+
+    }
+
+    useEffect(() => {
+       getFavorites(postId);
+       callGetComments()
+    }, []);
 
     const deletePost = () => handleDeletePost(url, linkrUserToken); //Model para deletar o post!
     const textareaRef = useRef(null);
@@ -138,24 +174,52 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     const handleNavigate = (tag) => navigate(`/hashtag/${tag.slice(1)}`);
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
+
+    const toUserPage = () => {
+        //console.log(post)
+        setClickedUser({
+            id: post.user_id,
+            username: post.username,
+            pictureUrl: post.picture_url
+        });
+        navigate(`/user/${post.user_id}`)
+    }
+
     return (
         <>
             {
                 (
-                    <CardContainer className="post">
+                    <FatherContainer isReposted={isReposted}>
+                    {isReposted ? 
+                        <span className="repost">
+                        <BiRepost />
+                        <h3>Re-posted by you</h3>
+                        </span>
+                    : null}
+                    <CardContainer className="post" openComments={openComments} isUserPosts={isUserPosts}>
+                      
                         <PostContentSide>
                             <img src={pictureUrl} alt="user" />
-                            <LikeContainer iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
+
+                            <InteractionIcon iconColor={isFavorite ? 'AC0C00' : "FFFFFF"}  data-tip={likedBy}>
                                 {isFavorite ? <IoIosHeart onClick={removeFavorite} /> : <IoIosHeartEmpty onClick={onClickFavorite} />}
 
-                                <h6>{likers.length} Likes</h6>
-                            </LikeContainer>
+                                <h6>{likers.length} likes</h6>
+                            </InteractionIcon >
+
+                            <InteractionIcon iconColor="FFFFFF">
+                                    <AiOutlineComment onClick={() => setOpenComments(!openComments)}/>
+                                    <h6>{listOfComments.length} comments</h6>
+                            </InteractionIcon>
+                            <InteractionIcon iconColor="FFFFFF">
+                                    <BiRepost onClick={() => setOpenConfirmationDialog(true)}/>
+                                    <h6>{listOfComments.length} re-posts</h6>
+                            </InteractionIcon>
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
                         <PostSide>
-                            <PostInfos>
                                 <PostOwnerContainer>
-                                    <p onClick={onclick}>{username}</p>
+                                    <p onClick={toUserPage}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
                                         <TiPencil onClick={EditPost} />
                                         <IoMdTrash onClick={deletePost} />
@@ -185,7 +249,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                             <span>{postDescription.description}</span>
                                         </ReactTagify>
                                 }
-                                <LinkPreview
+                                <LinkPreviewContainer
                                     href={url}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -196,23 +260,65 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                         <h2>{preview[0].url}</h2>
                                     </PreviewDescription>
                                     <img src={preview[0].favicon} alt={preview[0].title}></img>
-                                </LinkPreview>
-                            </PostInfos>
+                                </LinkPreviewContainer>
                         </PostSide>
                     </CardContainer>
+                    {openComments ? 
+           <RenderComments postId={postId} listOfComments={listOfComments} setListOfComments={setListOfComments}/>
+          : null}
+
+                    </FatherContainer>
                 )
+
+                
+               
                 
             }
+
+{openConfirmationDialog ? <ConfirmationDialog message='Do you want to re-post this link?' onclickNo={() => setOpenConfirmationDialog(false)} onclickYes={sharePost}/> : null}
 
         </>
     )
 };
 
+
+const FatherContainer = styled.div`
+    position: relative;
+    background-color: #1E1E1E;
+    z-index: 0;
+    margin-bottom: 38px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;    
+    max-width: 611px;
+    color: white;
+
+    .repost{
+        display: flex;
+        align-items: center;
+        padding: 8px;
+    }
+    svg{
+        font-size: 22px;
+    }
+    h3{
+        font-size: 11px;
+        font-family: 'Lato';
+        margin-left: 5px;
+
+    }
+
+    @media(max-width: 611px){
+        border-radius: 0;
+    }
+`
+
 const TextArea = styled.textarea`
+    height: 44px;
     border-radius: 5px;
     transition: ease all .5s;
     width: 100%;
-    background-color: #EFEFEF;
+    background-color: #FFFFFF;
     font-size: 15px;
     line-height: 18px;
     color: #000000;
@@ -242,61 +348,42 @@ const TextArea = styled.textarea`
         line-height: 16px;
         min-height: 47px;
     }
+    
 `
 
-const LikeContainer = styled.div`
+const InteractionIcon = styled.div`
     display:flex;
     flex-direction: column;
     align-items:center;
+    min-width: 80px;
     svg{
         width: 25px;
         height: 25px;
         color: #${props => props.iconColor};
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
     }
     h6{
         font-family: 'Lato';
         font-weight: 400;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 13px;
         color: #FFFFFF;
+        margin-bottom: 15px;
+        text-align: center;
     }
-`
 
-const PostInfos = styled.div`
-    h1,span{font-weight: 400;}
-    h1,p{
-        font-size: 19px;
-        line-height: 23px;
-        color: #FFFFFF;
-    }
-    h1{
-        margin-bottom: 7px;
-    }
-    span{
-        font-size: 17px;
-        line-height: 20px;
-        color: #B7B7B7;
-    }
-    @media screen and (max-width: 431px){
-        h1,span,p{font-weight: 400;}
-        h1,p{
-            font-size: 17px;
-            line-height: 20px;
+    @media screen and (max-width: 611px){
+        svg{
+            width: 17px;
+            height: 17px;
         }
-        span{
-            font-size: 15px;
-            line-height: 18px;
-        }
-    }
-    p{
-        cursor: pointer;
-        &:hover{
-            text-decoration: underline;
+        h6{
+            font-size: 9px;
+            line-height: 11px;
         }
     }
 `
-
 const PostOwnerContainer = styled.div`
     min-height: 23px;
     display:flex;
@@ -325,7 +412,8 @@ const InteractionContainer = styled.div`
 const PreviewDescription = styled.div`
     display:flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
+    height: 100%;
     justify-content: space-between;
     padding: 24px 20px;
     h1,span,h2{font-weight: 400;}
@@ -345,25 +433,42 @@ const PreviewDescription = styled.div`
         line-height: 13px;
         color: #CECECE;
     }
+    h1,span,h2{
+        -webkit-line-clamp: 3;
+        overflow:hidden;
+    }
+    @media screen and (max-width: 611px){
+        h1{
+            height: 30px;
+        }
+        span{
+            height: 44px;
+        }
+        h2{
+            height: 22px;
+        }
+    }
 `
 
-const LinkPreview = styled.a`
+const LinkPreviewContainer = styled.a`
     display:flex;
-    align-items:center;
+    float: inline-end;
+    margin-top: 10px;
     width: 100%;
     height: 155px;
-    margin-top: 10px;
     border: 1px solid #4D4D4D;
     border-radius: 11px;
     img{
         float: right;
-        width: 155px;
+        width: 30%;
         height: 100%;
         border-radius: 0px 10px 10px 0px;
     }
+
     @media screen and (max-width: 611px){
+        height: 115px;
         ${PreviewDescription}{
-            width: 100%;
+            padding: 8px;
             h1{
                 font-size: 11px;
                 line-height: 13px;
@@ -376,17 +481,19 @@ const LinkPreview = styled.a`
             }
             h2{color: #CECECE;}
         }
-        ${LikeContainer}{
-            svg{
-                width: 17px;
-                height: 17px;
-            }
-            h6{
-                font-size: 9px;
-                line-height: 11px;
-            }
-        }
     }
+`
+
+
+const LinkPreview = styled.div`
+    display:flex;
+    width: 100%;
+    height: fit-content;
+    margin-top: 10px;
+    border: 1px solid #4D4D4D;
+    border-radius: 11px;
+
+
     @media screen and (max-width: 430px){
         height: 115px;
         img{
@@ -394,3 +501,5 @@ const LinkPreview = styled.a`
         }
     }
 `
+
+

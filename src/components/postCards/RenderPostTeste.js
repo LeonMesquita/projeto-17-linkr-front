@@ -1,57 +1,46 @@
-import { useState, useEffect, useContext, useRef, useCallback, useLayoutEffect } from "react";
-import PostCard from "../postCards/PostCard";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";//useContext,
+
+import PostCard from "./PostCard";
 import PostSkeleton from "../skeletonComponents/PostSkeleton";
 import StatusCodeScreen from "../timelines/StatusCodeScreen";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import UserContext from "../../contexts/UserContext";
+import ClickedUserContext from "../../contexts/ClickedUserContext";
+import Swal from "sweetalert2";
+import axios from "axios";
+
 import styled from "styled-components";
 import usePostSearch from "../../hooks/usePostSearch";
 import { TailSpin} from "react-loader-spinner";
-import LoadNewPosts from "../timelines/LoadNewPosts";
-import useInterval from "react-useinterval";
-import useNewPostsSearch from "../../hooks/useNewPostsSearch";
 
-export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, params, page, setPage }) {
-    const { url } = useContext(UserContext);
-    const linkrUser = useLocalStorage("linkrUser", "")[0]
-    const token = linkrUser.token;
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        })
-    }
+export default function RenderPostsTeste({setIsPostLoaded, isPageLoaded, endPoint }) {
 
-    //Refresh Hook
-    const { newPosts, haveNewPosts, setRefreshLastPost, setToggleRefresh, toggleRefresh, setPostsRefreshed } = useNewPostsSearch( url, endPoint, token, params );
-
-    const FIFTEEN_SECONDS = 15000;
-    useInterval(() => setToggleRefresh(!toggleRefresh), FIFTEEN_SECONDS);
-
-    //Infinite Hook
-    const {
-        refresh, error, posts, hasMore, statusCode, setPosts
-    } = usePostSearch(
-        endPoint, page , setIsPostLoaded, params, setRefreshLastPost
-    );
+    const [linkirUser, setLinkirUser] = useLocalStorage("linkrUser", "");
+    const { url, user } = useContext(UserContext);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [ lastPost, setLastPost ] = useState(undefined);
 
     const observer = useRef();
+
+    const  {refresh, error, posts, hasMore} = usePostSearch(endPoint, pageNumber,lastPost, setLastPost, setIsPostLoaded);
+
     const lastPostElementRef = useCallback( node => {
         if (refresh) return 
         if(observer.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(entries => {
             if(entries[0].isIntersecting && hasMore){
-                setPage(prevPageNumber => prevPageNumber + 1)
+                setPageNumber(prevPageNumber => prevPageNumber + 1)
             };
         })
         if(node) observer.current.observe(node);
+
     }, [refresh, hasMore]);
 
-    // Refresh Function
-    const refreshPosts = () => {
-        setPosts( ( loadedPosts ) => ([...loadedPosts, ...loadedPosts]) )
-        scrollToTop();
-        setPostsRefreshed( (toggle) => !toggle);
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+        behavior: "smooth"
+        });
     }
 
     return (
@@ -60,31 +49,23 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                 !isPageLoaded
                 ? <PostSkeleton />
                 :
-                statusCode
-                ? <StatusCodeScreen statusCode={statusCode} />
-                :
-                <>  
-                    {
-                        haveNewPosts
-                        ?   <LoadNewPosts refreshClick={refreshPosts} number={newPosts.length}/>
-                        :   <></>
-                    }
+                <>
                     {posts?.map( (post) => {
-                        console.log(post)
                         return(
                             <PostCard
                                 key={post.post_id}
                                 postId={post.post_id}
-                                userId={linkrUser.userId}
+                                userId={linkirUser.userId}
                                 username={post.username}
                                 pictureUrl={post.picture_url}
                                 description={post.description}
                                 likes={post.likes}
                                 preview={post.preview}
-                                post={post}
+                                // onclick={() => onClickUser(post.user_id)}
                             />
                         )
                     })}
+                    {/* <StatusCodeScreen statusCode={statusCode}/> */}
                     {
                         !error
                         ?
@@ -99,6 +80,7 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                                     lkr
                                 </LinkrLogo>
                             </LoadingContainer>
+
                             Loading more posts...
                          </RefreshContainer>
                         :
