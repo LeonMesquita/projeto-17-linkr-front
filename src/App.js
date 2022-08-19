@@ -18,7 +18,7 @@ export default function App() {
         profilePic: ""
     })
     //const [url, setUrl] = useState('https://linkr-back-api.herokuapp.com'); //Colocar link do deploy
-    const [url, setUrl] = useState('http://localhost:4000');
+    const [url, setUrl] = useState('http://localhost:5000');
 
     const authorization = {
         headers: {

@@ -33,10 +33,6 @@ import ConfirmationDialog from "../ConfirmationDialog.js";
 
 export default function PostCard({postId, userId,username, pictureUrl, description,
     likes, preview, onclick, post}){
-
-    if(!userId){
-        userId = -1;
-    }
     const navigate = useNavigate();
     const { url } = useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
