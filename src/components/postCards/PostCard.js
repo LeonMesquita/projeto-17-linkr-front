@@ -187,7 +187,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     return (
         <>
-
             {
                 (
                     <FatherContainer isReposted={isReposted}>
