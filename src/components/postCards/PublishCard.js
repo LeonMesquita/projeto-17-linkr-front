@@ -10,81 +10,21 @@ import styled from "styled-components";
 import { CardContainer, PostContentSide, PostSide } from "../style.js";
 import PublishSkeleton from "../skeletonComponents/PublishSkeleton";
 
+import usePublish from "../../hooks/usePublish";
 
+export default function PublishCard({ isPageLoaded }) {
+    
+ 
+    const linkrUser = useLocalStorage("linkrUser", "")[0];
+    const { publishData, setPublishData, setPublishing, publishing, isPublished} = usePublish(linkrUser.token );
 
-export default function PublishCard({ isPageLoaded, setPosts, setStatusCode, setIsRefreshing }) {
-    const { url } = useContext(UserContext);
-
-    const [newPostInfos, setNewPostInfos] = useState({
-        url: "",
-        description: ""
-    });
-
-    const linkrUser = JSON.parse(localStorage.getItem("linkrUser"));
-
-
-    const [isDisable, setIsDisable] = useState("");
-
-    const alert = (titleText, text) => {
-        return Swal.fire({
-            icon: 'error',
-            titleText: `${titleText}`,
-            text: `${text}`,
-            color: `#FFFFFF`,
-            background: `#333333`,
-            confirmButtonColor: `#1877F2`,
-            padding: `10px`,
-            timer: 4000,
-            timerProgressBar: true,
-            timerProgressBar: `#ffffff`
-        })
-    }
-
-    const handleInputs = (e) => {
-        setNewPostInfos({ ...newPostInfos, [e.target.name]: e.target.value })
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsDisable("disabled");
-        if (newPostInfos.url.length === 0) {
-            const titleText = "Oops... Url camp is empty";
-            const text = "For be able to publish an post, is required to the link camp is filled";
-            await alert(titleText, text)
-            return setIsDisable("")
-        }
-        const promisse = axios.post(`${url}/timeline`, newPostInfos, linkrUser.token);
-        const TWO_SECONDS = 2000;
-
-        promisse.then(async () => {
-            setIsRefreshing(true);
-            handleGetPostsRefresh(url, 'posts', linkrUser.token, setPosts, setStatusCode, setIsRefreshing)
-
-                setNewPostInfos({
-                    url: "",
-                    description: ""
-                })
-                setIsDisable("enabled")
-        })
-        promisse.catch(async (res) => {
-            const errors = res.response.data;
-            let titleText = `Oops... Unauthorized`
-            let text = `Sign out...`
-            if (errors !== "Unauthorized") {
-                titleText = `Oops... u have an error(s)`;
-                text = "";
-                for (let i = 0; i < errors.length; i++) {
-                    const erro = errors[i];
-                    const title = Object.keys(erro)[0];
-                    const description = Object.keys(erro)[0];
-                    text += `${titleText} : ${description} \n`
-                }
-
-            } await alert(titleText, text)
-            return setIsDisable("")
-        });
-    }
-
+    const handleDataChange = (e) => {
+        setPublishData({...publishData, [e.target.name]: e.target.value})
+     }
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setPublishing( !publishing )
+    };
     return (
         <>
             {
@@ -100,28 +40,28 @@ export default function PublishCard({ isPageLoaded, setPosts, setStatusCode, set
                             <h1>What are you going to share today?</h1>
                             <Form
                                 onSubmit={handleSubmit}
-                                className={isDisable}
+                                className={isPublished ? "disabled" : ""}
                             >
                                 <Input
                                     type="url"
                                     placeholder="http://..."
                                     id="urlInput"
-                                    value={newPostInfos.url}
+                                    value={publishData.url}
                                     name="url"
-                                    onChange={handleInputs}
+                                    onChange={handleDataChange}
                                 />
                                 <DescriptionBox
                                     className="big"
                                     type="text"
                                     placeholder="Awesome article about #javascript"
                                     id="descriptionInput"
-                                    value={newPostInfos.description}
+                                    value={publishData.description}
                                     name="description"
-                                    onChange={handleInputs}
+                                    onChange={handleDataChange}
                                 />
                                 <PublishButton type="submit">
                                     {
-                                        isDisable === "disabled"
+                                        isPublished
                                             ? `Publishing...`
                                             : `Publish`
                                     }
