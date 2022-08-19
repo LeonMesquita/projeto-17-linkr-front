@@ -143,18 +143,18 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
 
     async function sharePost(){
         setOpenConfirmationDialog(false);
-    //    const repostBody = {
-    //         reposterId: linkrUserId,
-    //         postId
-    //     }
-    //     try{
-    //         await axios.post(`${url}/repost`, repostBody, linkirUser.token);
-    //         alert('repostou');
+       const repostBody = {
+            reposterId: linkrUserId,
+            postId
+        }
+        try{
+            await axios.post(`${url}/repost`, repostBody, linkirUser.token);
+            alert('repostou');
 
 
-    //     }catch(err){
+        }catch(err){
 
-    //     }
+        }
 
     }
 
@@ -181,7 +181,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
     const tagStyle = { fontWeight: "700", fontSize: "17px", lineHeight: "20px", color: "#FFFFFF" };
 
     const toUserPage = () => {
-        //console.log(post)
         setClickedUser({
             id: post.user_id,
             username: post.username,
@@ -189,6 +188,8 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
         });
         navigate(`/user/${post.user_id}`)
     }
+
+
 
     return (
         <>
@@ -257,7 +258,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                         </ReactTagify>
                                 }
                                 <LinkPreview
-                                    href={url}
+                                    href={preview[0].url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >

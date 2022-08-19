@@ -61,7 +61,7 @@ export default function PageTitle({ title, isPageLoaded, params, userPicture}){
                     <img src={userPicture} alt=""/>
                     <h1>{title}</h1>
                     { clickedUser.id !== linkrUser.userId && !isLoading?
-                     <button onClick={isFollowed ? callUnfollowUser : callFollowUser} disabled={isDisabled}>{isFollowed ? 'Unfollow' : 'Follow'}</button>
+                     <button className={isFollowed ? 'unfollow-button': ''} onClick={isFollowed ? callUnfollowUser : callFollowUser} disabled={isDisabled}>{isFollowed ? 'Unfollow' : 'Follow'}</button>
                      : null
                     }
                    
@@ -151,6 +151,11 @@ const UserTitle = styled.div`
                 opacity: 0.7;
             }
         
+    }
+
+    .unfollow-button{
+        background-color: #FFFFFF;
+        color: #1877F2;
     }
 
     @media(max-width: 440px) {
