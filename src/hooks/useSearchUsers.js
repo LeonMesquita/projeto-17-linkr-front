@@ -11,6 +11,7 @@ export default function useSearchUsers( urlQuery, params, token ) {
     const [ searchValue, setSearchValue ] = useState({ searchValue: "" });
     const [ openSearch, setOpenSearch ] = useState(false);
     const [error, setError] = useState(false);
+    const [cleanSearch, setCleanSearch ] = useState(false);
 
 
     // const [refresh, setRefresh] = useState(true);
@@ -25,7 +26,8 @@ export default function useSearchUsers( urlQuery, params, token ) {
         setUsers([]);
         setSearchValue({ searchValue: "" })
         setOpenSearch(false);
-    }, [params])
+        setError(false);
+    }, [cleanSearch, params])
     useEffect(() => {
         if(searchValue.searchValue.length >= 3){
             const URL_CONFIGURED = `${url}/${urlQuery}/${searchValue.searchValue}`
@@ -46,5 +48,5 @@ export default function useSearchUsers( urlQuery, params, token ) {
         }
     }, [searchValue, params])
 
-    return { setSearchValue, searchValue, users, openSearch, setOpenSearch, error}
+    return { setSearchValue, searchValue, users, openSearch, setOpenSearch, error, setCleanSearch}
 }

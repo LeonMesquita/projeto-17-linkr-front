@@ -1,23 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
+import useComponentVisible from "../hooks/useComponentVisible";
+
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from './SearchBar';
 import HeaderSkeleton from "./skeletonComponents/HeaderSkeleton.js";
-import useLocalStorage from "../hooks/useLocalStorage";
+
 import { IoIosArrowUp } from "react-icons/io";
 import {FiLogOut} from "react-icons/fi"
 export default function Header({ isPageLoaded }) {
 
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [ cleanOpen, setCleanOpen ] = useState(false);
+    const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(true, setCleanOpen);
+
     const linkrUser = useLocalStorage("linkrUser", "")[0];
-
     const localstorage = JSON.parse(localStorage.getItem("linkrUser"));
-
+    
     function logout() {
         localStorage.setItem("linkrUser", JSON.stringify(" - "));
         navigate("/", { replace: true });
     }
+
+    useEffect(() => {
+        setIsOpen(false);
+        setIsComponentVisible(true);
+    }, [cleanOpen])
 
     const handleOpenDropdown = () => {
         setIsOpen(!isOpen);
@@ -37,15 +47,19 @@ export default function Header({ isPageLoaded }) {
                         <SearchContainer>
                             <SearchBar />
                         </SearchContainer>
-                        <Dropdown>
+                        <Dropdown ref={ref}>
                             <IoIosArrowUp className={ isOpen ? "open" : ""} onClick={handleOpenDropdown}/>
                             <img src={linkrUser.profilePic} alt="User"/>
-                            <DropdownMenu className={isOpen ? "open" : ""}>
-                                <DropdownOption onClick={logout}>
-                                    <h4>Logout</h4> 
-                                    <FiLogOut />
-                                </DropdownOption>
-                            </DropdownMenu>
+                            {
+                                isComponentVisible && (
+                                    <DropdownMenu className={isOpen ? "open" : ""}>
+                                        <DropdownOption onClick={logout}>
+                                            <h4>Logout</h4> 
+                                            <FiLogOut />
+                                        </DropdownOption>
+                                    </DropdownMenu>
+                                )
+                            }
                         </Dropdown>
                     </HeaderContainer>
             }
