@@ -3,8 +3,8 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import useSearchUsers from '../hooks/useSearchUsers';
 import useComponentVisible from "../hooks/useComponentVisible";
 import axios from "axios";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import ClickedUserContext from "../contexts/ClickedUserContext";
 import UserContext from '../contexts/UserContext';
 
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -72,9 +72,6 @@ export default function SearchBar({ params }) {
                     }
                 </ResultsContainer>
             )}
-
-
-
         </SearchBarContainer >
     )
 }
