@@ -25,6 +25,7 @@ export default function UserTimeline(){
     const {clickedUser,setClickedUser, setIsUserPosts} = useContext(ClickedUserContext);
     const {url} = useContext(UserContext);
     const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     const InvalidTokenAlert = () => useAlert({
         icon:"error", 
@@ -37,26 +38,19 @@ export default function UserTimeline(){
     });
 
 
-    async function getUserData(){
-        try{
-            const promise = await axios.get(`${url}/user/data/${id}`);
-            console.log(promise.data)
-            setUser({
-                id: promise.data.id,
-                username: promise.data.username,
-                pictureUrl: promise.data.picture_url
-            });
-            setClickedUser({
-                id: promise.data.id,
-                username: promise.data.username,
-                pictureUrl: promise.data.picture_url
+     function getUserData(){
+        setIsLoading(true);
+            const promise = axios.get(`${url}/user/data/${id}`);
+            promise.then((res) => {
+                setClickedUser({
+                    id: res.data.id,
+                    username: res.data.username,
+                    pictureUrl: res.data.picture_url
+                });
+                setIsLoading(false);
             })
-        }catch(e){
-
-        }
     }
-
-
+   
 
     useEffect(() => {
         const token = handleTokenVerify();
@@ -76,13 +70,19 @@ export default function UserTimeline(){
         if(isPostLoaded && isHashtagLoaded){
             setTimeout( () => setIsPageLoaded(true), HALF_SECOND);
         }
-    }, [isPostLoaded, isHashtagLoaded])
+    }, [isPostLoaded, isHashtagLoaded]);
+
+
+
 
     return (
         <Body>
             <Header isPageLoaded={isPageLoaded}/>
             <Main>
-                <PageTitle title={`${clickedUser.username}'s posts`} isPageLoaded={isPageLoaded} userPicture={user.pictureUrl} clickedUser={clickedUser}/>
+               {
+                isLoading ? null :  
+                <PageTitle title={`${clickedUser.username}'s posts`} isPageLoaded={isPageLoaded} userPicture={user.pictureUrl}/>
+               }        
                 <Feed>
                     <LeftSide>
                         <RenderPosts 

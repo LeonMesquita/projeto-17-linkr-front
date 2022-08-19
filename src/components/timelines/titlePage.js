@@ -16,7 +16,6 @@ export default function PageTitle({ title, isPageLoaded, params, userPicture}){
     const {isFollowed, setIsFollowed, isUserPosts, clickedUser } = useContext(ClickedUserContext);
     const [isDisabled, setIsDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    console.log(clickedUser)
 
     async function getUserFollowers(){
         setIsLoading(true);
