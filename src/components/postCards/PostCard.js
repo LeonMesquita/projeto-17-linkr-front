@@ -225,7 +225,6 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                             <ReactTooltip  place="bottom" type="dark" effect="float" backgroundColor="#E8E8E8" textColor="#505050"/>
                         </PostContentSide>
                         <PostSide>
-                            <PostInfos>
                                 <PostOwnerContainer>
                                     <p onClick={toUserPage}>{username}</p>
                                     <InteractionContainer className={linkrUserId === userId ? "" : "notAuthorPost"}>
@@ -257,7 +256,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                             <span>{postDescription.description}</span>
                                         </ReactTagify>
                                 }
-                                <LinkPreview
+                                <LinkPreviewContainer
                                     href={preview[0].url}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -268,8 +267,7 @@ export default function PostCard({postId, userId,username, pictureUrl, descripti
                                         <h2>{preview[0].url}</h2>
                                     </PreviewDescription>
                                     <img src={preview[0].favicon} alt={preview[0].title}></img>
-                                </LinkPreview>
-                            </PostInfos>
+                                </LinkPreviewContainer>
                         </PostSide>
                     </CardContainer>
                     {openComments ? 
@@ -322,14 +320,12 @@ const FatherContainer = styled.div`
     }
 `
 
-
-
-
 const TextArea = styled.textarea`
+    height: 44px;
     border-radius: 5px;
     transition: ease all .5s;
     width: 100%;
-    background-color: #EFEFEF;
+    background-color: #FFFFFF;
     font-size: 15px;
     line-height: 18px;
     color: #000000;
@@ -383,42 +379,18 @@ const InteractionIcon = styled.div`
         margin-bottom: 15px;
         text-align: center;
     }
-`
 
-const PostInfos = styled.div`
-    h1,span{font-weight: 400;}
-    h1,p{
-        font-size: 19px;
-        line-height: 23px;
-        color: #FFFFFF;
-    }
-    h1{
-        margin-bottom: 7px;
-    }
-    span{
-        font-size: 17px;
-        line-height: 20px;
-        color: #B7B7B7;
-    }
-    @media screen and (max-width: 431px){
-        h1,span,p{font-weight: 400;}
-        h1,p{
-            font-size: 17px;
-            line-height: 20px;
+    @media screen and (max-width: 611px){
+        svg{
+            width: 17px;
+            height: 17px;
         }
-        span{
-            font-size: 15px;
-            line-height: 18px;
-        }
-    }
-    p{
-        cursor: pointer;
-        &:hover{
-            text-decoration: underline;
+        h6{
+            font-size: 9px;
+            line-height: 11px;
         }
     }
 `
-
 const PostOwnerContainer = styled.div`
     min-height: 23px;
     display:flex;
@@ -447,7 +419,8 @@ const InteractionContainer = styled.div`
 const PreviewDescription = styled.div`
     display:flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
+    height: 100%;
     justify-content: space-between;
     padding: 24px 20px;
     h1,span,h2{font-weight: 400;}
@@ -467,25 +440,42 @@ const PreviewDescription = styled.div`
         line-height: 13px;
         color: #CECECE;
     }
+    h1,span,h2{
+        -webkit-line-clamp: 3;
+        overflow:hidden;
+    }
+    @media screen and (max-width: 611px){
+        h1{
+            height: 30px;
+        }
+        span{
+            height: 44px;
+        }
+        h2{
+            height: 22px;
+        }
+    }
 `
 
-const LinkPreview = styled.a`
+const LinkPreviewContainer = styled.a`
     display:flex;
-    align-items:center;
+    float: inline-end;
+    margin-top: 10px;
     width: 100%;
     height: 155px;
-    margin-top: 10px;
     border: 1px solid #4D4D4D;
     border-radius: 11px;
     img{
         float: right;
-        width: 155px;
+        width: 30%;
         height: 100%;
         border-radius: 0px 10px 10px 0px;
     }
+
     @media screen and (max-width: 611px){
+        height: 115px;
         ${PreviewDescription}{
-            width: 100%;
+            padding: 8px;
             h1{
                 font-size: 11px;
                 line-height: 13px;
@@ -498,17 +488,19 @@ const LinkPreview = styled.a`
             }
             h2{color: #CECECE;}
         }
-        ${InteractionIcon}{
-            svg{
-                width: 17px;
-                height: 17px;
-            }
-            h6{
-                font-size: 9px;
-                line-height: 11px;
-            }
-        }
     }
+`
+
+
+const LinkPreview = styled.div`
+    display:flex;
+    width: 100%;
+    height: fit-content;
+    margin-top: 10px;
+    border: 1px solid #4D4D4D;
+    border-radius: 11px;
+
+
     @media screen and (max-width: 430px){
         height: 115px;
         img{
