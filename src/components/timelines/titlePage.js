@@ -9,7 +9,7 @@ import { TimelineTitle } from './style';
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { followUser, unfollowUser } from '../../handlers/handleFollowUser.js';
-
+//
 export default function PageTitle({ title, isPageLoaded, params, userPicture}){
     const [linkrUser] = useLocalStorage("linkrUser", "");
     const { url } = useContext(UserContext);
