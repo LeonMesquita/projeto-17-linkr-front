@@ -40,8 +40,8 @@ export default function usePostSearch( urlQuery , page, setIsPostLoaded, params,
             setHasMore(res.data.length === 10);
             setRefresh(false)
             if(page === 0) {
-                setLastPost(res.data[0].created_at)
-                setRefreshLastPost(res.data[0].created_at);
+                setLastPost(res.data[0].id)
+                setRefreshLastPost(res.data[0].id);
                 setIsPostLoaded(true);
             }
         }).catch( e => {

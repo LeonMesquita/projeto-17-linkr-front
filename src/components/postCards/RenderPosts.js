@@ -49,8 +49,9 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
 
     // Refresh Function
     const refreshPosts = () => {
-        setPosts( ( loadedPosts ) => ([...loadedPosts, ...loadedPosts]) )
+        setPosts( ( loadedPosts ) => ([...newPosts, ...loadedPosts]) )
         scrollToTop();
+        setRefreshLastPost(newPosts[0].id)
         setPostsRefreshed( (toggle) => !toggle);
     }
 
@@ -70,18 +71,24 @@ export default function RenderPosts({setIsPostLoaded, isPageLoaded, endPoint, pa
                         :   <></>
                     }
                     {posts?.map( (post) => {
-                        console.log(post)
+                        console.log(post);
                         return(
                             <PostCard
-                                key={post.post_id}
+                                key={post.id}
                                 postId={post.post_id}
-                                userId={linkrUser.userId}
+                                userId={post.user_id}
                                 username={post.username}
                                 pictureUrl={post.picture_url}
                                 description={post.description}
                                 likes={post.likes}
                                 preview={post.preview}
                                 post={post}
+                                repost={ post.repost_post ? {
+                                    repostUserId: post.repost_user,
+                                    repostUsername: post.repost_username
+                                } : false}
+                                repostCount={post.reposts_count}
+                                // onclick={() => onClickUser(post.user_id)}
                             />
                         )
                     })}

@@ -15,7 +15,6 @@ export default function useNewPostsSearch( url, urlQuery, token, params ) {
     useEffect( ()  => {
         setNewPosts([]);
         setHaveNewPosts(false);
-        setRefreshLastPost(undefined);
         firstRefresh.current = true;
     }, [postsRefreshed, params])
 
@@ -24,14 +23,14 @@ export default function useNewPostsSearch( url, urlQuery, token, params ) {
             firstRefresh.current = false;
             return;
         }
-        const URL_CONFIGURED = `${url}/refresh/${urlQuery}?created=${refreshLastPost}`
+        const URL_CONFIGURED = `${url}/${urlQuery}/refresh?created=${refreshLastPost}`
         const promisse = axios.get(
             URL_CONFIGURED,
             token
         ).then( res => {
             const posts = res.data;
             setNewPosts( (prevPosts) => [...prevPosts, ...posts]);
-            setRefreshLastPost(posts[0].created_at);
+            setRefreshLastPost(posts[0].id);
             setHaveNewPosts(true);
         }).catch( e => {
             if(e.response.status === 401) return;
